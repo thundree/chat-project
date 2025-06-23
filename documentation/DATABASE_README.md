@@ -128,6 +128,34 @@ window.ttInteractiveUtils.isMigrationCompleted()
 }
 ```
 
+### API Keys Table
+```typescript
+{
+  id: string; // Unique key ID
+  provider: "openai" | "google";
+  key: string; // The API key value (encrypted at rest if possible)
+  isActive: boolean; // Whether this key is currently active for the provider
+  createdAt: string; // ISO timestamp
+  lastUsed?: string; // ISO timestamp of last use
+}
+```
+
+## API Key Management
+
+- API keys for OpenAI and Google AI are securely stored in the `apiKeys` table in IndexedDB.
+- You can add, activate, deactivate, and delete API keys for each provider via the application's configuration UI.
+- Only one API key per provider can be active at a time; activating a new key deactivates the previous one.
+- The system automatically fetches and uses the active API key for each provider when making requests.
+- API keys are never stored in localStorage or environment variables.
+- Usage of each key is tracked with a `lastUsed` timestamp.
+
+### Example Operations
+
+- **Add API Key:** Adds a new key and sets it as active for the provider.
+- **Activate API Key:** Marks a key as active and deactivates others for the provider.
+- **Delete API Key:** Removes a key from the database.
+- **List API Keys:** Returns all stored keys for a provider.
+
 ## Error Handling
 
 All database operations include error handling:

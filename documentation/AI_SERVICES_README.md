@@ -115,6 +115,13 @@ All services include proper error handling and will throw descriptive errors for
 - Rate limiting
 - Model availability
 
+### API Key Management
+- API keys for OpenAI and Google AI are securely stored in the application's database (IndexedDB via Dexie).
+- The application provides a configuration UI (within chat settings) to add, update, activate, or switch API keys for each provider.
+- The services automatically fetch and refresh the active API key from the database as needed.
+- No API keys are read from environment variables or `.env` files; all key management is handled in-app.
+- The `DatabaseService` manages the `apiKeys` table and provides methods for storing and retrieving keys.
+
 ### Type Safety
 All services are fully typed with TypeScript interfaces for:
 - Request/response formats
@@ -140,7 +147,7 @@ const { generateResponse } = useAI("openai"); // Same functionality
 
 ### Adding Google AI Support
 
-1. Set your Google AI API key in `.env`
+1. Add your Google AI API key in the application's chat configuration UI
 2. Switch provider: `switchProvider("google-ai")`
 3. Use Google AI models: `generateResponse(chat, { model: "gemini-1.5-flash" })`
 

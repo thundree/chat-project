@@ -500,7 +500,7 @@ export default function ChatConfiguration({
           <p>{error}</p>
           <button
             onClick={clearError}
-            className="mt-2 text-sm underline hover:no-underline"
+            className="cursor-pointer mt-2 text-sm hover:underline no-underline"
           >
             Clear Error
           </button>

@@ -84,7 +84,7 @@ export default function MessageItem({
             <>
               <textarea
                 className="w-full rounded bg-gray-800 text-gray-200 p-2 border border-gray-600 mb-2"
-                rows={Math.max(2, editText.split("\n").length)}
+                rows={Math.max(6, editText.split("\n").length)}
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
                 disabled={saving}
@@ -129,7 +129,7 @@ export default function MessageItem({
         </div>
         {!editing && chatId && updateMessage && (
           <button
-            className="mt-2 text-xs text-blue-400 hover:underline self-start"
+            className="cursor-pointer mt-2 text-xs text-blue-400 hover:underline self-start"
             onClick={handleEdit}
           >
             Edit

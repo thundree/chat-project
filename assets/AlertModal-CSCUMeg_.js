@@ -1,0 +1,1 @@
+import{j as e,h as l}from"./index-Dk6qGdX0.js";function c({show:t,onClose:r,children:s,okText:a="OK"}){return e.jsx(l,{show:t,onClose:r,cancelText:a,children:e.jsx("div",{className:"flex flex-col items-center justify-center",children:e.jsx("div",{className:"flex-1 text-gray-800 dark:text-white mb-4",children:s})})})}export{c as default};

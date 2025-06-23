@@ -1,0 +1,321 @@
+import {
+  useEffect,
+  useState,
+  useRef,
+  lazy,
+  Suspense,
+  type ReactNode,
+} from "react";
+
+const CharacterSelect = lazy(() => import("@/components/CharacterSelect"));
+const AlertModal = lazy(() => import("@/components/AlertModal"));
+const MessageList = lazy(() => import("@/components/MessageList"));
+const ChatConfiguration = lazy(() => import("@/components/ChatConfiguration"));
+import CustomButton from "@/components/CustomButton";
+
+import { detectChatId } from "@/functions";
+import { useAI } from "@/hooks/useAI";
+import { useChat } from "@/contexts/useChat";
+import type { AIProvider } from "@/services/aiService";
+import {
+  loadSelectedProvider,
+  loadSelectedModelForProvider,
+} from "@/utils/localStorage";
+
+import type { Message } from "@/types";
+
+import { BsChatLeftText } from "react-icons/bs";
+import { Tabs, TabItem, type TabsRef } from "flowbite-react";
+import { HiAdjustments } from "react-icons/hi";
+
+export default function MainContent() {
+  // Load saved provider and model preferences
+  const [selectedProvider, setSelectedProvider] = useState<AIProvider>(() =>
+    loadSelectedProvider()
+  );
+
+  const [selectedModel, setSelectedModel] = useState<string>(() =>
+    loadSelectedModelForProvider(selectedProvider)
+  );
+
+  // Tab state and ref for resetting on chat change
+  const tabsRef = useRef<TabsRef>(null);
+
+  // Ensure the page is loaded prior to rendering
+  // This is to avoid flickering or loading states
+  const [loadedPage, setLoadedPage] = useState(false);
+
+  // Alert modal state
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertContent, setAlertContent] = useState<ReactNode>(null);
+
+  // Use chat context
+  const {
+    chats,
+    currentChat,
+    currentChatId,
+    streamingResponse,
+    setCurrentChat,
+    addMessage,
+    createChat,
+    setStreamingResponse,
+    clearStreamingResponse,
+  } = useChat();
+
+  // Use AI service with dynamic provider
+  const {
+    isLoading,
+    error,
+    generateResponse,
+    generateStreamingResponse,
+    validateConnection,
+    clearError,
+    switchProvider,
+  } = useAI(selectedProvider);
+
+  const showAlert = (content: React.ReactNode) => {
+    setAlertContent(content);
+    setAlertOpen(true);
+  };
+  const closeAlert = () => {
+    setAlertOpen(false);
+    setAlertContent(null);
+  };
+
+  // Handle provider change
+  const handleProviderChange = (provider: AIProvider) => {
+    setSelectedProvider(provider);
+    switchProvider(provider);
+    // Reset model to default for new provider
+    const defaultModel =
+      provider === "openai" ? "gpt-3.5-turbo" : "gemini-1.5-flash";
+    setSelectedModel(defaultModel);
+  };
+
+  // Handle model change
+  const handleModelChange = (model: string) => {
+    setSelectedModel(model);
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const chatIdFromUrl = detectChatId();
+      setCurrentChat(chatIdFromUrl);
+
+      setTimeout(() => {
+        setLoadedPage(true);
+      }, 50);
+    };
+
+    // Get initial chat ID
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleHashChange);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [setCurrentChat, chats]);
+
+  // Reset tab to index 0 when chat id changes
+  useEffect(() => {
+    tabsRef.current?.setActiveTab(0);
+  }, [currentChatId]);
+
+  const handleGenerateResponse = async () => {
+    if (!currentChat) {
+      showAlert("No chat selected");
+      return;
+    }
+
+    const newMessage = await generateResponse(currentChat, {
+      model: selectedModel,
+      maxTokens: 1000,
+    });
+
+    if (newMessage && currentChatId) {
+      addMessage(currentChatId, newMessage);
+    }
+  };
+
+  const handleStreamingResponse = async () => {
+    if (!currentChat || !currentChatId) {
+      showAlert("No chat selected");
+      return;
+    }
+
+    clearStreamingResponse(currentChatId);
+
+    const newMessage = await generateStreamingResponse(
+      currentChat,
+      (chunk) => {
+        setStreamingResponse(currentChatId, chunk);
+      },
+      {
+        model: selectedModel,
+        maxTokens: 1000,
+      }
+    );
+
+    if (newMessage && currentChatId) {
+      addMessage(currentChatId, newMessage);
+      clearStreamingResponse(currentChatId);
+    }
+  };
+
+  const handleValidateConnection = async () => {
+    const isValid = await validateConnection();
+    showAlert(
+      isValid ? "OpenAI connection is valid!" : "OpenAI connection failed!"
+    );
+  };
+
+  const addUserMessage = () => {
+    const userText = prompt("Enter your message:");
+    if (userText && currentChatId) {
+      const userMessage: Omit<Message, "id"> = {
+        sender: "user",
+        text: [userText],
+      };
+      addMessage(currentChatId, userMessage);
+    }
+  };
+
+  return (
+    <div className="flex-1 w-full flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-900">
+      {/* Alert Modal Wrapper */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <AlertModal show={alertOpen} onClose={closeAlert} okText="OK">
+          {alertContent}
+        </AlertModal>
+      </Suspense>
+
+      {!loadedPage ? (
+        <div className="flex m-auto items-center justify-center h-full">
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      ) : (
+        <div
+          className="w-full flex-1 flex flex-col bg-fixed md:bg-cover md:bg-center bg-no-repeat"
+          style={{
+            backgroundImage: currentChat?.backgroundImage
+              ? `url(${currentChat.backgroundImage})`
+              : undefined,
+          }}
+        >
+          {currentChatId && currentChat ? (
+            <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
+              <Tabs
+                ref={tabsRef}
+                className="[&>button]:cursor-pointer [&_[aria-label]]:bg-black/60 rounded-lg"
+                aria-label="Chat Tabs"
+                variant="underline"
+              >
+                <TabItem active title="Messages" icon={BsChatLeftText}>
+                  {/* Chat Messages */}
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
+                        Loading messages...
+                      </div>
+                    }
+                  >
+                    <MessageList
+                      messages={currentChat.messages ?? []}
+                      selectedChat={currentChat}
+                      streamingResponse={streamingResponse}
+                    />
+                  </Suspense>
+                </TabItem>
+
+                <TabItem title="Configuration" icon={HiAdjustments}>
+                  {/* Chat Configuration */}
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
+                        Loading configuration...
+                      </div>
+                    }
+                  >
+                    <ChatConfiguration
+                      currentChat={currentChat}
+                      isLoading={isLoading}
+                      error={error}
+                      clearError={clearError}
+                      onModelChange={handleModelChange}
+                      onProviderChange={handleProviderChange}
+                      selectedModel={selectedModel}
+                      selectedProvider={selectedProvider}
+                    />
+                  </Suspense>
+                </TabItem>
+              </Tabs>
+
+              <div className="flex flex-wrap gap-3 mt-6">
+                <CustomButton
+                  onClick={addUserMessage}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  disabled={isLoading}
+                >
+                  Add User Message
+                </CustomButton>
+
+                <CustomButton
+                  onClick={handleGenerateResponse}
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                  disabled={
+                    isLoading || (currentChat.messages?.length ?? 0) === 0
+                  }
+                >
+                  {isLoading ? "Generating..." : "Generate Response"}
+                </CustomButton>
+
+                <CustomButton
+                  onClick={handleStreamingResponse}
+                  className="bg-purple-500 hover:bg-purple-600 text-white"
+                  disabled={
+                    isLoading || (currentChat.messages?.length ?? 0) === 0
+                  }
+                >
+                  {isLoading ? "Streaming..." : "Stream Response"}
+                </CustomButton>
+
+                <CustomButton
+                  onClick={handleValidateConnection}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                  disabled={isLoading}
+                >
+                  Test API Connection
+                </CustomButton>
+              </div>
+            </div>
+          ) : (
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-6">
+                Select a Character to Start a New Chat
+              </h2>
+
+              <Suspense
+                fallback={
+                  <div className="text-gray-600 dark:text-gray-400">
+                    Loading character selection...
+                  </div>
+                }
+              >
+                <CharacterSelect
+                  onSelect={async (character) => {
+                    // Create a new chat using the context
+                    const newChatId = await createChat(character);
+                    window.location.hash = `#${newChatId}`;
+                  }}
+                />
+              </Suspense>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

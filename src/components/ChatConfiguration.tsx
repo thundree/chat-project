@@ -269,31 +269,6 @@ export default function ChatConfiguration({
         </p>
       </div>
 
-      {/* AI Provider Selection */}
-      <div className="w-full">
-        <div className="flex items-center justify-start gap-2 mb-2">
-          <label
-            htmlFor="provider-select"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            AI Provider
-          </label>
-        </div>
-        <select
-          id="provider-select"
-          value={selectedProvider}
-          onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
-          className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          disabled={isLoading}
-        >
-          <option value="openai">OpenAI (GPT Models)</option>
-          <option value="google-ai">Google AI (Gemini Models)</option>
-        </select>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Current: {getProviderDisplayName()}
-        </p>
-      </div>
-
       {/* API Key Configuration */}
       <div className="w-full border-t border-gray-300 dark:border-gray-600 pt-3">
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -423,6 +398,31 @@ export default function ChatConfiguration({
             </a>
           </p>
         </div>
+      </div>
+
+      {/* AI Provider Selection */}
+      <div className="w-full">
+        <div className="flex items-center justify-start gap-2 mb-2">
+          <label
+            htmlFor="provider-select"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            AI Provider
+          </label>
+        </div>
+        <select
+          id="provider-select"
+          value={selectedProvider}
+          onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
+          className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+          disabled={isLoading}
+        >
+          <option value="openai">OpenAI (GPT Models)</option>
+          <option value="google-ai">Google AI (Gemini Models)</option>
+        </select>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Current: {getProviderDisplayName()}
+        </p>
       </div>
 
       {/* Model Selection */}

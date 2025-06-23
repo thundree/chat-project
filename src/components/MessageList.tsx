@@ -1,6 +1,7 @@
 import type { Chat, Message } from "@/types";
 import React from "react";
 import MessageItem from "@/components/MessageItem";
+import { useChat } from "@/contexts/useChat";
 
 interface MessageListProps {
   messages: Message[];
@@ -13,6 +14,8 @@ const MessageList: React.FC<MessageListProps> = ({
   selectedChat,
   streamingResponse,
 }) => {
+  const { currentChatId, updateMessage } = useChat();
+
   const allMessages = React.useMemo(() => {
     const initialMessage = selectedChat?.characterInitialMessage || [];
     if (!selectedChat || initialMessage?.length === 0) return messages;
@@ -47,6 +50,8 @@ const MessageList: React.FC<MessageListProps> = ({
                 message={message}
                 selectedChat={selectedChat as Chat}
                 msgSender={msgSender}
+                chatId={currentChatId}
+                updateMessage={updateMessage}
               />
             </div>
           );

@@ -22,7 +22,7 @@ class TTInteractiveDatabase extends Dexie implements ChatDB {
 
     this.version(1).stores({
       chats: "id, title, characterName, *messages",
-      messages: "id, chatId, sender, *text",
+      messages: "id, chatId, sender, *text, [id+chatId]", // add compound index
       characters: "id, name, isOriginal",
       apiKeys: "id, provider, isActive",
     });

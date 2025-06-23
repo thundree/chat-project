@@ -37,7 +37,7 @@ export default function MessageItem({
 }: Readonly<MessageItemProps>) {
   const isCharacterMessage = message.sender !== "user";
   const [editing, setEditing] = React.useState(false);
-  const [editText, setEditText] = React.useState(message.text.join("\n"));
+  const [editText, setEditText] = React.useState(message.text.join("\n\n"));
   const [saving, setSaving] = React.useState(false);
 
   let messageIcon;
@@ -57,13 +57,18 @@ export default function MessageItem({
 
   const handleEdit = () => setEditing(true);
   const handleCancel = () => {
-    setEditText(message.text.join("\n"));
+    setEditText(message.text.join("\n\n"));
     setEditing(false);
   };
   const handleSave = async () => {
     if (!chatId || !updateMessage) return;
     setSaving(true);
-    await updateMessage(chatId, message.id, { text: editText.split("\n") });
+    // Split by double newlines (paragraphs)
+    const paragraphs = editText
+      .split(/\n\n+/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+    await updateMessage(chatId, message.id, { text: paragraphs });
     setSaving(false);
     setEditing(false);
   };
@@ -84,7 +89,7 @@ export default function MessageItem({
             <>
               <textarea
                 className="w-full rounded bg-gray-800 text-gray-200 p-2 border border-gray-600 mb-2"
-                rows={Math.max(6, editText.split("\n").length)}
+                rows={Math.max(6, editText.split("\n\n").length)}
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
                 disabled={saving}

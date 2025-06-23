@@ -4,17 +4,7 @@ This project now supports both OpenAI and Google AI (Gemini) APIs through a unif
 
 ## Setup
 
-### OpenAI
-Set your OpenAI API key in your environment:
-```bash
-VITE_OPENAI_API_KEY=your_openai_api_key_here
-```
-
-### Google AI (Gemini) - Updated Package
-Set your Google AI API key in your environment:
-```bash
-VITE_GOOGLE_AI_API_KEY=your_google_ai_api_key_here
-```
+API keys for both OpenAI and Google AI are now stored in the application's database. You can configure and manage your API keys within the chat settings for a selected chat.
 
 You can get a Google AI API key from: https://ai.google.dev/
 

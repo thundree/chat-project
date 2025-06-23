@@ -8,6 +8,9 @@ import React, {
 } from "react";
 const CharacterSelect = lazy(() => import("@/components/CharacterSelect"));
 const AlertModal = lazy(() => import("@/components/AlertModal"));
+import type { Message, Character } from "@/types";
+import ChatPanel from "@/components/ChatPanel";
+import type { TabsRef } from "flowbite-react";
 import { detectChatId } from "@/functions";
 import { useAI } from "@/hooks/useAI";
 import { useChat } from "@/contexts/useChat";
@@ -16,9 +19,6 @@ import {
   loadSelectedProvider,
   loadSelectedModelForProvider,
 } from "@/utils/localStorage";
-import type { Message, Character } from "@/types";
-import ChatPanel from "@/components/ChatPanel";
-import type { TabsRef } from "flowbite-react";
 
 export default function MainContent() {
   // Load saved provider and model preferences

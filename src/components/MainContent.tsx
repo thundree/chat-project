@@ -1,18 +1,13 @@
-import {
+import React, {
+  Suspense,
   useEffect,
   useState,
   useRef,
   lazy,
-  Suspense,
   type ReactNode,
 } from "react";
-
 const CharacterSelect = lazy(() => import("@/components/CharacterSelect"));
 const AlertModal = lazy(() => import("@/components/AlertModal"));
-const MessageList = lazy(() => import("@/components/MessageList"));
-const ChatConfiguration = lazy(() => import("@/components/ChatConfiguration"));
-import CustomButton from "@/components/CustomButton";
-
 import { detectChatId } from "@/functions";
 import { useAI } from "@/hooks/useAI";
 import { useChat } from "@/contexts/useChat";
@@ -21,12 +16,9 @@ import {
   loadSelectedProvider,
   loadSelectedModelForProvider,
 } from "@/utils/localStorage";
-
-import type { Message } from "@/types";
-
-import { BsChatLeftText } from "react-icons/bs";
-import { Tabs, TabItem, type TabsRef } from "flowbite-react";
-import { HiAdjustments } from "react-icons/hi";
+import type { Message, Character } from "@/types";
+import ChatPanel from "@/components/ChatPanel";
+import type { TabsRef } from "flowbite-react";
 
 export default function MainContent() {
   // Load saved provider and model preferences
@@ -206,91 +198,22 @@ export default function MainContent() {
           }}
         >
           {currentChatId && currentChat ? (
-            <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
-              <Tabs
-                ref={tabsRef}
-                className="[&>button]:cursor-pointer [&_[aria-label]]:bg-black/60 rounded-lg"
-                aria-label="Chat Tabs"
-                variant="underline"
-              >
-                <TabItem active title="Messages" icon={BsChatLeftText}>
-                  {/* Chat Messages */}
-                  <Suspense
-                    fallback={
-                      <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
-                        Loading messages...
-                      </div>
-                    }
-                  >
-                    <MessageList
-                      messages={currentChat.messages ?? []}
-                      selectedChat={currentChat}
-                      streamingResponse={streamingResponse}
-                    />
-                  </Suspense>
-                </TabItem>
-
-                <TabItem title="Configuration" icon={HiAdjustments}>
-                  {/* Chat Configuration */}
-                  <Suspense
-                    fallback={
-                      <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
-                        Loading configuration...
-                      </div>
-                    }
-                  >
-                    <ChatConfiguration
-                      currentChat={currentChat}
-                      isLoading={isLoading}
-                      error={error}
-                      clearError={clearError}
-                      onModelChange={handleModelChange}
-                      onProviderChange={handleProviderChange}
-                      selectedModel={selectedModel}
-                      selectedProvider={selectedProvider}
-                    />
-                  </Suspense>
-                </TabItem>
-              </Tabs>
-
-              <div className="flex flex-wrap gap-3 mt-6">
-                <CustomButton
-                  onClick={addUserMessage}
-                  className="bg-blue-500 hover:bg-blue-600 text-white"
-                  disabled={isLoading}
-                >
-                  Add User Message
-                </CustomButton>
-
-                <CustomButton
-                  onClick={handleGenerateResponse}
-                  className="bg-green-500 hover:bg-green-600 text-white"
-                  disabled={
-                    isLoading || (currentChat.messages?.length ?? 0) === 0
-                  }
-                >
-                  {isLoading ? "Generating..." : "Generate Response"}
-                </CustomButton>
-
-                <CustomButton
-                  onClick={handleStreamingResponse}
-                  className="bg-purple-500 hover:bg-purple-600 text-white"
-                  disabled={
-                    isLoading || (currentChat.messages?.length ?? 0) === 0
-                  }
-                >
-                  {isLoading ? "Streaming..." : "Stream Response"}
-                </CustomButton>
-
-                <CustomButton
-                  onClick={handleValidateConnection}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
-                  disabled={isLoading}
-                >
-                  Test API Connection
-                </CustomButton>
-              </div>
-            </div>
+            <ChatPanel
+              currentChat={currentChat}
+              streamingResponse={streamingResponse}
+              isLoading={isLoading}
+              error={error}
+              clearError={clearError}
+              onModelChange={handleModelChange}
+              onProviderChange={handleProviderChange}
+              selectedModel={selectedModel}
+              selectedProvider={selectedProvider}
+              addUserMessage={addUserMessage}
+              handleGenerateResponse={handleGenerateResponse}
+              handleStreamingResponse={handleStreamingResponse}
+              handleValidateConnection={handleValidateConnection}
+              tabsRef={tabsRef as React.RefObject<TabsRef>}
+            />
           ) : (
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-6">
@@ -305,7 +228,7 @@ export default function MainContent() {
                 }
               >
                 <CharacterSelect
-                  onSelect={async (character) => {
+                  onSelect={async (character: Character) => {
                     // Create a new chat using the context
                     const newChatId = await createChat(character);
                     window.location.hash = `#${newChatId}`;

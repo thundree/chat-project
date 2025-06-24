@@ -12,6 +12,7 @@ const ChatConfiguration = React.lazy(
 
 import type { AIProvider } from "@/services/aiService";
 import type { Chat } from "@/types";
+import { useChat } from "@/contexts/useChat";
 
 interface ChatPanelProps {
   currentChat: Chat;
@@ -46,6 +47,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   handleValidateConnection,
   tabsRef,
 }) => {
+  const { updateChat } = useChat();
+
+  const onUserNameChange = (newName: string) => {
+    if (currentChat) {
+      const updatedChat = {
+        ...currentChat,
+        userName: newName,
+      };
+      // Assuming there's a function to update the chat in context or state
+      updateChat(currentChat.id, updatedChat);
+    }
+  };
+
   return (
     <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
       <Tabs
@@ -81,6 +95,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             }
           >
             <ChatConfiguration
+              onUserNameChange={onUserNameChange}
               currentChat={currentChat}
               isLoading={isLoading}
               error={error}

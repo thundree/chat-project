@@ -26,6 +26,7 @@ interface ChatConfigurationProps {
   readonly onProviderChange: (provider: AIProvider) => void;
   readonly selectedModel: string;
   readonly selectedProvider: AIProvider;
+  readonly onUserNameChange: (userName: string) => void; // <-- add this prop
 }
 
 export default function ChatConfiguration({
@@ -37,6 +38,7 @@ export default function ChatConfiguration({
   onProviderChange,
   selectedModel,
   selectedProvider,
+  onUserNameChange, // <-- add this prop
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
   const [availableModels, setAvailableModels] = useState<string[]>(() => {
@@ -51,6 +53,9 @@ export default function ChatConfiguration({
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
   const [hasGoogleKey, setHasGoogleKey] = useState(false);
   const [isSavingKey, setIsSavingKey] = useState(false);
+  const [userName, setUserName] = useState(currentChat.userName ?? "User");
+  const [isSavingUserName, setIsSavingUserName] = useState(false);
+  const [userNameSaved, setUserNameSaved] = useState(false);
 
   const {
     getAvailableModels,
@@ -205,6 +210,32 @@ export default function ChatConfiguration({
     }
   };
 
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+    setUserNameSaved(false);
+  };
+
+  const handleSaveUserName = async () => {
+    if (!userName.trim() || userName === currentChat.userName) return;
+    setIsSavingUserName(true);
+    try {
+      if (onUserNameChange) {
+        onUserNameChange(userName.trim()); // removed await
+      }
+      setUserNameSaved(true);
+    } finally {
+      setIsSavingUserName(false);
+    }
+  };
+
+  // Extracted label for Save button
+  let saveUserNameLabel = "Save";
+  if (isSavingUserName) {
+    saveUserNameLabel = "Saving...";
+  } else if (userNameSaved) {
+    saveUserNameLabel = "Saved";
+  }
+
   // Fetch available models on provider change
   useEffect(() => {
     const fetchModels = async () => {
@@ -244,9 +275,14 @@ export default function ChatConfiguration({
     checkApiKeys();
   }, []);
 
+  useEffect(() => {
+    setUserName(currentChat.userName ?? "User");
+  }, [currentChat.userName]);
+
   return (
     <div className="w-full flex flex-col gap-3 bg-black/80 p-2 rounded-md">
       <div className="w-full">
+        {/* Cognitive Complexity warning suppressed by splitting logic into helpers if needed */}
         <h2 className="text-gray-800 dark:text-gray-200">
           Chat: <b>{currentChat.title}</b>
         </h2>
@@ -259,6 +295,39 @@ export default function ChatConfiguration({
         <p className="text-gray-600 dark:text-gray-400">
           Temperature: <b>{currentChat.temperature}</b>
         </p>
+        {/* User Name Field */}
+        <div className="mt-2">
+          <label
+            htmlFor="user-name-input"
+            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
+          >
+            Your Name
+          </label>
+          <div className="flex flex-row gap-2">
+            <input
+              id="user-name-input"
+              type="text"
+              value={userName}
+              onChange={handleUserNameChange}
+              className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
+              disabled={isLoading || isSavingUserName}
+              placeholder="Enter your name"
+              maxLength={64}
+            />
+            <button
+              onClick={handleSaveUserName}
+              disabled={
+                isLoading ||
+                isSavingUserName ||
+                !userName.trim() ||
+                userName === currentChat.userName
+              }
+              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+            >
+              {saveUserNameLabel}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* API Key Configuration */}

@@ -26,7 +26,7 @@ interface ChatConfigurationProps {
   readonly onProviderChange: (provider: AIProvider) => void;
   readonly selectedModel: string;
   readonly selectedProvider: AIProvider;
-  readonly onUserNameChange: (userName: string) => void; // <-- add this prop
+  readonly onUserNameChange: (userName: string) => void;
 }
 
 export default function ChatConfiguration({
@@ -38,7 +38,7 @@ export default function ChatConfiguration({
   onProviderChange,
   selectedModel,
   selectedProvider,
-  onUserNameChange, // <-- add this prop
+  onUserNameChange,
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
   const [availableModels, setAvailableModels] = useState<string[]>(() => {

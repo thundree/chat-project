@@ -61,15 +61,7 @@ export default function ChatConfiguration({
 
   // Helper function to format model names for display
   const formatModelName = (model: string): string => {
-    const modelDisplayNames: Record<string, string> = {
-      "gpt-3.5-turbo": "GPT-3.5 Turbo (Recommended)",
-      "gpt-4": "GPT-4 (Premium)",
-      "gpt-4-turbo-preview": "GPT-4 Turbo (Premium)",
-      "gemini-1.5-flash": "Gemini 1.5 Flash (Fast & Free)",
-      "gemini-1.5-flash-8b": "Gemini 1.5 Flash 8B (Faster)",
-      "gemini-1.5-pro": "Gemini 1.5 Pro (Most Capable)",
-      "gemini-1.0-pro": "Gemini 1.0 Pro",
-    };
+    const modelDisplayNames: Record<string, string> = {};
 
     return modelDisplayNames[model] || model;
   };

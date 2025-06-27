@@ -216,6 +216,16 @@ export default function MainContent() {
     }
   };
 
+  const onSendMessage = (messageText: string) => {
+    if (messageText.trim() && currentChatId) {
+      const userMessage: Omit<Message, "id"> = {
+        sender: "user",
+        text: [messageText.trim()],
+      };
+      addMessage(currentChatId, userMessage);
+    }
+  };
+
   return (
     <div className="flex-1 w-full flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-900">
       {/* Alert Modal Wrapper */}
@@ -253,6 +263,7 @@ export default function MainContent() {
               handleGenerateResponse={handleGenerateResponse}
               handleStreamingResponse={handleStreamingResponse}
               handleValidateConnection={handleValidateConnection}
+              onSendMessage={onSendMessage}
               tabsRef={tabsRef as React.RefObject<TabsRef>}
             />
           ) : (

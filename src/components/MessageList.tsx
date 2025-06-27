@@ -1,18 +1,23 @@
 import type { Chat, Message } from "@/types";
 import React from "react";
 import MessageItem from "@/components/MessageItem";
+import MessageInput from "@/components/MessageInput";
 import { useChat } from "@/contexts/useChat";
 
 interface MessageListProps {
   messages: Message[];
   selectedChat: Chat | null;
   streamingResponse: string;
+  onSendMessage: (messageText: string) => void;
+  isLoading?: boolean;
 }
 
 const MessageList: React.FC<MessageListProps> = ({
   messages,
   selectedChat,
   streamingResponse,
+  onSendMessage,
+  isLoading = false,
 }) => {
   const { currentChatId, updateMessage } = useChat();
 
@@ -69,6 +74,15 @@ const MessageList: React.FC<MessageListProps> = ({
           </div>
         </div>
       )}
+
+      {/* Message Input */}
+      <div className="mb-3">
+        <MessageInput
+          selectedChat={selectedChat}
+          onSendMessage={onSendMessage}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 };

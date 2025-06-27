@@ -28,6 +28,7 @@ interface ChatPanelProps {
   handleGenerateResponse: () => void;
   handleStreamingResponse: () => void;
   handleValidateConnection: () => void;
+  onSendMessage: (messageText: string) => void;
   tabsRef: RefObject<TabsRef>;
 }
 
@@ -45,6 +46,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   handleGenerateResponse,
   handleStreamingResponse,
   handleValidateConnection,
+  onSendMessage,
   tabsRef,
 }) => {
   const { updateChat } = useChat();
@@ -81,6 +83,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               messages={currentChat.messages ?? []}
               selectedChat={currentChat}
               streamingResponse={streamingResponse}
+              onSendMessage={onSendMessage}
+              isLoading={isLoading}
             />
           </Suspense>
         </TabItem>

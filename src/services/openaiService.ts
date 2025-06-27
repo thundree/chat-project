@@ -285,6 +285,14 @@ export const validateApiKey = async (): Promise<boolean> => {
 };
 
 /**
+ * Check if API key exists (without making API calls)
+ */
+export const hasApiKey = async (): Promise<boolean> => {
+  const apiKey = await getApiKey();
+  return !!apiKey;
+};
+
+/**
  * Get available OpenAI models
  */
 export const getAvailableModels = async (): Promise<string[]> => {

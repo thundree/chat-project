@@ -27,6 +27,7 @@ export interface UseAIReturn {
   getProviderDisplayName: () => string;
   getDefaultModel: () => string;
   clearError: () => void;
+  hasApiKey: () => Promise<boolean>;
 }
 
 export const useAI = (initialProvider: AIProvider = "openai"): UseAIReturn => {
@@ -138,6 +139,14 @@ export const useAI = (initialProvider: AIProvider = "openai"): UseAIReturn => {
     return aiService.getProviderDisplayName();
   }, [aiService]);
 
+  const hasApiKey = useCallback(async (): Promise<boolean> => {
+    try {
+      return await aiService.hasApiKey();
+    } catch {
+      return false;
+    }
+  }, [aiService]);
+
   const getDefaultModel = useCallback(() => {
     return aiService.getDefaultModel();
   }, [aiService]);
@@ -154,5 +163,6 @@ export const useAI = (initialProvider: AIProvider = "openai"): UseAIReturn => {
     getProviderDisplayName,
     getDefaultModel,
     clearError,
+    hasApiKey,
   };
 };

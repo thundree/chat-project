@@ -377,6 +377,14 @@ export const validateApiKey = async (): Promise<boolean> => {
   }
 };
 
+/**
+ * Check if API key exists (without making API calls)
+ */
+export const hasApiKey = async (): Promise<boolean> => {
+  const apiKey = await getApiKey();
+  return !!apiKey;
+};
+
 // Types for Google AI models
 interface GoogleAIModel {
   name: string;

@@ -94,6 +94,20 @@ export class UnifiedAIService {
   }
 
   /**
+   * Check if API key exists for the configured provider (without making API calls)
+   */
+  async hasApiKey(): Promise<boolean> {
+    switch (this.provider) {
+      case "openai":
+        return OpenAIService.hasApiKey();
+      case "google-ai":
+        return GoogleAIService.hasApiKey();
+      default:
+        throw new Error(`Unsupported AI provider: ${this.provider}`);
+    }
+  }
+
+  /**
    * Get available models for the configured provider
    */
   async getAvailableModels(): Promise<string[]> {

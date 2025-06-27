@@ -129,6 +129,40 @@ All services are fully typed with TypeScript interfaces for:
 - Configuration options
 - Error types
 
+## API Key Validation
+
+The application now includes proactive API key validation to prevent failed requests:
+
+### Automatic Validation in Chat Interface
+
+Before making any AI service requests (generate response, streaming response), the application automatically checks if an API key exists for the selected provider:
+
+- **Pre-request Validation**: Checks for API key existence before API calls
+- **User-Friendly Warnings**: Shows clear messages when no API key is configured
+- **Provider-Specific Messages**: Displays appropriate messaging for OpenAI vs Google AI
+- **Configuration Guidance**: Directs users to the Configuration tab for API key setup
+
+### API Key Checking Methods
+
+```typescript
+// Check if API key exists (fast, no API call)
+const hasKey = await hasApiKey();
+
+// Validate API key with actual API call
+const isValid = await validateConnection();
+```
+
+### Implementation Details
+
+The validation system works at multiple levels:
+
+1. **Service Level**: `hasApiKey()` functions in both `openaiService.ts` and `googleAIService.ts`
+2. **Unified Service**: `hasApiKey()` method in `UnifiedAIService` class
+3. **Hook Level**: `hasApiKey` function in `useAI` hook
+4. **Component Level**: Pre-request checks in `MainContent.tsx` chat handlers
+
+This ensures users are informed about missing API keys before attempting requests, improving the user experience and preventing unnecessary error states.
+
 ## Migration Guide
 
 ### From OpenAI-only to Unified Service

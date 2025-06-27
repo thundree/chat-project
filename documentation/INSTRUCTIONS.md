@@ -36,7 +36,8 @@ First, I'll analyze the current state:
   - Testing and deployment pipeline improvements
 
 ### IF MID-TASK (uncommitted changes detected):
-- **DO NOT** stage, commit, or modify git state
+- **DO NOT** stage, commit, or modify git state in any way
+- **NEVER** use `git add` - leave all file staging to the user after work completion
 - Focus on code development and file editing only
 - Update project documentation with:
   - Component interface changes and prop modifications
@@ -44,7 +45,8 @@ First, I'll analyze the current state:
   - Database schema changes and migration notes
   - Active issues and blockers discovered
   - Important architectural decisions and patterns
-- Keep working on React development without git operations
+- Keep working on React development without any git operations
+- Let the user manually review and stage changes when satisfied
 
 ### IF TASK COMPLETE (clean working directory detected):
 - Update project documentation to reflect completed work:
@@ -52,12 +54,14 @@ First, I'll analyze the current state:
   - Keep AI service configurations and API contracts
   - Remove implementation details and debugging notes
   - Consolidate learnings into concise insights
-- **DO NOT** perform any git operations or archiving
+- **DO NOT** perform any git operations, archiving, or file staging
+- **LEAVE ALL GIT OPERATIONS** to the user for manual review and approval
 - Run project health checks:
   - `npm run lint` for code quality
   - `npm run build` for TypeScript compilation
   - Test AI service connections and database operations
 - Focus on preparing next development tasks
+- Provide clear summary of changes made for user review
 
 ## Argument Handling
 
@@ -72,8 +76,9 @@ $ARGUMENTS
 **REMOVED ARGUMENTS**: Git-related arguments (push, main, deploy) have been removed to prevent accidental git operations.
 
 ## Project-Specific Safety Checks
-- **NEVER** perform git operations like commit, reset, push, merge, branch creation, or any state-changing git commands
+- **NEVER** perform git operations like commit, reset, push, merge, branch creation, staging (add), or any state-changing git commands
 - **ONLY** use read-only git commands for context: `git status`, `git log`, `git diff` (without applying changes)
+- **NEVER** stage files or add them to git - the user will manually review and stage changes after work completion
 - Preserve all meaningful work through file editing, not git operations
 - Focus on code development, documentation updates, and project analysis
 - Ensure TypeScript compilation passes with `npm run build`
@@ -84,6 +89,7 @@ $ARGUMENTS
 
 ## Prohibited Git Commands
 **DO NOT USE**: `git commit`, `git reset`, `git push`, `git pull`, `git merge`, `git rebase`, `git checkout`, `git branch`, `git add`, `git stash`, or any other state-changing git commands.
+**ESPECIALLY DO NOT USE**: `git add` - file staging is reserved for manual user review and approval.
 
 ## Key Project Areas to Monitor
 1. **Chat Components**: `src/components/Chat*.tsx`, `src/components/Message*.tsx`

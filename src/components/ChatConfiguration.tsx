@@ -319,45 +319,6 @@ export default function ChatConfiguration({
         <h2 className="text-gray-800 dark:text-gray-200">
           Chat: <b>{currentChat.title}</b>
         </h2>
-        {/* Chat Title Field */}
-        <div className="mt-2">
-          <label
-            htmlFor="chat-title-input"
-            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
-          >
-            Chat Title
-          </label>
-          <div className="flex flex-row gap-2">
-            <input
-              id="chat-title-input"
-              type="text"
-              value={chatTitle}
-              onChange={handleTitleChange}
-              className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
-              disabled={isLoading || isSavingTitle}
-              placeholder="Enter a title for your chat"
-              maxLength={128}
-            />
-            <button
-              onClick={handleSaveTitle}
-              disabled={
-                isLoading ||
-                isSavingTitle ||
-                !chatTitle.trim() ||
-                chatTitle === currentChat.title
-              }
-              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-            >
-              {saveTitleLabel}
-            </button>
-          </div>
-        </div>
-        <p className="text-gray-800 dark:text-gray-200">
-          Character:{" "}
-          <b style={{ color: currentChat.characterColor }}>
-            {currentChat.characterName}
-          </b>
-        </p>
         <p className="text-gray-600 dark:text-gray-400">
           Temperature: <b>{currentChat.temperature}</b>
         </p>
@@ -388,9 +349,42 @@ export default function ChatConfiguration({
                 !userName.trim() ||
                 userName === currentChat.userName
               }
-              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
             >
               {saveUserNameLabel}
+            </button>
+          </div>
+        </div>
+        {/* Chat Title Field */}
+        <div className="mt-2">
+          <label
+            htmlFor="chat-title-input"
+            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
+          >
+            Chat Title
+          </label>
+          <div className="flex flex-row gap-2">
+            <input
+              id="chat-title-input"
+              type="text"
+              value={chatTitle}
+              onChange={handleTitleChange}
+              className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
+              disabled={isLoading || isSavingTitle}
+              placeholder="Enter a title for your chat"
+              maxLength={128}
+            />
+            <button
+              onClick={handleSaveTitle}
+              disabled={
+                isLoading ||
+                isSavingTitle ||
+                !chatTitle.trim() ||
+                chatTitle === currentChat.title
+              }
+              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
+            >
+              {saveTitleLabel}
             </button>
           </div>
         </div>
@@ -445,7 +439,7 @@ export default function ChatConfiguration({
                   !openaiKey.trim() ||
                   !validateOpenAIKey(openaiKey)
                 }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
                 {isSavingKey ? "..." : "Save"}
               </button>
@@ -507,7 +501,7 @@ export default function ChatConfiguration({
                   !googleKey.trim() ||
                   !validateGoogleAIKey(googleKey)
                 }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
                 {isSavingKey ? "..." : "Save"}
               </button>

@@ -21,7 +21,7 @@ const MessageList: React.FC<MessageListProps> = ({
   onGenerateResponse,
   isLoading = false,
 }) => {
-  const { currentChatId, updateMessage } = useChat();
+  const { currentChatId, updateMessage, deleteMessage } = useChat();
 
   const allMessages = React.useMemo(() => {
     const initialMessage = selectedChat?.characterInitialMessage || [];
@@ -59,6 +59,7 @@ const MessageList: React.FC<MessageListProps> = ({
                 msgSender={msgSender}
                 chatId={currentChatId}
                 updateMessage={updateMessage}
+                deleteMessage={deleteMessage}
               />
             </div>
           );

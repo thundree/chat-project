@@ -3,6 +3,7 @@ import { FaUserAlt } from "react-icons/fa";
 import type { Chat, Message } from "@/types";
 import { SiNginxproxymanager } from "react-icons/si";
 import { replacePlaceholders } from "@/functions";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 type MessageItemProps = {
   message: Message;
@@ -14,6 +15,7 @@ type MessageItemProps = {
     messageId: string,
     updates: Partial<Message>
   ) => Promise<void>;
+  deleteMessage?: (chatId: string, messageId: string) => Promise<void>;
 };
 
 const replaceMessageText = (
@@ -34,11 +36,14 @@ export default function MessageItem({
   msgSender,
   chatId,
   updateMessage,
+  deleteMessage,
 }: Readonly<MessageItemProps>) {
   const isCharacterMessage = message.sender !== "user";
   const [editing, setEditing] = React.useState(false);
   const [editText, setEditText] = React.useState(message.text.join("\n\n"));
   const [saving, setSaving] = React.useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
 
   let messageIcon;
   if (isCharacterMessage) {
@@ -71,6 +76,20 @@ export default function MessageItem({
     await updateMessage(chatId, message.id, { text: paragraphs });
     setSaving(false);
     setEditing(false);
+  };
+
+  const handleDelete = () => setShowDeleteConfirm(true);
+  const handleDeleteCancel = () => setShowDeleteConfirm(false);
+  const handleDeleteConfirm = async () => {
+    if (!chatId || !deleteMessage) return;
+    setDeleting(true);
+    try {
+      await deleteMessage(chatId, message.id);
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+    setDeleting(false);
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -133,13 +152,37 @@ export default function MessageItem({
           )}
         </div>
         {!editing && chatId && updateMessage && (
-          <button
-            className="cursor-pointer mt-2 text-xs text-blue-400 hover:underline self-start"
-            onClick={handleEdit}
-          >
-            Edit
-          </button>
+          <div className="flex gap-2 mt-2">
+            <button
+              className="cursor-pointer text-xs text-blue-400 hover:underline"
+              onClick={handleEdit}
+            >
+              Edit
+            </button>
+            {deleteMessage && (
+              <button
+                className="cursor-pointer text-xs text-red-400 hover:underline"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            )}
+          </div>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmationModal
+          show={showDeleteConfirm}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Message"
+          confirmText={deleting ? "Deleting..." : "Delete"}
+          cancelText="Cancel"
+          confirmColor="failure"
+          loading={deleting}
+        >
+          Are you sure you want to delete this message? This action cannot be undone.
+        </ConfirmationModal>
       </div>
     </div>
   );

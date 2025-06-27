@@ -9,6 +9,8 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   title?: React.ReactNode;
+  confirmColor?: string;
+  loading?: boolean;
 }
 
 export default function ConfirmationModal({
@@ -19,6 +21,8 @@ export default function ConfirmationModal({
   confirmText = "Confirm",
   cancelText = "Cancel",
   title,
+  confirmColor = "primary",
+  loading = false,
 }: Readonly<ConfirmationModalProps>) {
   return (
     <GenericModal
@@ -28,6 +32,8 @@ export default function ConfirmationModal({
       confirmText={confirmText}
       cancelText={cancelText}
       title={title}
+      confirmColor={confirmColor}
+      loading={loading}
     >
       <div className="flex flex-col items-center justify-center">
         <div className="flex-1 text-gray-800 dark:text-white mb-4">

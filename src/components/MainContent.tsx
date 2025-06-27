@@ -54,7 +54,6 @@ export default function MainContent() {
     clearStreamingResponse,
   } = useChat();
 
-  // Use AI service with dynamic provider
   const {
     isLoading,
     error,
@@ -63,6 +62,7 @@ export default function MainContent() {
     validateConnection,
     clearError,
     switchProvider,
+    hasApiKey,
   } = useAI(selectedProvider);
 
   const showAlert = (content: React.ReactNode) => {
@@ -122,6 +122,25 @@ export default function MainContent() {
       return;
     }
 
+    // Check if API key exists for the current provider
+    const hasKey = await hasApiKey();
+    if (!hasKey) {
+      showAlert(
+        <div>
+          <p className="font-semibold">API Key Required</p>
+          <p>
+            No API key found for{" "}
+            {selectedProvider === "openai" ? "OpenAI" : "Google AI"}.
+          </p>
+          <p>
+            Please configure your API key in the Configuration tab to use this
+            service.
+          </p>
+        </div>
+      );
+      return;
+    }
+
     const newMessage = await generateResponse(currentChat, {
       model: selectedModel,
       maxTokens: 1000,
@@ -135,6 +154,25 @@ export default function MainContent() {
   const handleStreamingResponse = async () => {
     if (!currentChat || !currentChatId) {
       showAlert("No chat selected");
+      return;
+    }
+
+    // Check if API key exists for the current provider
+    const hasKey = await hasApiKey();
+    if (!hasKey) {
+      showAlert(
+        <div>
+          <p className="font-semibold">API Key Required</p>
+          <p>
+            No API key found for{" "}
+            {selectedProvider === "openai" ? "OpenAI" : "Google AI"}.
+          </p>
+          <p>
+            Please configure your API key in the Configuration tab to use this
+            service.
+          </p>
+        </div>
+      );
       return;
     }
 
@@ -159,8 +197,11 @@ export default function MainContent() {
 
   const handleValidateConnection = async () => {
     const isValid = await validateConnection();
+    const providerName = selectedProvider === "openai" ? "OpenAI" : "Google AI";
     showAlert(
-      isValid ? "OpenAI connection is valid!" : "OpenAI connection failed!"
+      isValid
+        ? `${providerName} connection is valid!`
+        : `${providerName} connection failed!`
     );
   };
 

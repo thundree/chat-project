@@ -181,7 +181,8 @@ export default function MessageItem({
           confirmColor="failure"
           loading={deleting}
         >
-          Are you sure you want to delete this message? This action cannot be undone.
+          Are you sure you want to delete this message? This action cannot be
+          undone.
         </ConfirmationModal>
       </div>
     </div>

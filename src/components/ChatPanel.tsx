@@ -84,6 +84,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               selectedChat={currentChat}
               streamingResponse={streamingResponse}
               onSendMessage={onSendMessage}
+              onGenerateResponse={handleGenerateResponse}
               isLoading={isLoading}
             />
           </Suspense>

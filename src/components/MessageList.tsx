@@ -9,6 +9,7 @@ interface MessageListProps {
   selectedChat: Chat | null;
   streamingResponse: string;
   onSendMessage: (messageText: string) => void;
+  onGenerateResponse: () => void;
   isLoading?: boolean;
 }
 
@@ -17,6 +18,7 @@ const MessageList: React.FC<MessageListProps> = ({
   selectedChat,
   streamingResponse,
   onSendMessage,
+  onGenerateResponse,
   isLoading = false,
 }) => {
   const { currentChatId, updateMessage } = useChat();
@@ -80,6 +82,7 @@ const MessageList: React.FC<MessageListProps> = ({
         <MessageInput
           selectedChat={selectedChat}
           onSendMessage={onSendMessage}
+          onGenerateResponse={onGenerateResponse}
           isLoading={isLoading}
         />
       </div>

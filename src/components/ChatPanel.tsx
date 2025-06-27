@@ -109,6 +109,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               onProviderChange={onProviderChange}
               selectedModel={selectedModel}
               selectedProvider={selectedProvider}
+              onTestApiConnection={handleValidateConnection}
             />
           </Suspense>
         </TabItem>
@@ -137,14 +138,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           disabled={isLoading || (currentChat.messages?.length ?? 0) === 0}
         >
           {isLoading ? "Streaming..." : "Stream Response"}
-        </CustomButton>
-
-        <CustomButton
-          onClick={handleValidateConnection}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white"
-          disabled={isLoading}
-        >
-          Test API Connection
         </CustomButton>
       </div>
     </div>

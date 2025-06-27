@@ -16,6 +16,7 @@ import { validateOpenAIKey, validateGoogleAIKey } from "@/utils/apiKeyUtils";
 
 import { TbRefreshAlert } from "react-icons/tb";
 import { BsDatabaseFillExclamation } from "react-icons/bs";
+import CustomButton from "@/components/CustomButton";
 
 interface ChatConfigurationProps {
   readonly currentChat: Chat;
@@ -27,6 +28,7 @@ interface ChatConfigurationProps {
   readonly selectedModel: string;
   readonly selectedProvider: AIProvider;
   readonly onUserNameChange: (userName: string) => void;
+  readonly onTestApiConnection: () => void;
 }
 
 export default function ChatConfiguration({
@@ -39,6 +41,7 @@ export default function ChatConfiguration({
   selectedModel,
   selectedProvider,
   onUserNameChange,
+  onTestApiConnection,
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
   const [availableModels, setAvailableModels] = useState<string[]>(() => {
@@ -553,6 +556,17 @@ export default function ChatConfiguration({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Test API Connection Button */}
+      <div className="mt-6">
+        <CustomButton
+          onClick={onTestApiConnection}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white"
+          disabled={isLoading}
+        >
+          Test API Connection
+        </CustomButton>
       </div>
 
       {error && (

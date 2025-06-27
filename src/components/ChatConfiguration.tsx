@@ -28,6 +28,7 @@ interface ChatConfigurationProps {
   readonly selectedModel: string;
   readonly selectedProvider: AIProvider;
   readonly onUserNameChange: (userName: string) => void;
+  readonly onTitleChange: (title: string) => void;
   readonly onTestApiConnection: () => void;
 }
 
@@ -41,6 +42,7 @@ export default function ChatConfiguration({
   selectedModel,
   selectedProvider,
   onUserNameChange,
+  onTitleChange,
   onTestApiConnection,
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
@@ -59,6 +61,9 @@ export default function ChatConfiguration({
   const [userName, setUserName] = useState(currentChat.userName ?? "User");
   const [isSavingUserName, setIsSavingUserName] = useState(false);
   const [userNameSaved, setUserNameSaved] = useState(false);
+  const [chatTitle, setChatTitle] = useState(currentChat.title);
+  const [isSavingTitle, setIsSavingTitle] = useState(false);
+  const [titleSaved, setTitleSaved] = useState(false);
 
   const {
     getAvailableModels,
@@ -239,6 +244,31 @@ export default function ChatConfiguration({
     saveUserNameLabel = "Saved";
   }
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChatTitle(e.target.value);
+    setTitleSaved(false);
+  };
+
+  const handleSaveTitle = async () => {
+    if (!chatTitle.trim() || chatTitle === currentChat.title) return;
+    setIsSavingTitle(true);
+    try {
+      if (onTitleChange) {
+        onTitleChange(chatTitle.trim());
+      }
+      setTitleSaved(true);
+    } finally {
+      setIsSavingTitle(false);
+    }
+  };
+
+  let saveTitleLabel = "Save";
+  if (isSavingTitle) {
+    saveTitleLabel = "Saving...";
+  } else if (titleSaved) {
+    saveTitleLabel = "Saved";
+  }
+
   // Fetch available models on provider change
   useEffect(() => {
     const fetchModels = async () => {
@@ -289,6 +319,39 @@ export default function ChatConfiguration({
         <h2 className="text-gray-800 dark:text-gray-200">
           Chat: <b>{currentChat.title}</b>
         </h2>
+        {/* Chat Title Field */}
+        <div className="mt-2">
+          <label
+            htmlFor="chat-title-input"
+            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
+          >
+            Chat Title
+          </label>
+          <div className="flex flex-row gap-2">
+            <input
+              id="chat-title-input"
+              type="text"
+              value={chatTitle}
+              onChange={handleTitleChange}
+              className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
+              disabled={isLoading || isSavingTitle}
+              placeholder="Enter a title for your chat"
+              maxLength={128}
+            />
+            <button
+              onClick={handleSaveTitle}
+              disabled={
+                isLoading ||
+                isSavingTitle ||
+                !chatTitle.trim() ||
+                chatTitle === currentChat.title
+              }
+              className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+            >
+              {saveTitleLabel}
+            </button>
+          </div>
+        </div>
         <p className="text-gray-800 dark:text-gray-200">
           Character:{" "}
           <b style={{ color: currentChat.characterColor }}>

@@ -127,7 +127,7 @@ export default function ChatConfiguration({
     try {
       const [openaiExists, googleExists] = await Promise.all([
         DatabaseService.hasApiKey("openai"),
-        DatabaseService.hasApiKey("google"),
+        DatabaseService.hasApiKey("google-ai"),
       ]);
       setHasOpenAIKey(openaiExists);
       setHasGoogleKey(googleExists);

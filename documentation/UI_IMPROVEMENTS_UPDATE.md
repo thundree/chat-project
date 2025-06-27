@@ -29,6 +29,7 @@ Recent improvements to the chat application's user interface, including message 
 - **Files Modified**:
   - `src/components/ChatConfiguration.tsx`
   - `src/components/ChatPanel.tsx`
+  - `src/components/MainContent.tsx`
 
 #### Test API Connection Button Migration
 - Moved "Test API Connection" button from main chat area to Configuration tab
@@ -37,6 +38,11 @@ Recent improvements to the chat application's user interface, including message 
   - Integrated button within configuration UI
   - Consistent styling with existing configuration elements
 - Removed button from `ChatPanel` bottom action area
+- **Improved validation logic** in `MainContent.tsx`:
+  - Added pre-validation to check if API key exists for current provider
+  - Provides specific error messages when API key is missing
+  - Guides users to configure API key in Configuration tab
+  - Only attempts connection validation if API key is present
 - Maintains all existing functionality while improving UI organization
 
 ## Features Added
@@ -44,6 +50,8 @@ Recent improvements to the chat application's user interface, including message 
 - **Better Organization**: Test API Connection now logically placed in Configuration tab
 - **Enhanced Modals**: Improved confirmation modal with loading states and color customization
 - **Consistent UX**: All operations follow established patterns and styling
+- **Smart API Validation**: Pre-checks for API key existence before testing connections
+- **Helpful Error Messages**: Specific guidance when API keys are missing or invalid
 
 ## Technical Implementation
 - Leverages existing `deleteMessage` from chat context
@@ -58,6 +66,8 @@ Recent improvements to the chat application's user interface, including message 
 - Safe message deletion with clear confirmation flow
 - Loading states provide feedback during operations
 - Consistent interaction patterns across the application
+- **Intelligent error handling**: Users receive specific guidance when API keys are not configured
+- **Proactive validation**: Prevents unnecessary API calls when credentials are missing
 
 ---
 

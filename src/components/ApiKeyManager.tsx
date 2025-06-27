@@ -27,7 +27,7 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
   const checkExistingKeys = async () => {
     try {
       const hasOpenAI = await DatabaseService.hasApiKey("openai");
-      const hasGoogle = await DatabaseService.hasApiKey("google");
+      const hasGoogle = await DatabaseService.hasApiKey("google-ai");
       setHasOpenAIKey(hasOpenAI);
       setHasGoogleKey(hasGoogle);
     } catch (error) {

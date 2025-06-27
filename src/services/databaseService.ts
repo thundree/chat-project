@@ -299,7 +299,7 @@ export class DatabaseService {
     }
   }
 
-  static async hasApiKey(provider: "openai" | "google"): Promise<boolean> {
+  static async hasApiKey(provider: "openai" | "google-ai"): Promise<boolean> {
     try {
       const count = await db.apiKeys
         .where("provider")

@@ -13,7 +13,7 @@ export const useApiKeys = () => {
       setLoading(true);
       const [openai, google] = await Promise.all([
         DatabaseService.hasApiKey("openai"),
-        DatabaseService.hasApiKey("google"),
+        DatabaseService.hasApiKey("google-ai"),
       ]);
       setHasOpenAIKey(openai);
       setHasGoogleKey(google);

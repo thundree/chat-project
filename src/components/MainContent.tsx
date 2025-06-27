@@ -15,6 +15,7 @@ import { detectChatId } from "@/functions";
 import { useAI } from "@/hooks/useAI";
 import { useChat } from "@/contexts/useChat";
 import type { AIProvider } from "@/services/aiService";
+import DatabaseService from "@/services/databaseService";
 import {
   loadSelectedProvider,
   loadSelectedModelForProvider,
@@ -196,12 +197,30 @@ export default function MainContent() {
   };
 
   const handleValidateConnection = async () => {
-    const isValid = await validateConnection();
     const providerName = selectedProvider === "openai" ? "OpenAI" : "Google AI";
+
+    // First check if API key exists for the current provider
+    try {
+      const hasKey = await DatabaseService.hasApiKey(selectedProvider);
+
+      if (!hasKey) {
+        showAlert(
+          `No ${providerName} API key found! Please configure your API key in the Configuration tab before testing the connection.`
+        );
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking API key:", error);
+      showAlert(`Error checking ${providerName} API key configuration.`);
+      return;
+    }
+
+    // If key exists, proceed with connection validation
+    const isValid = await validateConnection();
     showAlert(
       isValid
         ? `${providerName} connection is valid!`
-        : `${providerName} connection failed!`
+        : `${providerName} connection failed! Please check your API key and try again.`
     );
   };
 

@@ -108,7 +108,7 @@ export default function MessageItem({
           {editing ? (
             <>
               <textarea
-                className="w-full rounded bg-gray-800 text-gray-200 p-2 border border-gray-600 mb-2"
+                className="w-full rounded bg-gray-800 text-gray-200 p-2 pt-0 border border-gray-600 mb-2"
                 rows={Math.max(6, editText.split("\n\n").length)}
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}

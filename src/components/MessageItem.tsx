@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import type { Chat, Message } from "@/types";
 import { SiNginxproxymanager } from "react-icons/si";

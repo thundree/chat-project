@@ -237,11 +237,12 @@ export default function ChatConfiguration({
   };
 
   const handleSaveUserName = async () => {
-    if (!userName.trim() || userName === currentChat.userName) return;
+    const newUserName = userName.trim();
+    if (!newUserName || userName === currentChat.userName) return;
     setIsSavingUserName(true);
     try {
       if (onUserNameChange) {
-        onUserNameChange(userName.trim()); // removed await
+        onUserNameChange(newUserName);
       }
       setUserNameSaved(true);
     } finally {

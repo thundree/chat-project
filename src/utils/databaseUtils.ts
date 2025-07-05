@@ -7,6 +7,7 @@ import {
 } from "@/utils/localStorage";
 
 import type { Chat, Character } from "@/types";
+import { CHAT_STORAGE_KEY } from "@/constants";
 
 /**
  * Check if the migration from localStorage to IndexedDB has been completed
@@ -131,7 +132,7 @@ export const clearAllChatData = async (): Promise<void> => {
 
     // Also clear localStorage backup and migration flag
     localStorage.removeItem(STORAGE_KEYS.CHAT_HISTORY);
-    localStorage.removeItem("ttinteractive_chats_backup");
+    localStorage.removeItem(`${CHAT_STORAGE_KEY}_backup`);
     saveToLocalStorage(STORAGE_KEYS.MIGRATION_COMPLETED, false);
 
     console.log("All chat data cleared");

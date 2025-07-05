@@ -7,3 +7,5 @@ export const API_KEY_PROVIDERS = [
 ] as const;
 
 export type AIProvider = (typeof API_KEY_PROVIDERS)[number];
+
+export const CHAT_STORAGE_KEY = "ttinteractive_chats";

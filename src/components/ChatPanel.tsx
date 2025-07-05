@@ -29,7 +29,7 @@ interface ChatPanelProps {
   tabsRef: RefObject<TabsRef>;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({
+function ChatPanel({
   currentChat,
   streamingResponse,
   isLoading,
@@ -43,7 +43,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   handleValidateConnection,
   onSendMessage,
   tabsRef,
-}) => {
+}: Readonly<ChatPanelProps>) {
   const { updateChat } = useChat();
 
   const onUserNameChange = (newName: string) => {
@@ -81,7 +81,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
       <Tabs
         ref={tabsRef}
-        className="[&>button]:cursor-pointer [&_[aria-label]]:bg-black/60 rounded-lg"
+        className="[&>button]:cursor-pointer [&_[aria-label]]:bg-black/60 rounded-lg gap-0"
         aria-label="Chat Tabs"
         variant="underline"
       >
@@ -133,6 +133,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       </Tabs>
     </div>
   );
-};
+}
 
 export default ChatPanel;

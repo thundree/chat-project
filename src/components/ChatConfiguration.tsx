@@ -480,12 +480,9 @@ export default function ChatConfiguration({
 
         {/* OpenAI API Key */}
         <div className="mb-4">
-          <label
-            htmlFor="openai-key-input"
-            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
-          >
+          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
             OpenAI API Key
-          </label>
+          </span>
           {hasOpenAIKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
@@ -542,12 +539,9 @@ export default function ChatConfiguration({
 
         {/* Google AI API Key */}
         <div className="mb-2">
-          <label
-            htmlFor="google-key-input"
-            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
-          >
+          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
             Google AI API Key
-          </label>
+          </span>
           {hasGoogleKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">

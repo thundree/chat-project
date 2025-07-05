@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import type { Chat, Message } from "@/types";
 import { SiNginxproxymanager } from "react-icons/si";
@@ -39,11 +39,11 @@ export default function MessageItem({
   deleteMessage,
 }: Readonly<MessageItemProps>) {
   const isCharacterMessage = message.sender !== "user";
-  const [editing, setEditing] = React.useState(false);
-  const [editText, setEditText] = React.useState(message.text.join("\n\n"));
-  const [saving, setSaving] = React.useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
-  const [deleting, setDeleting] = React.useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(message.text.join("\n\n"));
+  const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   let messageIcon;
   if (isCharacterMessage) {
@@ -65,6 +65,7 @@ export default function MessageItem({
     setEditText(message.text.join("\n\n"));
     setEditing(false);
   };
+
   const handleSave = async () => {
     if (!chatId || !updateMessage) return;
     setSaving(true);

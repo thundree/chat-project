@@ -13,6 +13,7 @@ import {
   loadFromLocalStorage,
   STORAGE_KEYS,
 } from "@/utils/localStorage";
+import { CHAT_STORAGE_KEY } from "@/constants";
 
 // Action types for the chat reducer
 export type ChatAction =
@@ -225,7 +226,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!migrationCompleted) {
           // First time loading, migrate from localStorage to IndexedDB
           chats = await DatabaseService.migrateFromLocalStorage(
-            "ttinteractive_chats",
+            CHAT_STORAGE_KEY,
             []
           );
 
@@ -256,7 +257,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (error) {
           console.error("Error saving chats to IndexedDB:", error);
           // Fallback to localStorage as backup
-          saveToLocalStorage("ttinteractive_chats_backup", state.chats);
+          saveToLocalStorage(`${CHAT_STORAGE_KEY}_backup`, state.chats);
         }
       }
     };

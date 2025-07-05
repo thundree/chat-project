@@ -28,7 +28,7 @@ export type Chat = {
   characterInitialPrompt?: string;
   characterColor?: string;
   characterVoice?: string;
-  temperature: string;
+  temperature: number;
   messages?: Message[];
 };
 

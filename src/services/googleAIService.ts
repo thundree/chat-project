@@ -183,7 +183,7 @@ export const getChatCompletion = async (
     }
 
     const { messages, systemInstruction } = prepareMessagesForGoogleAI(chat);
-    const temperature = parseFloat(chat.temperature) || 0.7;
+    const temperature = chat.temperature || 0.7;
 
     // Prepare the content for the new API
     const contents = messages.map((msg) => ({
@@ -244,7 +244,7 @@ export const getStreamingChatCompletion = async (
     }
 
     const { messages, systemInstruction } = prepareMessagesForGoogleAI(chat);
-    const temperature = parseFloat(chat.temperature) || 0.7;
+    const temperature = chat.temperature || 0.7;
 
     // Prepare the content for the new API
     const contents = messages.map((msg) => ({
@@ -297,7 +297,7 @@ export const getChatCompletionViaProxy = async (
 ): Promise<string> => {
   try {
     const { messages, systemInstruction } = prepareMessagesForGoogleAI(chat);
-    const temperature = parseFloat(chat.temperature) || 0.7;
+    const temperature = chat.temperature || 0.7;
 
     const requestBody: GoogleAICompletionRequest = {
       model,

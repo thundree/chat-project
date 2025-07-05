@@ -116,14 +116,14 @@ export default function MessageItem({
               />
               <div className="flex gap-2 mt-1">
                 <button
-                  className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-xs"
+                  className="cursor-pointer px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-xs"
                   onClick={handleSave}
                   disabled={saving}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>
                 <button
-                  className="px-2 py-1 rounded bg-gray-600 text-white hover:bg-gray-700 text-xs"
+                  className="cursor-pointer px-2 py-1 rounded bg-gray-600 text-white hover:bg-gray-700 text-xs"
                   onClick={handleCancel}
                   disabled={saving}
                 >

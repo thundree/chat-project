@@ -3,6 +3,9 @@ import React from "react";
 import MessageItem from "@/components/MessageItem";
 import MessageInput from "@/components/MessageInput";
 import { useChat } from "@/contexts/useChat";
+import CustomButton from "./CustomButton";
+import { BiMessageSquareAdd } from "react-icons/bi";
+import { IoInfiniteOutline } from "react-icons/io5";
 
 interface MessageListProps {
   messages: Message[];
@@ -22,6 +25,12 @@ const MessageList: React.FC<MessageListProps> = ({
   isLoading = false,
 }) => {
   const { currentChatId, updateMessage, deleteMessage } = useChat();
+
+  const handleGenerateResponse = () => {
+    if (selectedChat) {
+      onGenerateResponse();
+    }
+  };
 
   const allMessages = React.useMemo(() => {
     const initialMessage = selectedChat?.characterInitialMessage || [];
@@ -77,6 +86,25 @@ const MessageList: React.FC<MessageListProps> = ({
           </div>
         </div>
       )}
+
+      {/* Generate Response Button */}
+      <div className="flex flex-wrap gap-3 mb-3">
+        <CustomButton
+          onClick={handleGenerateResponse}
+          className="bg-green-500 w-42 ml-auto hover:bg-green-600 text-white"
+          disabled={isLoading || (selectedChat?.messages?.length ?? 0) === 0}
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2 mr-auto">
+              <IoInfiniteOutline /> Generating...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2 mr-auto">
+              <BiMessageSquareAdd /> New Response
+            </span>
+          )}
+        </CustomButton>
+      </div>
 
       {/* Message Input */}
       <div className="mb-3">

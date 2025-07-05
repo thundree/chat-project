@@ -21,7 +21,6 @@ import {
   loadSelectedModelForProvider,
 } from "@/utils/localStorage";
 import { OPEN_AI_API_KEY_INDEX, type AIProvider } from "@/constants";
-import { getProviderDisplayName } from "@/utils/apiKeyUtils";
 
 export default function MainContent() {
   // Load saved provider and model preferences
@@ -53,15 +52,12 @@ export default function MainContent() {
     setCurrentChat,
     addMessage,
     createChat,
-    setStreamingResponse,
-    clearStreamingResponse,
   } = useChat();
 
   const {
     isLoading,
     error,
     generateResponse,
-    generateStreamingResponse,
     validateConnection,
     clearError,
     switchProvider,
@@ -157,49 +153,6 @@ export default function MainContent() {
     }
   };
 
-  const handleStreamingResponse = async () => {
-    if (!currentChat || !currentChatId) {
-      showAlert("No chat selected");
-      return;
-    }
-
-    // Check if API key exists for the current provider
-    const hasKey = await hasApiKey();
-    if (!hasKey) {
-      showAlert(
-        <div>
-          <p className="font-semibold">API Key Required</p>
-          <p>
-            No API key found for "{getProviderDisplayName(selectedProvider)}".
-          </p>
-          <p>
-            Please configure your API key in the Configuration tab to use this
-            service.
-          </p>
-        </div>
-      );
-      return;
-    }
-
-    clearStreamingResponse(currentChatId);
-
-    const newMessage = await generateStreamingResponse(
-      currentChat,
-      (chunk) => {
-        setStreamingResponse(currentChatId, chunk);
-      },
-      {
-        model: selectedModel,
-        maxTokens: 1000,
-      }
-    );
-
-    if (newMessage && currentChatId) {
-      addMessage(currentChatId, newMessage);
-      clearStreamingResponse(currentChatId);
-    }
-  };
-
   const handleValidateConnection = async () => {
     const providerName =
       selectedProvider === OPEN_AI_API_KEY_INDEX ? "OpenAI" : "Google AI";
@@ -273,7 +226,6 @@ export default function MainContent() {
               selectedModel={selectedModel}
               selectedProvider={selectedProvider}
               handleGenerateResponse={handleGenerateResponse}
-              handleStreamingResponse={handleStreamingResponse}
               handleValidateConnection={handleValidateConnection}
               onSendMessage={onSendMessage}
               tabsRef={tabsRef as React.RefObject<TabsRef>}

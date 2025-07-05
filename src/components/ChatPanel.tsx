@@ -3,7 +3,6 @@ import { Tabs, TabItem } from "flowbite-react";
 import type { TabsRef } from "flowbite-react";
 import { BsChatLeftText } from "react-icons/bs";
 import { HiAdjustments } from "react-icons/hi";
-import CustomButton from "@/components/CustomButton";
 
 const MessageList = React.lazy(() => import("@/components/MessageList"));
 const ChatConfiguration = React.lazy(
@@ -25,7 +24,6 @@ interface ChatPanelProps {
   selectedModel: string;
   selectedProvider: AIProvider;
   handleGenerateResponse: () => void;
-  handleStreamingResponse: () => void;
   handleValidateConnection: () => void;
   onSendMessage: (messageText: string) => void;
   tabsRef: RefObject<TabsRef>;
@@ -42,7 +40,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   selectedModel,
   selectedProvider,
   handleGenerateResponse,
-  handleStreamingResponse,
   handleValidateConnection,
   onSendMessage,
   tabsRef,
@@ -134,24 +131,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           </Suspense>
         </TabItem>
       </Tabs>
-
-      <div className="flex flex-wrap gap-3 mt-6">
-        <CustomButton
-          onClick={handleGenerateResponse}
-          className="bg-green-500 hover:bg-green-600 text-white"
-          disabled={isLoading || (currentChat.messages?.length ?? 0) === 0}
-        >
-          {isLoading ? "Generating..." : "Generate Response"}
-        </CustomButton>
-
-        <CustomButton
-          onClick={handleStreamingResponse}
-          className="bg-purple-500 hover:bg-purple-600 text-white"
-          disabled={isLoading || (currentChat.messages?.length ?? 0) === 0}
-        >
-          {isLoading ? "Streaming..." : "Stream Response"}
-        </CustomButton>
-      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import type { Chat, Message, Character } from "@/types";
-import { initialChatList } from "@/data/mockedChats";
+
 import DatabaseService from "@/services/databaseService";
 import {
   saveToLocalStorage,
@@ -226,7 +226,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
           // First time loading, migrate from localStorage to IndexedDB
           chats = await DatabaseService.migrateFromLocalStorage(
             "ttinteractive_chats",
-            initialChatList
+            []
           );
 
           // Mark migration as completed
@@ -240,7 +240,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       } catch (error) {
         console.error("Error loading chats:", error);
         // Fallback to default data
-        dispatch({ type: "SET_CHATS", payload: initialChatList });
+        dispatch({ type: "SET_CHATS", payload: [] });
       }
     };
 

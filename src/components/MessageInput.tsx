@@ -73,6 +73,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <div className="flex-1 flex items-end gap-2">
           <textarea
             ref={textareaRef}
+            id="message-input"
+            name="message-input"
             className="flex-1 min-h-[72px] max-h-[150px] resize-none rounded bg-gray-800/40 text-gray-200 p-2 pt-0 mt-1 border border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Your message (Enter for new lines; Ctrl+Enter to send and generate reply)"
             value={inputText}

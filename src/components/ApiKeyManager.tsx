@@ -58,7 +58,7 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
 
     setLoading(true);
     try {
-      await DatabaseService.saveApiKey("google", googleKey.trim());
+      await DatabaseService.saveApiKey("google-ai", googleKey.trim());
       await refreshGoogleApiKey();
       setGoogleKey("");
       setHasGoogleKey(true);
@@ -71,7 +71,7 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
     }
   };
 
-  const handleRemoveKey = async (provider: "openai" | "google") => {
+  const handleRemoveKey = async (provider: "openai" | "google-ai") => {
     if (!confirm(`Are you sure you want to remove the ${provider} API key?`)) {
       return;
     }
@@ -169,7 +169,7 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-green-600">✓ Key configured</span>
                 <button
-                  onClick={() => handleRemoveKey("google")}
+                  onClick={() => handleRemoveKey("google-ai")}
                   disabled={loading}
                   className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
                 >

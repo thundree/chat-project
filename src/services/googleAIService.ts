@@ -8,13 +8,13 @@ let GOOGLE_AI_API_KEY: string | null = null;
 
 // Function to get API key from database
 const getApiKey = async (): Promise<string | null> => {
-  GOOGLE_AI_API_KEY ??= await DatabaseService.getActiveApiKey("google");
+  GOOGLE_AI_API_KEY ??= await DatabaseService.getActiveApiKey("google-ai");
   return GOOGLE_AI_API_KEY;
 };
 
 // Function to refresh API key from database
 export const refreshApiKey = async (): Promise<void> => {
-  GOOGLE_AI_API_KEY = await DatabaseService.getActiveApiKey("google");
+  GOOGLE_AI_API_KEY = await DatabaseService.getActiveApiKey("google-ai");
   genAI = null; // Reset client so it gets reinitialized with new key
 };
 

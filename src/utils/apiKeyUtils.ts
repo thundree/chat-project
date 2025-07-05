@@ -32,12 +32,12 @@ export const maskApiKey = (key: string): string => {
  * Get provider display name
  */
 export const getProviderDisplayName = (
-  provider: "openai" | "google"
+  provider: "openai" | "google-ai"
 ): string => {
   switch (provider) {
     case "openai":
       return "OpenAI";
-    case "google":
+    case "google-ai":
       return "Google AI";
     default:
       return provider;
@@ -47,11 +47,11 @@ export const getProviderDisplayName = (
 /**
  * Get API key documentation URL
  */
-export const getApiKeyDocUrl = (provider: "openai" | "google"): string => {
+export const getApiKeyDocUrl = (provider: "openai" | "google-ai"): string => {
   switch (provider) {
     case "openai":
       return "https://platform.openai.com/api-keys";
-    case "google":
+    case "google-ai":
       return "https://aistudio.google.com/app/apikey";
     default:
       return "#";

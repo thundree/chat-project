@@ -181,7 +181,7 @@ export default function ChatConfiguration({
 
     setIsSavingKey(true);
     try {
-      await DatabaseService.saveApiKey("google", googleKey.trim());
+      await DatabaseService.saveApiKey("google-ai", googleKey.trim());
       await refreshGoogleApiKey();
       setGoogleKey("");
       setHasGoogleKey(true);
@@ -196,7 +196,7 @@ export default function ChatConfiguration({
   };
 
   // Remove API key
-  const handleRemoveKey = async (provider: "openai" | "google") => {
+  const handleRemoveKey = async (provider: "openai" | "google-ai") => {
     setIsSavingKey(true);
     try {
       const keys = await DatabaseService.getAllApiKeys(provider);
@@ -472,7 +472,7 @@ export default function ChatConfiguration({
                 ✓ Configured
               </span>
               <button
-                onClick={() => handleRemoveKey("google")}
+                onClick={() => handleRemoveKey("google-ai")}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >

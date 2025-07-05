@@ -200,7 +200,7 @@ export class DatabaseService {
 
   // API Key operations
   static async saveApiKey(
-    provider: "openai" | "google",
+    provider: "openai" | "google-ai",
     key: string
   ): Promise<void> {
     try {
@@ -229,7 +229,7 @@ export class DatabaseService {
   }
 
   static async getActiveApiKey(
-    provider: "openai" | "google"
+    provider: "openai" | "google-ai"
   ): Promise<string | null> {
     try {
       const apiKey = await db.apiKeys
@@ -254,7 +254,7 @@ export class DatabaseService {
   }
 
   static async getAllApiKeys(
-    provider?: "openai" | "google"
+    provider?: "openai" | "google-ai"
   ): Promise<ApiKey[]> {
     try {
       if (provider) {

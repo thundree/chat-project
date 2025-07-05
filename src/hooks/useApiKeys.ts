@@ -37,7 +37,7 @@ export const useApiKeys = () => {
 
   const saveGoogleKey = async (key: string): Promise<void> => {
     try {
-      await DatabaseService.saveApiKey("google", key);
+      await DatabaseService.saveApiKey("google-ai", key);
       await refreshGoogleApiKey();
       setHasGoogleKey(true);
     } catch (error) {
@@ -62,7 +62,7 @@ export const useApiKeys = () => {
 
   const removeGoogleKey = async (): Promise<void> => {
     try {
-      const keys = await DatabaseService.getAllApiKeys("google");
+      const keys = await DatabaseService.getAllApiKeys("google-ai");
       for (const key of keys) {
         await DatabaseService.deleteApiKey(key.id);
       }

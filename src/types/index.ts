@@ -2,7 +2,7 @@ export type SenderType = "user" | "character";
 
 export type ApiKey = {
   id: string;
-  provider: "openai" | "google";
+  provider: "openai" | "google-ai";
   key: string;
   isActive: boolean;
   createdAt: string;

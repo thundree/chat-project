@@ -72,6 +72,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
+  const onTemperatureChange = (newTemperature: number) => {
+    if (currentChat) {
+      const updatedChat = {
+        ...currentChat,
+        temperature: newTemperature,
+      };
+      updateChat(currentChat.id, updatedChat);
+    }
+  };
+
   return (
     <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
       <Tabs
@@ -112,6 +122,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             <ChatConfiguration
               onUserNameChange={onUserNameChange}
               onTitleChange={onTitleChange}
+              onTemperatureChange={onTemperatureChange}
               currentChat={currentChat}
               isLoading={isLoading}
               error={error}

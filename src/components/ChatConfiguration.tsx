@@ -34,6 +34,7 @@ interface ChatConfigurationProps {
   readonly selectedProvider: AIProvider;
   readonly onUserNameChange: (userName: string) => void;
   readonly onTitleChange: (title: string) => void;
+  readonly onTemperatureChange: (temperature: number) => void;
   readonly onTestApiConnection: () => void;
 }
 
@@ -48,6 +49,7 @@ export default function ChatConfiguration({
   selectedProvider,
   onUserNameChange,
   onTitleChange,
+  onTemperatureChange,
   onTestApiConnection,
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
@@ -69,6 +71,9 @@ export default function ChatConfiguration({
   const [chatTitle, setChatTitle] = useState(currentChat.title);
   const [isSavingTitle, setIsSavingTitle] = useState(false);
   const [titleSaved, setTitleSaved] = useState(false);
+  const [temperature, setTemperature] = useState(currentChat.temperature);
+  const [isSavingTemperature, setIsSavingTemperature] = useState(false);
+  const [temperatureSaved, setTemperatureSaved] = useState(false);
 
   const {
     getAvailableModels,
@@ -277,6 +282,31 @@ export default function ChatConfiguration({
     saveTitleLabel = "Saved";
   }
 
+  const handleTemperatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTemperature(parseFloat(e.target.value));
+    setTemperatureSaved(false);
+  };
+
+  const handleSaveTemperature = async () => {
+    if (temperature === currentChat.temperature) return;
+    setIsSavingTemperature(true);
+    try {
+      if (onTemperatureChange) {
+        onTemperatureChange(temperature);
+      }
+      setTemperatureSaved(true);
+    } finally {
+      setIsSavingTemperature(false);
+    }
+  };
+
+  let saveTemperatureLabel = "Save";
+  if (isSavingTemperature) {
+    saveTemperatureLabel = "Saving...";
+  } else if (temperatureSaved) {
+    saveTemperatureLabel = "Saved";
+  }
+
   // Fetch available models on provider change
   useEffect(() => {
     const fetchModels = async () => {
@@ -319,6 +349,11 @@ export default function ChatConfiguration({
   useEffect(() => {
     setUserName(currentChat.userName ?? "User");
   }, [currentChat.userName]);
+
+  useEffect(() => {
+    setTemperature(currentChat.temperature);
+    setChatTitle(currentChat.title);
+  }, [currentChat.temperature, currentChat.title]);
 
   return (
     <div className="w-full flex flex-col gap-3 bg-black/80 p-2 rounded-md">
@@ -394,6 +429,44 @@ export default function ChatConfiguration({
             >
               {saveTitleLabel}
             </button>
+          </div>
+        </div>
+        {/* Temperature Slider */}
+        <div className="mt-2">
+          <label
+            htmlFor="temperature-slider"
+            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
+          >
+            Temperature: {temperature}
+          </label>
+          <div className="flex flex-row gap-0 items-center">
+            <input
+              id="temperature-slider"
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value={temperature}
+              onChange={handleTemperatureChange}
+              className="flex-1 max-w-xs h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 slider"
+              disabled={isLoading || isSavingTemperature}
+            />
+            <button
+              onClick={handleSaveTemperature}
+              disabled={
+                isLoading ||
+                isSavingTemperature ||
+                temperature === currentChat.temperature
+              }
+              className="px-3 h-[34px] ml-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
+            >
+              {saveTemperatureLabel}
+            </button>
+          </div>
+          <div className="flex max-w-xs justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <span>0 (Focused)</span>
+            <span>1 (Balanced)</span>
+            <span>2 (Creative)</span>
           </div>
         </div>
       </div>

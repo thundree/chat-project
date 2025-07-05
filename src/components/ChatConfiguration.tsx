@@ -436,7 +436,7 @@ export default function ChatConfiguration({
         <div className="mt-2">
           <label
             htmlFor="temperature-slider"
-            className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
+            className="block text-xs font-medium text-gray-600 dark:text-gray-400 -mb-1 pt-1"
           >
             Temperature: {temperature}
           </label>
@@ -445,7 +445,7 @@ export default function ChatConfiguration({
               id="temperature-slider"
               type="range"
               min="0"
-              max="2"
+              max="1"
               step="0.01"
               value={temperature}
               onChange={handleTemperatureChange}
@@ -466,8 +466,8 @@ export default function ChatConfiguration({
           </div>
           <div className="flex max-w-xs justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>0 (Focused)</span>
-            <span>1 (Balanced)</span>
-            <span>2 (Creative)</span>
+            <span>.5 (Balanced)</span>
+            <span>1 (Creative)</span>
           </div>
         </div>
       </div>

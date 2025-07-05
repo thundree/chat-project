@@ -132,7 +132,7 @@ window.ttInteractiveUtils.isMigrationCompleted()
 ```typescript
 {
   id: string; // Unique key ID
-  provider: "openai" | "google-ai";
+  provider: AIProvider; // "openai" or "google-ai"
   key: string; // The API key value (encrypted at rest if possible)
   isActive: boolean; // Whether this key is currently active for the provider
   createdAt: string; // ISO timestamp

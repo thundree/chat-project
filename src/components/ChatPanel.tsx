@@ -10,9 +10,9 @@ const ChatConfiguration = React.lazy(
   () => import("@/components/ChatConfiguration")
 );
 
-import type { AIProvider } from "@/services/aiService";
 import type { Chat } from "@/types";
 import { useChat } from "@/contexts/useChat";
+import type { AIProvider } from "@/constants";
 
 interface ChatPanelProps {
   currentChat: Chat;

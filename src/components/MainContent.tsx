@@ -14,12 +14,14 @@ import type { TabsRef } from "flowbite-react";
 import { detectChatId } from "@/functions";
 import { useAI } from "@/hooks/useAI";
 import { useChat } from "@/contexts/useChat";
-import type { AIProvider } from "@/services/aiService";
+
 import DatabaseService from "@/services/databaseService";
 import {
   loadSelectedProvider,
   loadSelectedModelForProvider,
 } from "@/utils/localStorage";
+import { OPEN_AI_API_KEY_INDEX, type AIProvider } from "@/constants";
+import { getProviderDisplayName } from "@/utils/apiKeyUtils";
 
 export default function MainContent() {
   // Load saved provider and model preferences
@@ -81,7 +83,7 @@ export default function MainContent() {
     switchProvider(provider);
     // Reset model to default for new provider
     const defaultModel =
-      provider === "openai" ? "gpt-3.5-turbo" : "gemini-1.5-flash";
+      provider === OPEN_AI_API_KEY_INDEX ? "gpt-3.5-turbo" : "gemini-1.5-flash";
     setSelectedModel(defaultModel);
   };
 
@@ -131,7 +133,10 @@ export default function MainContent() {
           <p className="font-semibold">API Key Required</p>
           <p>
             No API key found for{" "}
-            {selectedProvider === "openai" ? "OpenAI" : "Google AI"}.
+            {selectedProvider === OPEN_AI_API_KEY_INDEX
+              ? "OpenAI"
+              : "Google AI"}
+            .
           </p>
           <p>
             Please configure your API key in the Configuration tab to use this
@@ -165,8 +170,7 @@ export default function MainContent() {
         <div>
           <p className="font-semibold">API Key Required</p>
           <p>
-            No API key found for{" "}
-            {selectedProvider === "openai" ? "OpenAI" : "Google AI"}.
+            No API key found for "{getProviderDisplayName(selectedProvider)}".
           </p>
           <p>
             Please configure your API key in the Configuration tab to use this
@@ -197,7 +201,8 @@ export default function MainContent() {
   };
 
   const handleValidateConnection = async () => {
-    const providerName = selectedProvider === "openai" ? "OpenAI" : "Google AI";
+    const providerName =
+      selectedProvider === OPEN_AI_API_KEY_INDEX ? "OpenAI" : "Google AI";
 
     // First check if API key exists for the current provider
     try {

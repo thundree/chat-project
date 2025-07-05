@@ -1,5 +1,7 @@
 // Local Storage utility functions for persisting app state
 
+import type { AIProvider } from "@/constants";
+
 /**
  * Generic function to save data to localStorage
  */
@@ -147,9 +149,6 @@ export const areModelsStale = (
   const maxAgeMs = maxAgeHours * 60 * 60 * 1000;
   return Date.now() - timestamp > maxAgeMs;
 };
-
-// Provider-specific functions
-export type AIProvider = "openai" | "google-ai";
 
 export const saveSelectedProvider = (provider: AIProvider): boolean => {
   return saveToLocalStorage(STORAGE_KEYS.SELECTED_PROVIDER, provider);

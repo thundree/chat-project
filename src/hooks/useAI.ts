@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import type { Chat, Message } from "@/types";
-import { UnifiedAIService, type AIProvider } from "@/services/aiService";
+import { UnifiedAIService } from "@/services/aiService";
+import type { AIProvider } from "@/constants";
 
 export interface UseAIOptions {
   model?: string;

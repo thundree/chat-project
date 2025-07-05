@@ -1,6 +1,7 @@
 // IndexedDB service using Dexie for chat and message persistence
 import Dexie, { type Table } from "dexie";
 import type { Chat, Message, Character, ApiKey } from "@/types";
+import type { AIProvider } from "@/constants";
 
 // Define the database schema
 export interface ChatDB extends Dexie {
@@ -199,10 +200,7 @@ export class DatabaseService {
   }
 
   // API Key operations
-  static async saveApiKey(
-    provider: "openai" | "google-ai",
-    key: string
-  ): Promise<void> {
+  static async saveApiKey(provider: AIProvider, key: string): Promise<void> {
     try {
       await db.transaction("rw", db.apiKeys, async () => {
         // Deactivate existing keys for this provider
@@ -228,9 +226,7 @@ export class DatabaseService {
     }
   }
 
-  static async getActiveApiKey(
-    provider: "openai" | "google-ai"
-  ): Promise<string | null> {
+  static async getActiveApiKey(provider: AIProvider): Promise<string | null> {
     try {
       const apiKey = await db.apiKeys
         .where("provider")
@@ -253,9 +249,7 @@ export class DatabaseService {
     }
   }
 
-  static async getAllApiKeys(
-    provider?: "openai" | "google-ai"
-  ): Promise<ApiKey[]> {
+  static async getAllApiKeys(provider?: AIProvider): Promise<ApiKey[]> {
     try {
       if (provider) {
         return await db.apiKeys.where("provider").equals(provider).toArray();
@@ -299,7 +293,7 @@ export class DatabaseService {
     }
   }
 
-  static async hasApiKey(provider: "openai" | "google-ai"): Promise<boolean> {
+  static async hasApiKey(provider: AIProvider): Promise<boolean> {
     try {
       const count = await db.apiKeys
         .where("provider")

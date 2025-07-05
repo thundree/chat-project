@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Chat } from "@/types";
 import { useAI } from "@/hooks/useAI";
-import type { AIProvider } from "@/services/aiService";
+
 import {
   saveSelectedModelForProvider,
   saveAvailableModelsForProvider,
@@ -17,6 +17,11 @@ import { validateOpenAIKey, validateGoogleAIKey } from "@/utils/apiKeyUtils";
 import { TbRefreshAlert } from "react-icons/tb";
 import { BsDatabaseFillExclamation } from "react-icons/bs";
 import CustomButton from "@/components/CustomButton";
+import {
+  GOOGLE_AI_API_KEY_INDEX,
+  OPEN_AI_API_KEY_INDEX,
+  type AIProvider,
+} from "@/constants";
 
 interface ChatConfigurationProps {
   readonly currentChat: Chat;
@@ -131,8 +136,8 @@ export default function ChatConfiguration({
   const checkApiKeys = async () => {
     try {
       const [openaiExists, googleExists] = await Promise.all([
-        DatabaseService.hasApiKey("openai"),
-        DatabaseService.hasApiKey("google-ai"),
+        DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
+        DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
       ]);
       setHasOpenAIKey(openaiExists);
       setHasGoogleKey(googleExists);
@@ -154,7 +159,7 @@ export default function ChatConfiguration({
 
     setIsSavingKey(true);
     try {
-      await DatabaseService.saveApiKey("openai", openaiKey.trim());
+      await DatabaseService.saveApiKey(OPEN_AI_API_KEY_INDEX, openaiKey.trim());
       await refreshOpenAIApiKey();
       setOpenaiKey("");
       setHasOpenAIKey(true);
@@ -181,7 +186,10 @@ export default function ChatConfiguration({
 
     setIsSavingKey(true);
     try {
-      await DatabaseService.saveApiKey("google-ai", googleKey.trim());
+      await DatabaseService.saveApiKey(
+        GOOGLE_AI_API_KEY_INDEX,
+        googleKey.trim()
+      );
       await refreshGoogleApiKey();
       setGoogleKey("");
       setHasGoogleKey(true);
@@ -196,7 +204,7 @@ export default function ChatConfiguration({
   };
 
   // Remove API key
-  const handleRemoveKey = async (provider: "openai" | "google-ai") => {
+  const handleRemoveKey = async (provider: AIProvider) => {
     setIsSavingKey(true);
     try {
       const keys = await DatabaseService.getAllApiKeys(provider);
@@ -204,7 +212,7 @@ export default function ChatConfiguration({
         await DatabaseService.deleteApiKey(key.id);
       }
 
-      if (provider === "openai") {
+      if (provider === OPEN_AI_API_KEY_INDEX) {
         await refreshOpenAIApiKey();
         setHasOpenAIKey(false);
       } else {
@@ -410,7 +418,7 @@ export default function ChatConfiguration({
                 ✓ Configured
               </span>
               <button
-                onClick={() => handleRemoveKey("openai")}
+                onClick={() => handleRemoveKey(OPEN_AI_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
@@ -472,7 +480,7 @@ export default function ChatConfiguration({
                 ✓ Configured
               </span>
               <button
-                onClick={() => handleRemoveKey("google-ai")}
+                onClick={() => handleRemoveKey(GOOGLE_AI_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
@@ -538,8 +546,10 @@ export default function ChatConfiguration({
           className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           disabled={isLoading}
         >
-          <option value="openai">OpenAI (GPT Models)</option>
-          <option value="google-ai">Google AI (Gemini Models)</option>
+          <option value={OPEN_AI_API_KEY_INDEX}>OpenAI (GPT Models)</option>
+          <option value={GOOGLE_AI_API_KEY_INDEX}>
+            Google AI (Gemini Models)
+          </option>
         </select>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Current: {getProviderDisplayName()}

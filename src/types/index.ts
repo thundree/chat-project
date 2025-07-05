@@ -1,8 +1,10 @@
+import type { AIProvider } from "@/constants";
+
 export type SenderType = "user" | "character";
 
 export type ApiKey = {
   id: string;
-  provider: "openai" | "google-ai";
+  provider: AIProvider;
   key: string;
   isActive: boolean;
   createdAt: string;

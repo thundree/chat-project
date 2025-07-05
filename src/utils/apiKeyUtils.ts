@@ -2,6 +2,8 @@
  * Utility functions for API key validation and management
  */
 
+import type { AIProvider } from "@/constants";
+
 /**
  * Validate OpenAI API key format
  */
@@ -31,9 +33,7 @@ export const maskApiKey = (key: string): string => {
 /**
  * Get provider display name
  */
-export const getProviderDisplayName = (
-  provider: "openai" | "google-ai"
-): string => {
+export const getProviderDisplayName = (provider: AIProvider): string => {
   switch (provider) {
     case "openai":
       return "OpenAI";
@@ -47,7 +47,7 @@ export const getProviderDisplayName = (
 /**
  * Get API key documentation URL
  */
-export const getApiKeyDocUrl = (provider: "openai" | "google-ai"): string => {
+export const getApiKeyDocUrl = (provider: AIProvider): string => {
   switch (provider) {
     case "openai":
       return "https://platform.openai.com/api-keys";

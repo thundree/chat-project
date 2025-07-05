@@ -5,8 +5,11 @@ import * as OpenAIService from "./openaiService";
 
 // Google AI Service
 import * as GoogleAIService from "./googleAIService";
-
-export type AIProvider = "openai" | "google-ai";
+import {
+  GOOGLE_AI_API_KEY_INDEX,
+  OPEN_AI_API_KEY_INDEX,
+  type AIProvider,
+} from "@/constants";
 
 export interface AIServiceConfig {
   provider: AIProvider;
@@ -26,7 +29,7 @@ export interface AIMessage {
 export class UnifiedAIService {
   private provider: AIProvider;
 
-  constructor(provider: AIProvider = "openai") {
+  constructor(provider: AIProvider = OPEN_AI_API_KEY_INDEX) {
     this.provider = provider;
   }
 
@@ -40,9 +43,9 @@ export class UnifiedAIService {
     const { model, maxTokens = 1000 } = config;
 
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.getChatCompletion(chat, model, maxTokens);
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.getChatCompletion(chat, model, maxTokens);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -60,14 +63,14 @@ export class UnifiedAIService {
     const { model, maxTokens = 1000 } = config;
 
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.getStreamingChatCompletion(
           chat,
           model,
           maxTokens,
           onChunk
         );
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.getStreamingChatCompletion(
           chat,
           model,
@@ -84,9 +87,9 @@ export class UnifiedAIService {
    */
   async validateApiKey(): Promise<boolean> {
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.validateApiKey();
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.validateApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -98,9 +101,9 @@ export class UnifiedAIService {
    */
   async hasApiKey(): Promise<boolean> {
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.hasApiKey();
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.hasApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -112,9 +115,9 @@ export class UnifiedAIService {
    */
   async getAvailableModels(): Promise<string[]> {
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.getAvailableModels();
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.getAvailableModels();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -129,9 +132,9 @@ export class UnifiedAIService {
     sender: SenderType = "character"
   ): Message {
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return OpenAIService.createMessageFromResponse(response, sender);
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.createMessageFromResponse(response, sender);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -157,9 +160,9 @@ export class UnifiedAIService {
    */
   getDefaultModel(): string {
     switch (this.provider) {
-      case "openai":
+      case OPEN_AI_API_KEY_INDEX:
         return "gpt-3.5-turbo";
-      case "google-ai":
+      case GOOGLE_AI_API_KEY_INDEX:
         return "gemini-1.5-flash";
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
@@ -176,21 +179,21 @@ export class UnifiedAIService {
     provider: AIProvider;
   } {
     switch (this.provider) {
-      case "openai": {
+      case OPEN_AI_API_KEY_INDEX: {
         // OpenAI doesn't have a getModelInfo function, so we'll create basic info
         const isGPT4 = modelId.includes("gpt-4");
         return {
           name: modelId,
           tier: isGPT4 ? "premium" : "pro",
           description: isGPT4 ? "Advanced GPT-4 model" : "Standard GPT model",
-          provider: "openai",
+          provider: OPEN_AI_API_KEY_INDEX,
         };
       }
-      case "google-ai": {
+      case GOOGLE_AI_API_KEY_INDEX: {
         const info = GoogleAIService.getModelInfo(modelId);
         return {
           ...info,
-          provider: "google-ai",
+          provider: GOOGLE_AI_API_KEY_INDEX,
         };
       }
       default:
@@ -203,9 +206,9 @@ export class UnifiedAIService {
    */
   getProviderDisplayName(): string {
     switch (this.provider) {
-      case "openai":
-        return "OpenAI";
-      case "google-ai":
+      case OPEN_AI_API_KEY_INDEX:
+        return "OpenAI (GPT)";
+      case GOOGLE_AI_API_KEY_INDEX:
         return "Google AI (Gemini)";
       default:
         return this.provider;
@@ -214,8 +217,8 @@ export class UnifiedAIService {
 }
 
 // Create default instances for easy importing
-export const openAIService = new UnifiedAIService("openai");
-export const googleAIService = new UnifiedAIService("google-ai");
+export const openAIService = new UnifiedAIService(OPEN_AI_API_KEY_INDEX);
+export const googleAIService = new UnifiedAIService(GOOGLE_AI_API_KEY_INDEX);
 
 // Export individual services for direct access if needed
 export { OpenAIService, GoogleAIService };

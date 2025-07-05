@@ -24,7 +24,6 @@ interface ChatPanelProps {
   onProviderChange: (provider: AIProvider) => void;
   selectedModel: string;
   selectedProvider: AIProvider;
-  addUserMessage: () => void;
   handleGenerateResponse: () => void;
   handleStreamingResponse: () => void;
   handleValidateConnection: () => void;
@@ -42,7 +41,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onProviderChange,
   selectedModel,
   selectedProvider,
-  addUserMessage,
   handleGenerateResponse,
   handleStreamingResponse,
   handleValidateConnection,
@@ -138,14 +136,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       </Tabs>
 
       <div className="flex flex-wrap gap-3 mt-6">
-        <CustomButton
-          onClick={addUserMessage}
-          className="bg-blue-500 hover:bg-blue-600 text-white"
-          disabled={isLoading}
-        >
-          Add User Message
-        </CustomButton>
-
         <CustomButton
           onClick={handleGenerateResponse}
           className="bg-green-500 hover:bg-green-600 text-white"

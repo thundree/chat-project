@@ -229,17 +229,6 @@ export default function MainContent() {
     );
   };
 
-  const addUserMessage = () => {
-    const userText = prompt("Enter your message:");
-    if (userText && currentChatId) {
-      const userMessage: Omit<Message, "id"> = {
-        sender: "user",
-        text: [userText],
-      };
-      addMessage(currentChatId, userMessage);
-    }
-  };
-
   const onSendMessage = (messageText: string) => {
     if (messageText.trim() && currentChatId) {
       const userMessage: Omit<Message, "id"> = {
@@ -283,7 +272,6 @@ export default function MainContent() {
               onProviderChange={handleProviderChange}
               selectedModel={selectedModel}
               selectedProvider={selectedProvider}
-              addUserMessage={addUserMessage}
               handleGenerateResponse={handleGenerateResponse}
               handleStreamingResponse={handleStreamingResponse}
               handleValidateConnection={handleValidateConnection}

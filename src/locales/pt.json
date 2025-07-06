@@ -118,6 +118,13 @@
     "maxTokensDescription": "Número máximo de tokens para respostas da IA",
     "themeDescription": "Escolha seu tema preferido. Automático seguirá a preferência do seu sistema."
   },
+  "sidebar": {
+    "newChat": "Novo Chat",
+    "settings": "Configurações",
+    "noChats": "Nenhum chat disponível",
+    "deleteChat": "Excluir chat",
+    "deleteConfirmation": "Tem certeza que deseja excluir o chat"
+  },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",
     "networkError": "Erro de rede. Verifique sua conexão.",

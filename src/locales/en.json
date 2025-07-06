@@ -118,6 +118,13 @@
     "maxTokensDescription": "Maximum number of tokens for AI responses",
     "themeDescription": "Choose your preferred theme. Auto will follow your system preference."
   },
+  "sidebar": {
+    "newChat": "New Chat",
+    "settings": "Settings",
+    "noChats": "No chats available",
+    "deleteChat": "Delete chat",
+    "deleteConfirmation": "Are you sure you want to delete chat"
+  },
   "errors": {
     "generic": "An error occurred. Please try again.",
     "networkError": "Network error. Please check your connection.",

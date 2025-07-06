@@ -11,6 +11,7 @@ import { IoSettings } from "react-icons/io5";
 
 import { FaTrashCan } from "react-icons/fa6";
 import { useChat } from "@/contexts/useChat";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Suspense, useState, type ReactNode } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import GlobalSettingsModal from "./GlobalSettingsModal";
@@ -22,6 +23,7 @@ type SidebarProps = {
 
 export default function Sidebar({ open }: Readonly<SidebarProps>) {
   const { chats, currentChatId, deleteChat } = useChat();
+  const { t } = useTranslation();
 
   // Confirmation modal state
   const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -62,8 +64,8 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
           show={confirmationOpen}
           onClose={closeConfirmation}
           onConfirm={handleConfirm}
-          confirmText="Remove"
-          cancelText="Cancel"
+          confirmText={t("common.remove")}
+          cancelText={t("common.cancel")}
         >
           {confirmationContent}
         </ConfirmationModal>
@@ -85,13 +87,13 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
       >
         <SidebarItems className="h-full flex flex-col">
           <SidebarItemGroup className="flex-1">
-            <a className="flex mb-4" href="#new-chat">
+            <a className="flex w-full mb-4" href="#new-chat">
               <CustomButton
-                className="flex gap-3 items-center justify-start"
+                className="flex w-full gap-3 items-center justify-start"
                 variant="default"
               >
-                <PiChatsBold />
-                <span>New Chat</span>
+                <PiChatsBold size={24} />
+                <span>{t("sidebar.newChat")}</span>
               </CustomButton>
             </a>
 
@@ -123,7 +125,7 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                       e.stopPropagation();
                       showConfirmation(
                         <p>
-                          Are you sure you want to delete chat "{chat.title}"?
+                          {t("sidebar.deleteConfirmation")} "{chat.title}"?
                         </p>,
                         () => {
                           deleteChat(chat.id);
@@ -134,7 +136,7 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                       );
                     }}
                     className="opacity-0 ml-auto cursor-pointer group-hover:opacity-60 transition-opacity py-2 pl-3 pr-2 -mr-2 text-red-600 hover:opacity-100"
-                    title="Delete chat"
+                    title={t("sidebar.deleteChat")}
                   >
                     <FaTrashCan />
                   </button>
@@ -147,7 +149,7 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                 onClick={() => {}}
               >
                 <span className="flex text-gray-600 dark:text-gray-400">
-                  No chats available
+                  {t("sidebar.noChats")}
                 </span>
               </SidebarItem>
             )}
@@ -161,7 +163,7 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
               onClick={() => setSettingsOpen(true)}
             >
               <IoSettings />
-              <span>Settings</span>
+              <span>{t("sidebar.settings")}</span>
             </CustomButton>
           </SidebarItemGroup>
         </SidebarItems>

@@ -108,7 +108,15 @@
     },
     "general": "Configurações Gerais",
     "appearance": "Aparência",
-    "advanced": "Avançado"
+    "advanced": "Avançado",
+    "dataManagement": "Gerenciamento de Dados",
+    "storageUsage": "Uso de Armazenamento",
+    "exportData": "Exportar Dados do App",
+    "exportDescription": "Baixar um backup das suas configurações e dados",
+    "storageDescription": "KB utilizados",
+    "maxTokens": "Máximo de Tokens",
+    "maxTokensDescription": "Número máximo de tokens para respostas da IA",
+    "themeDescription": "Escolha seu tema preferido. Automático seguirá a preferência do seu sistema."
   },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",

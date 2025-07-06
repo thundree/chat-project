@@ -108,7 +108,15 @@
     },
     "general": "General Settings",
     "appearance": "Appearance",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "dataManagement": "Data Management",
+    "storageUsage": "Storage Usage",
+    "exportData": "Export App Data",
+    "exportDescription": "Download a backup of your settings and data",
+    "storageDescription": "KB used",
+    "maxTokens": "Max Tokens",
+    "maxTokensDescription": "Maximum number of tokens for AI responses",
+    "themeDescription": "Choose your preferred theme. Auto will follow your system preference."
   },
   "errors": {
     "generic": "An error occurred. Please try again.",

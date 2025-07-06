@@ -113,8 +113,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 <option value="auto">{t("settings.themes.auto")}</option>
               </Select>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Choose your preferred theme. Auto will follow your system
-                preference.
+                {t("settings.themeDescription")}
               </p>
             </div>
           </div>
@@ -128,7 +127,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
           <div className="space-y-3">
             <div>
               <Label className="mb-1 block text-sm">
-                Max Tokens: {userPrefs.maxTokens}
+                {t("settings.maxTokens")}: {userPrefs.maxTokens}
               </Label>
               <input
                 type="range"
@@ -142,7 +141,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 className="w-full slider"
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Maximum number of tokens for AI responses
+                {t("settings.maxTokensDescription")}
               </p>
             </div>
             <div>
@@ -170,11 +169,13 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
         {/* Data Management */}
         <div>
           <Label className="mb-2 block text-lg font-semibold">
-            Data Management
+            {t("settings.dataManagement")}
           </Label>
           <div className="space-y-3">
             <div>
-              <Label className="mb-1 block text-sm">Storage Usage</Label>
+              <Label className="mb-1 block text-sm">
+                {t("settings.storageUsage")}
+              </Label>
               <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                 <div
                   className="bg-blue-600 h-2.5 rounded-full"
@@ -182,7 +183,8 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 ></div>
               </div>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                {(storageInfo.used / 1024).toFixed(1)} KB used (
+                {(storageInfo.used / 1024).toFixed(1)}{" "}
+                {t("settings.storageDescription")} (
                 {storageInfo.percentage.toFixed(1)}%)
               </p>
             </div>
@@ -192,10 +194,10 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 variant="default"
                 className="w-full"
               >
-                Export App Data
+                {t("settings.exportData")}
               </CustomButton>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Download a backup of your settings and data
+                {t("settings.exportDescription")}
               </p>
             </div>
           </div>

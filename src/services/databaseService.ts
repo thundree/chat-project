@@ -2,6 +2,7 @@
 import Dexie, { type Table } from "dexie";
 import type { Chat, Message, Character, ApiKey } from "@/types";
 import type { AIProvider } from "@/constants";
+import { OLLAMA_API_KEY_INDEX } from "@/constants";
 
 // Define the database schema
 export interface ChatDB extends Dexie {
@@ -295,6 +296,11 @@ export class DatabaseService {
 
   static async hasApiKey(provider: AIProvider): Promise<boolean> {
     try {
+      // For Ollama, always return true since it doesn't require API keys by default
+      if (provider === OLLAMA_API_KEY_INDEX) {
+        return true;
+      }
+
       const count = await db.apiKeys
         .where("provider")
         .equals(provider)

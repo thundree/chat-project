@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import type { Chat, Message } from "@/types";
 import { UnifiedAIService } from "@/services/aiService";
 import type { AIProvider } from "@/constants";
+import { OPEN_AI_API_KEY_INDEX } from "@/constants";
 
 export interface UseAIOptions {
   model?: string;
@@ -31,7 +32,9 @@ export interface UseAIReturn {
   hasApiKey: () => Promise<boolean>;
 }
 
-export const useAI = (initialProvider: AIProvider = "openai"): UseAIReturn => {
+export const useAI = (
+  initialProvider: AIProvider = OPEN_AI_API_KEY_INDEX
+): UseAIReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [aiService] = useState(() => new UnifiedAIService(initialProvider));

@@ -12,7 +12,11 @@ import {
 import DatabaseService from "@/services/databaseService";
 import { refreshApiKey as refreshGoogleApiKey } from "@/services/googleAIService";
 import { refreshApiKey as refreshOpenAIApiKey } from "@/services/openaiService";
-import { validateOpenAIKey, validateGoogleAIKey } from "@/utils/apiKeyUtils";
+import {
+  validateOpenAIKey,
+  validateGoogleAIKey,
+  validateOllamaBaseUrl,
+} from "@/utils/apiKeyUtils";
 
 import { TbRefreshAlert } from "react-icons/tb";
 import { BsDatabaseFillExclamation } from "react-icons/bs";
@@ -20,6 +24,7 @@ import CustomButton from "@/components/CustomButton";
 import {
   GOOGLE_AI_API_KEY_INDEX,
   OPEN_AI_API_KEY_INDEX,
+  OLLAMA_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -62,8 +67,10 @@ export default function ChatConfiguration({
   // API Key states
   const [openaiKey, setOpenaiKey] = useState("");
   const [googleKey, setGoogleKey] = useState("");
+  const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
   const [hasGoogleKey, setHasGoogleKey] = useState(false);
+  const [hasOllamaKey, setHasOllamaKey] = useState(false);
   const [isSavingKey, setIsSavingKey] = useState(false);
   const [userName, setUserName] = useState(currentChat.userName ?? "User");
   const [isSavingUserName, setIsSavingUserName] = useState(false);
@@ -95,6 +102,15 @@ export default function ChatConfiguration({
     if (model.includes("gpt")) return "pro";
     if (model.includes("gemini-1.5-flash")) return "free";
     if (model.includes("gemini")) return "pro";
+    // Ollama models are generally free (running locally)
+    if (
+      model.includes("llama") ||
+      model.includes("mistral") ||
+      model.includes("codellama") ||
+      model.includes("phi") ||
+      model.includes("gemma")
+    )
+      return "free";
     return "pro";
   };
 
@@ -129,6 +145,13 @@ export default function ChatConfiguration({
         setAvailableModels(freshModels);
         saveAvailableModelsForProvider(freshModels, selectedProvider);
         setModelsFromCache(false);
+
+        // Automatically select the first model if current selected model is not in the list
+        if (!freshModels.includes(selectedModel)) {
+          const firstModel = freshModels[0];
+          onModelChange(firstModel);
+          saveSelectedModelForProvider(firstModel, selectedProvider);
+        }
       }
     } catch (fetchError) {
       console.error("Failed to refresh models:", fetchError);
@@ -140,12 +163,14 @@ export default function ChatConfiguration({
   // Check for existing API keys on component mount
   const checkApiKeys = async () => {
     try {
-      const [openaiExists, googleExists] = await Promise.all([
+      const [openaiExists, googleExists, ollamaExists] = await Promise.all([
         DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
         DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
+        DatabaseService.hasApiKey(OLLAMA_API_KEY_INDEX),
       ]);
       setHasOpenAIKey(openaiExists);
       setHasGoogleKey(googleExists);
+      setHasOllamaKey(ollamaExists);
     } catch (error) {
       console.error("Error checking API keys:", error);
     }
@@ -208,6 +233,31 @@ export default function ChatConfiguration({
     }
   };
 
+  // Save Ollama URL
+  const handleSaveOllamaUrl = async () => {
+    if (!ollamaUrl.trim()) return;
+
+    if (!validateOllamaBaseUrl(ollamaUrl.trim())) {
+      alert(
+        "Invalid Ollama URL format. Please enter a valid URL (e.g., http://localhost:11434)."
+      );
+      return;
+    }
+
+    setIsSavingKey(true);
+    try {
+      await DatabaseService.saveApiKey(OLLAMA_API_KEY_INDEX, ollamaUrl.trim());
+      setHasOllamaKey(true);
+      // Refresh models after setting URL
+      await refreshModels();
+    } catch (error) {
+      console.error("Error saving Ollama URL:", error);
+      alert("Error saving Ollama URL. Please try again.");
+    } finally {
+      setIsSavingKey(false);
+    }
+  };
+
   // Remove API key
   const handleRemoveKey = async (provider: AIProvider) => {
     setIsSavingKey(true);
@@ -220,9 +270,11 @@ export default function ChatConfiguration({
       if (provider === OPEN_AI_API_KEY_INDEX) {
         await refreshOpenAIApiKey();
         setHasOpenAIKey(false);
-      } else {
+      } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
         await refreshGoogleApiKey();
         setHasGoogleKey(false);
+      } else if (provider === OLLAMA_API_KEY_INDEX) {
+        setHasOllamaKey(false);
       }
     } catch (error) {
       console.error(`Error removing ${provider} key:`, error);
@@ -329,6 +381,13 @@ export default function ChatConfiguration({
           setAvailableModels(freshModels);
           saveAvailableModelsForProvider(freshModels, selectedProvider);
           setModelsFromCache(false);
+
+          // Automatically select the first model if current selected model is not in the list
+          if (!freshModels.includes(selectedModel)) {
+            const firstModel = freshModels[0];
+            onModelChange(firstModel);
+            saveSelectedModelForProvider(firstModel, selectedProvider);
+          }
         }
       } catch (fetchError) {
         console.log(
@@ -340,7 +399,7 @@ export default function ChatConfiguration({
     };
 
     fetchModels();
-  }, [selectedProvider, getAvailableModels]);
+  }, [selectedProvider, getAvailableModels, selectedModel, onModelChange]);
 
   // Check for existing API keys on component mount
   useEffect(() => {
@@ -595,6 +654,65 @@ export default function ChatConfiguration({
             </a>
           </p>
         </div>
+
+        {/* Ollama Configuration */}
+        <div className="mb-2">
+          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            Ollama Server URL
+          </span>
+          {hasOllamaKey ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                ✓ Configured
+              </span>
+              <button
+                onClick={() => handleRemoveKey(OLLAMA_API_KEY_INDEX)}
+                disabled={isSavingKey}
+                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                id="ollama-url-input"
+                type="url"
+                value={ollamaUrl}
+                onChange={(e) => setOllamaUrl(e.target.value)}
+                placeholder="http://localhost:11434"
+                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
+                  ollamaUrl && !validateOllamaBaseUrl(ollamaUrl)
+                    ? "border-red-300 dark:border-red-500"
+                    : "border-gray-300"
+                }`}
+                disabled={isSavingKey}
+              />
+              <button
+                onClick={handleSaveOllamaUrl}
+                disabled={
+                  isSavingKey ||
+                  !ollamaUrl.trim() ||
+                  !validateOllamaBaseUrl(ollamaUrl)
+                }
+                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
+              >
+                {isSavingKey ? "..." : "Save"}
+              </button>
+            </div>
+          )}
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Local Ollama server URL. Install Ollama from{" "}
+            <a
+              href="https://ollama.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              ollama.ai
+            </a>
+          </p>
+        </div>
       </div>
 
       {/* AI Provider Selection */}
@@ -618,6 +736,7 @@ export default function ChatConfiguration({
           <option value={GOOGLE_AI_API_KEY_INDEX}>
             Google AI (Gemini Models)
           </option>
+          <option value={OLLAMA_API_KEY_INDEX}>Ollama (Local Models)</option>
         </select>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Current: {getProviderDisplayName()}

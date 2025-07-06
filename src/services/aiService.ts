@@ -5,9 +5,14 @@ import * as OpenAIService from "./openaiService";
 
 // Google AI Service
 import * as GoogleAIService from "./googleAIService";
+
+// Ollama Service
+import * as OllamaService from "./ollamaService";
+
 import {
   GOOGLE_AI_API_KEY_INDEX,
   OPEN_AI_API_KEY_INDEX,
+  OLLAMA_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -47,6 +52,8 @@ export class UnifiedAIService {
         return OpenAIService.getChatCompletion(chat, model, maxTokens);
       case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.getChatCompletion(chat, model, maxTokens);
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.getChatCompletion(chat, model, maxTokens);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -77,6 +84,13 @@ export class UnifiedAIService {
           maxTokens,
           onChunk
         );
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.getStreamingChatCompletion(
+          chat,
+          model,
+          maxTokens,
+          onChunk
+        );
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -91,6 +105,8 @@ export class UnifiedAIService {
         return OpenAIService.validateApiKey();
       case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.validateApiKey();
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.validateApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -105,6 +121,8 @@ export class UnifiedAIService {
         return OpenAIService.hasApiKey();
       case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.hasApiKey();
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.hasApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -119,6 +137,8 @@ export class UnifiedAIService {
         return OpenAIService.getAvailableModels();
       case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.getAvailableModels();
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.getAvailableModels();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -136,6 +156,8 @@ export class UnifiedAIService {
         return OpenAIService.createMessageFromResponse(response, sender);
       case GOOGLE_AI_API_KEY_INDEX:
         return GoogleAIService.createMessageFromResponse(response, sender);
+      case OLLAMA_API_KEY_INDEX:
+        return OllamaService.createMessageFromResponse(response, sender);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -164,6 +186,31 @@ export class UnifiedAIService {
         return "gpt-3.5-turbo";
       case GOOGLE_AI_API_KEY_INDEX:
         return "gemini-1.5-flash";
+      case OLLAMA_API_KEY_INDEX:
+        // For Ollama, we should try to get the first available model
+        // This is a fallback if no models are available yet
+        return "llama3.2";
+      default:
+        throw new Error(`Unsupported AI provider: ${this.provider}`);
+    }
+  }
+
+  /**
+   * Get default model for the current provider, preferring first available model for Ollama
+   */
+  async getDefaultModelAsync(): Promise<string> {
+    switch (this.provider) {
+      case OPEN_AI_API_KEY_INDEX:
+        return "gpt-3.5-turbo";
+      case GOOGLE_AI_API_KEY_INDEX:
+        return "gemini-2.5-flash";
+      case OLLAMA_API_KEY_INDEX:
+        try {
+          const availableModels = await this.getAvailableModels();
+          return availableModels.length > 0 ? availableModels[0] : "llama3.2";
+        } catch {
+          return "llama3.2";
+        }
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -196,6 +243,13 @@ export class UnifiedAIService {
           provider: GOOGLE_AI_API_KEY_INDEX,
         };
       }
+      case OLLAMA_API_KEY_INDEX: {
+        const info = OllamaService.getModelInfo(modelId);
+        return {
+          ...info,
+          provider: OLLAMA_API_KEY_INDEX,
+        };
+      }
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -210,6 +264,8 @@ export class UnifiedAIService {
         return "OpenAI (GPT)";
       case GOOGLE_AI_API_KEY_INDEX:
         return "Google AI (Gemini)";
+      case OLLAMA_API_KEY_INDEX:
+        return "Ollama (Local)";
       default:
         return this.provider;
     }
@@ -219,9 +275,10 @@ export class UnifiedAIService {
 // Create default instances for easy importing
 export const openAIService = new UnifiedAIService(OPEN_AI_API_KEY_INDEX);
 export const googleAIService = new UnifiedAIService(GOOGLE_AI_API_KEY_INDEX);
+export const ollamaService = new UnifiedAIService(OLLAMA_API_KEY_INDEX);
 
 // Export individual services for direct access if needed
-export { OpenAIService, GoogleAIService };
+export { OpenAIService, GoogleAIService, OllamaService };
 
 // Export a factory function to create configured services
 export const createAIService = (provider: AIProvider): UnifiedAIService => {

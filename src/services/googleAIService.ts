@@ -2,19 +2,24 @@ import { GoogleGenAI } from "@google/genai";
 import type { Chat, Message, SenderType } from "@/types";
 import { httpClient } from "@/utils/httpClient";
 import DatabaseService from "./databaseService";
+import { GOOGLE_AI_API_KEY_INDEX } from "@/constants";
 
 // Google AI API configuration
 let GOOGLE_AI_API_KEY: string | null = null;
 
 // Function to get API key from database
 const getApiKey = async (): Promise<string | null> => {
-  GOOGLE_AI_API_KEY ??= await DatabaseService.getActiveApiKey("google-ai");
+  GOOGLE_AI_API_KEY ??= await DatabaseService.getActiveApiKey(
+    GOOGLE_AI_API_KEY_INDEX
+  );
   return GOOGLE_AI_API_KEY;
 };
 
 // Function to refresh API key from database
 export const refreshApiKey = async (): Promise<void> => {
-  GOOGLE_AI_API_KEY = await DatabaseService.getActiveApiKey("google-ai");
+  GOOGLE_AI_API_KEY = await DatabaseService.getActiveApiKey(
+    GOOGLE_AI_API_KEY_INDEX
+  );
   genAI = null; // Reset client so it gets reinitialized with new key
 };
 

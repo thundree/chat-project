@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import DatabaseService from "@/services/databaseService";
 import { refreshApiKey as refreshGoogleApiKey } from "@/services/googleAIService";
 import { refreshApiKey as refreshOpenAIApiKey } from "@/services/openaiService";
+import { OPEN_AI_API_KEY_INDEX, GOOGLE_AI_API_KEY_INDEX } from "@/constants";
 
 export const useApiKeys = () => {
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
@@ -12,8 +13,8 @@ export const useApiKeys = () => {
     try {
       setLoading(true);
       const [openai, google] = await Promise.all([
-        DatabaseService.hasApiKey("openai"),
-        DatabaseService.hasApiKey("google-ai"),
+        DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
+        DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
       ]);
       setHasOpenAIKey(openai);
       setHasGoogleKey(google);
@@ -26,7 +27,7 @@ export const useApiKeys = () => {
 
   const saveOpenAIKey = async (key: string): Promise<void> => {
     try {
-      await DatabaseService.saveApiKey("openai", key);
+      await DatabaseService.saveApiKey(OPEN_AI_API_KEY_INDEX, key);
       await refreshOpenAIApiKey();
       setHasOpenAIKey(true);
     } catch (error) {
@@ -37,7 +38,7 @@ export const useApiKeys = () => {
 
   const saveGoogleKey = async (key: string): Promise<void> => {
     try {
-      await DatabaseService.saveApiKey("google-ai", key);
+      await DatabaseService.saveApiKey(GOOGLE_AI_API_KEY_INDEX, key);
       await refreshGoogleApiKey();
       setHasGoogleKey(true);
     } catch (error) {
@@ -48,7 +49,7 @@ export const useApiKeys = () => {
 
   const removeOpenAIKey = async (): Promise<void> => {
     try {
-      const keys = await DatabaseService.getAllApiKeys("openai");
+      const keys = await DatabaseService.getAllApiKeys(OPEN_AI_API_KEY_INDEX);
       for (const key of keys) {
         await DatabaseService.deleteApiKey(key.id);
       }
@@ -62,7 +63,7 @@ export const useApiKeys = () => {
 
   const removeGoogleKey = async (): Promise<void> => {
     try {
-      const keys = await DatabaseService.getAllApiKeys("google-ai");
+      const keys = await DatabaseService.getAllApiKeys(GOOGLE_AI_API_KEY_INDEX);
       for (const key of keys) {
         await DatabaseService.deleteApiKey(key.id);
       }

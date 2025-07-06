@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import type { Chat, Message, SenderType } from "@/types";
 import { httpClient } from "@/utils/httpClient";
 import DatabaseService from "./databaseService";
+import { OPEN_AI_API_KEY_INDEX } from "@/constants";
 
 // OpenAI API configuration
 let OPENAI_API_KEY: string | null = null;
@@ -9,13 +10,15 @@ let openai: OpenAI | null = null;
 
 // Function to get API key from database
 const getApiKey = async (): Promise<string | null> => {
-  OPENAI_API_KEY ??= await DatabaseService.getActiveApiKey("openai");
+  OPENAI_API_KEY ??= await DatabaseService.getActiveApiKey(
+    OPEN_AI_API_KEY_INDEX
+  );
   return OPENAI_API_KEY;
 };
 
 // Function to refresh API key from database
 export const refreshApiKey = async (): Promise<void> => {
-  OPENAI_API_KEY = await DatabaseService.getActiveApiKey("openai");
+  OPENAI_API_KEY = await DatabaseService.getActiveApiKey(OPEN_AI_API_KEY_INDEX);
   openai = null; // Reset client so it gets reinitialized with new key
 };
 

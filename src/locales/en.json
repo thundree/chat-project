@@ -125,6 +125,19 @@
     "deleteChat": "Delete chat",
     "deleteConfirmation": "Are you sure you want to delete chat"
   },
+  "mainContent": {
+    "noChatSelected": "No chat selected",
+    "apiKeyRequired": "API Key Required",
+    "noApiKeyFound": "No API key found for",
+    "configureApiKey": "Please configure your API key in the Configuration tab to use this service.",
+    "loading": "Loading...",
+    "selectCharacter": "Select a Character to Start a New Chat",
+    "loadingCharacters": "Loading character selection...",
+    "connectionValid": "connection is valid!",
+    "connectionFailed": "connection failed! Please check your API key and try again.",
+    "noApiKeyFoundForTest": "No API key found! Please configure your API key in the Configuration tab before testing the connection.",
+    "errorCheckingApiKey": "Error checking API key configuration."
+  },
   "errors": {
     "generic": "An error occurred. Please try again.",
     "networkError": "Network error. Please check your connection.",

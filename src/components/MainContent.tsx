@@ -14,6 +14,7 @@ import type { TabsRef } from "flowbite-react";
 import { detectChatId } from "@/functions";
 import { useAI } from "@/hooks/useAI";
 import { useChat } from "@/contexts/useChat";
+import { useTranslation } from "@/hooks/useTranslation";
 
 import DatabaseService from "@/services/databaseService";
 import {
@@ -24,6 +25,8 @@ import { getProviderDisplayName } from "@/utils/apiKeyUtils";
 import { type AIProvider } from "@/constants";
 
 export default function MainContent() {
+  const { t } = useTranslation();
+
   // Load saved provider and model preferences
   const [selectedProvider, setSelectedProvider] = useState<AIProvider>(() =>
     loadSelectedProvider()
@@ -118,7 +121,7 @@ export default function MainContent() {
 
   const handleGenerateResponse = async () => {
     if (!currentChat) {
-      showAlert("No chat selected");
+      showAlert(t("mainContent.noChatSelected"));
       return;
     }
 
@@ -127,14 +130,12 @@ export default function MainContent() {
     if (!hasKey) {
       showAlert(
         <div>
-          <p className="font-semibold">API Key Required</p>
+          <p className="font-semibold">{t("mainContent.apiKeyRequired")}</p>
           <p>
-            No API key found for {getProviderDisplayName(selectedProvider)}.
+            {t("mainContent.noApiKeyFound")}{" "}
+            {getProviderDisplayName(selectedProvider)}.
           </p>
-          <p>
-            Please configure your API key in the Configuration tab to use this
-            service.
-          </p>
+          <p>{t("mainContent.configureApiKey")}</p>
         </div>
       );
       return;
@@ -159,13 +160,15 @@ export default function MainContent() {
 
       if (!hasKey) {
         showAlert(
-          `No ${providerName} API key found! Please configure your API key in the Configuration tab before testing the connection.`
+          `${t("mainContent.noApiKeyFound")} ${providerName}! ${t(
+            "mainContent.configureApiKey"
+          )}`
         );
         return;
       }
     } catch (error) {
       console.error("Error checking API key:", error);
-      showAlert(`Error checking ${providerName} API key configuration.`);
+      showAlert(`${t("mainContent.errorCheckingApiKey")} ${providerName}.`);
       return;
     }
 
@@ -173,8 +176,8 @@ export default function MainContent() {
     const isValid = await validateConnection();
     showAlert(
       isValid
-        ? `${providerName} connection is valid!`
-        : `${providerName} connection failed! Please check your API key and try again.`
+        ? `${providerName} ${t("mainContent.connectionValid")}`
+        : `${providerName} ${t("mainContent.connectionFailed")}`
     );
   };
 
@@ -191,15 +194,21 @@ export default function MainContent() {
   return (
     <div className="flex-1 w-full flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-900">
       {/* Alert Modal Wrapper */}
-      <Suspense fallback={<div>Loading...</div>}>
-        <AlertModal show={alertOpen} onClose={closeAlert} okText="OK">
+      <Suspense fallback={<div>{t("mainContent.loading")}</div>}>
+        <AlertModal
+          show={alertOpen}
+          onClose={closeAlert}
+          okText={t("common.confirm")}
+        >
           {alertContent}
         </AlertModal>
       </Suspense>
 
       {!loadedPage ? (
         <div className="flex m-auto items-center justify-center h-full">
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            {t("mainContent.loading")}
+          </p>
         </div>
       ) : (
         <div
@@ -229,13 +238,13 @@ export default function MainContent() {
           ) : (
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-6">
-                Select a Character to Start a New Chat
+                {t("mainContent.selectCharacter")}
               </h2>
 
               <Suspense
                 fallback={
                   <div className="text-gray-600 dark:text-gray-400">
-                    Loading character selection...
+                    {t("mainContent.loadingCharacters")}
                   </div>
                 }
               >

@@ -125,6 +125,19 @@
     "deleteChat": "Excluir chat",
     "deleteConfirmation": "Tem certeza que deseja excluir o chat"
   },
+  "mainContent": {
+    "noChatSelected": "Nenhum chat selecionado",
+    "apiKeyRequired": "Chave API Necessária",
+    "noApiKeyFound": "Nenhuma chave API encontrada para",
+    "configureApiKey": "Por favor, configure sua chave API na aba de Configuração para usar este serviço.",
+    "loading": "Carregando...",
+    "selectCharacter": "Selecione um Personagem para Iniciar um Novo Chat",
+    "loadingCharacters": "Carregando seleção de personagens...",
+    "connectionValid": "conexão é válida!",
+    "connectionFailed": "conexão falhou! Verifique sua chave API e tente novamente.",
+    "noApiKeyFoundForTest": "Nenhuma chave API encontrada! Configure sua chave API na aba de Configuração antes de testar a conexão.",
+    "errorCheckingApiKey": "Erro ao verificar configuração da chave API."
+  },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",
     "networkError": "Erro de rede. Verifique sua conexão.",

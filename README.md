@@ -5,8 +5,8 @@ A modern, feature-rich chat application built with React, TypeScript, and Vite t
 ## 🚀 Features
 
 ### Multi-Provider AI Support
-- **OpenAI** - GPT models (gpt-3.5-turbo, gpt-4, gpt-4o)
-- **Google AI** - Gemini models (gemini-1.5-flash, gemini-1.5-pro)
+- **OpenAI** - GPT models
+- **Google AI** - Gemini models
 - **OpenRouter** - Access to 200+ models from multiple providers
 - **Ollama** - Local AI models for privacy-focused inference
 

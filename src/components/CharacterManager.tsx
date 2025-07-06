@@ -18,7 +18,7 @@ export default function CharacterManager({
   const [formData, setFormData] = useState({
     characterName: currentChat.characterName ?? "",
     characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
-    characterInitialMessage: currentChat.characterInitialMessage?.[0] ?? "",
+    characterInitialMessage: currentChat.characterInitialMessage?.join("\n\n") ?? "",
     characterImage: currentChat.characterImage ?? "",
     backgroundImage: currentChat.backgroundImage ?? "",
   });
@@ -29,7 +29,7 @@ export default function CharacterManager({
     const newFormData = {
       characterName: currentChat.characterName ?? "",
       characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
-      characterInitialMessage: currentChat.characterInitialMessage?.[0] ?? "",
+      characterInitialMessage: currentChat.characterInitialMessage?.join("\n\n") ?? "",
       characterImage: currentChat.characterImage ?? "",
       backgroundImage: currentChat.backgroundImage ?? "",
     };
@@ -48,7 +48,7 @@ export default function CharacterManager({
       characterName: formData.characterName,
       characterInitialPrompt: formData.characterInitialPrompt,
       characterInitialMessage: formData.characterInitialMessage
-        ? [formData.characterInitialMessage]
+        ? formData.characterInitialMessage.split("\n\n").map(msg => msg.trim()).filter(Boolean)
         : undefined,
       characterImage: formData.characterImage,
       backgroundImage: formData.backgroundImage,
@@ -62,7 +62,7 @@ export default function CharacterManager({
     setFormData({
       characterName: currentChat.characterName ?? "",
       characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
-      characterInitialMessage: currentChat.characterInitialMessage?.[0] ?? "",
+      characterInitialMessage: currentChat.characterInitialMessage?.join("\n\n") ?? "",
       characterImage: currentChat.characterImage ?? "",
       backgroundImage: currentChat.backgroundImage ?? "",
     });

@@ -65,7 +65,7 @@ A modern, feature-rich chat application built with React, TypeScript, and Vite t
 
 4. **Open in browser**
    ```
-   http://localhost:5174
+   http://localhost:5173/chat-project
    ```
 
 ## 🔧 Configuration

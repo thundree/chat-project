@@ -752,7 +752,7 @@ export default function ChatConfiguration({
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
-                Remove
+                Edit
               </button>
             </div>
           ) : (

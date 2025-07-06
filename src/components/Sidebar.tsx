@@ -7,11 +7,13 @@ import {
 
 import CustomButton from "@/components/CustomButton";
 import { PiChatsBold } from "react-icons/pi";
+import { IoSettings } from "react-icons/io5";
 
 import { FaTrashCan } from "react-icons/fa6";
 import { useChat } from "@/contexts/useChat";
 import { Suspense, useState, type ReactNode } from "react";
 import ConfirmationModal from "./ConfirmationModal";
+import GlobalSettingsModal from "./GlobalSettingsModal";
 
 type SidebarProps = {
   open: boolean;
@@ -28,6 +30,9 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
   const [confirmationAction, setConfirmationAction] = useState<
     (() => void) | null
   >(null);
+
+  // Global settings modal state
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const showConfirmation = (
     content: React.ReactNode,
@@ -64,14 +69,22 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
         </ConfirmationModal>
       </Suspense>
 
+      {/* Global Settings Modal */}
+      <Suspense>
+        <GlobalSettingsModal
+          show={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+        />
+      </Suspense>
+
       <MainSidebar
         className={`fixed z-40 h-screen w-64 transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
         ${open ? "translate-x-0" : "-translate-x-full"}
         `}
         aria-label="Chat list"
       >
-        <SidebarItems>
-          <SidebarItemGroup>
+        <SidebarItems className="h-full flex flex-col">
+          <SidebarItemGroup className="flex-1">
             <a className="flex mb-4" href="#new-chat">
               <CustomButton
                 className="flex gap-3 items-center justify-start"
@@ -136,6 +149,20 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                 <span className="flex text-gray-400">No chats available</span>
               </SidebarItem>
             )}
+          </SidebarItemGroup>
+
+          {/* Settings section at the bottom */}
+          <SidebarItemGroup className="mt-auto">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <CustomButton
+                className="flex gap-3 items-center justify-start w-full"
+                variant="default"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <IoSettings />
+                <span>Settings</span>
+              </CustomButton>
+            </div>
           </SidebarItemGroup>
         </SidebarItems>
       </MainSidebar>

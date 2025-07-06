@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SiNginxproxymanager } from "react-icons/si";
 import { IoSend } from "react-icons/io5";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { Chat } from "@/types";
 
 interface MessageInputProps {
@@ -18,6 +19,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   isLoading = false,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const [inputText, setInputText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -56,7 +58,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
     // Enter alone just creates new line (default behavior)
   };
 
-  const userName = selectedChat?.userName ?? "User";
+  const userName = selectedChat?.userName ?? t("messageInput.defaultUser");
 
   return (
     <div className="p-2 flex gap-2 bg-white/90 dark:bg-black/80 rounded-md">
@@ -76,7 +78,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
             id="message-input"
             name="message-input"
             className="flex-1 min-h-[72px] max-h-[150px] resize-none rounded bg-gray-100/80 dark:bg-gray-800/40 text-gray-900 dark:text-gray-200 p-2 pt-0 mt-1 border border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:outline-none"
-            placeholder="Your message (Enter for new lines; Ctrl+Enter to send and generate reply)"
+            placeholder={t("messageInput.placeholder")}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -89,7 +91,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
             onClick={handleSubmit}
             disabled={!inputText.trim() || isLoading || disabled}
             className="flex-shrink-0 p-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
-            title="Send message and generate reply (Ctrl+Enter)"
+            title={t("messageInput.sendButtonTitle")}
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

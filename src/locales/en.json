@@ -153,7 +153,14 @@
     "noMessages": "No messages yet",
     "streaming": "Streaming... (Character)",
     "generating": "Generating...",
-    "newResponse": "New Response"
+    "newResponse": "New Response",
+    "defaultUser": "User",
+    "defaultCharacter": "Character"
+  },
+  "messageInput": {
+    "defaultUser": "User",
+    "placeholder": "Your message (Enter for new lines; Ctrl+Enter to send and generate reply)",
+    "sendButtonTitle": "Send message and generate reply (Ctrl+Enter)"
   },
   "errors": {
     "generic": "An error occurred. Please try again.",

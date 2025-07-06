@@ -153,7 +153,14 @@
     "noMessages": "Ainda não há mensagens",
     "streaming": "Transmitindo... (Personagem)",
     "generating": "Gerando...",
-    "newResponse": "Nova Resposta"
+    "newResponse": "Nova Resposta",
+    "defaultUser": "Usuário",
+    "defaultCharacter": "Personagem"
+  },
+  "messageInput": {
+    "defaultUser": "Usuário",
+    "placeholder": "Sua mensagem (Enter para nova linha; Ctrl+Enter para enviar e gerar resposta)",
+    "sendButtonTitle": "Enviar mensagem e gerar resposta (Ctrl+Enter)"
   },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",

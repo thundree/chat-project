@@ -58,9 +58,9 @@ const MessageList: React.FC<MessageListProps> = ({
         allMessages.map((message) => {
           let msgSender;
           if (message.sender === "user") {
-            msgSender = selectedChat?.userName ?? "User";
+            msgSender = selectedChat?.userName ?? t("messageList.defaultUser");
           } else {
-            msgSender = selectedChat?.characterName ?? "Character";
+            msgSender = selectedChat?.characterName ?? t("messageList.defaultCharacter");
           }
 
           return (

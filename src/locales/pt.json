@@ -138,6 +138,9 @@
     "noApiKeyFoundForTest": "Nenhuma chave API encontrada! Configure sua chave API na aba de Configuração antes de testar a conexão.",
     "errorCheckingApiKey": "Erro ao verificar configuração da chave API."
   },
+  "characters": {
+    "select": "Selecionar"
+  },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",
     "networkError": "Erro de rede. Verifique sua conexão.",

@@ -1,6 +1,7 @@
 import { originalCharacters } from "@/data/originalCharacters";
 import type { Character } from "@/types";
 import CustomButton from "@/components/CustomButton";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface CharacterSelectProps {
   onSelect: (character: Character) => void;
@@ -9,6 +10,8 @@ interface CharacterSelectProps {
 export default function CharacterSelect({
   onSelect,
 }: Readonly<CharacterSelectProps>) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-items-center">
       {originalCharacters.map((char) => (
@@ -33,7 +36,9 @@ export default function CharacterSelect({
             {char.description}
           </p>
 
-          <CustomButton onClick={() => onSelect(char)}>Select</CustomButton>
+          <CustomButton onClick={() => onSelect(char)}>
+            {t("characters.select")}
+          </CustomButton>
         </div>
       ))}
     </div>

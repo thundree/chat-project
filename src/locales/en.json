@@ -138,6 +138,9 @@
     "noApiKeyFoundForTest": "No API key found! Please configure your API key in the Configuration tab before testing the connection.",
     "errorCheckingApiKey": "Error checking API key configuration."
   },
+  "characters": {
+    "select": "Select"
+  },
   "errors": {
     "generic": "An error occurred. Please try again.",
     "networkError": "Network error. Please check your connection.",

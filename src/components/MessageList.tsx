@@ -27,6 +27,7 @@ const MessageList: React.FC<MessageListProps> = ({
   const { currentChatId, updateMessage, deleteMessage } = useChat();
 
   const handleGenerateResponse = () => {
+    if (isLoading) return;
     if (selectedChat) {
       onGenerateResponse();
     }

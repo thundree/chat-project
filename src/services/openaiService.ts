@@ -314,6 +314,7 @@ export const getAvailableModels = async (): Promise<string[]> => {
           !model.id.includes("image") &&
           !model.id.includes("vision") &&
           !model.id.includes("dall-e") &&
+          !model.id.includes("dalle") &&
           !model.id.includes("transcribe")
       )
       .map((model) => model.id)

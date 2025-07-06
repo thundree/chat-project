@@ -9,10 +9,14 @@ import * as GoogleAIService from "./googleAIService";
 // Ollama Service
 import * as OllamaService from "./ollamaService";
 
+// OpenRouter Service
+import * as OpenRouterService from "./openrouterService";
+
 import {
   GOOGLE_AI_API_KEY_INDEX,
   OPEN_AI_API_KEY_INDEX,
   OLLAMA_API_KEY_INDEX,
+  OPENROUTER_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -54,6 +58,8 @@ export class UnifiedAIService {
         return GoogleAIService.getChatCompletion(chat, model, maxTokens);
       case OLLAMA_API_KEY_INDEX:
         return OllamaService.getChatCompletion(chat, model, maxTokens);
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.getChatCompletion(chat, model, maxTokens);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -91,6 +97,13 @@ export class UnifiedAIService {
           maxTokens,
           onChunk
         );
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.getStreamingChatCompletion(
+          chat,
+          model,
+          maxTokens,
+          onChunk
+        );
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -107,6 +120,8 @@ export class UnifiedAIService {
         return GoogleAIService.validateApiKey();
       case OLLAMA_API_KEY_INDEX:
         return OllamaService.validateApiKey();
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.validateApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -123,6 +138,8 @@ export class UnifiedAIService {
         return GoogleAIService.hasApiKey();
       case OLLAMA_API_KEY_INDEX:
         return OllamaService.hasApiKey();
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.hasApiKey();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -139,6 +156,8 @@ export class UnifiedAIService {
         return GoogleAIService.getAvailableModels();
       case OLLAMA_API_KEY_INDEX:
         return OllamaService.getAvailableModels();
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.getAvailableModels();
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -158,6 +177,8 @@ export class UnifiedAIService {
         return GoogleAIService.createMessageFromResponse(response, sender);
       case OLLAMA_API_KEY_INDEX:
         return OllamaService.createMessageFromResponse(response, sender);
+      case OPENROUTER_API_KEY_INDEX:
+        return OpenRouterService.createMessageFromResponse(response, sender);
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -189,7 +210,9 @@ export class UnifiedAIService {
       case OLLAMA_API_KEY_INDEX:
         // For Ollama, we should try to get the first available model
         // This is a fallback if no models are available yet
-        return "llama3.2";
+        return "";
+      case OPENROUTER_API_KEY_INDEX:
+        return "";
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -205,12 +228,14 @@ export class UnifiedAIService {
       case GOOGLE_AI_API_KEY_INDEX:
         return "";
       case OLLAMA_API_KEY_INDEX:
+      case OPENROUTER_API_KEY_INDEX:
         try {
           const availableModels = await this.getAvailableModels();
-          return availableModels.length > 0 ? availableModels[0] : "llama3.2";
+          return availableModels.length > 0 ? availableModels[0] : "";
         } catch {
-          return "llama3.2";
+          return "";
         }
+
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -250,6 +275,13 @@ export class UnifiedAIService {
           provider: OLLAMA_API_KEY_INDEX,
         };
       }
+      case OPENROUTER_API_KEY_INDEX: {
+        const info = OpenRouterService.getModelInfo(modelId);
+        return {
+          ...info,
+          provider: OPENROUTER_API_KEY_INDEX,
+        };
+      }
       default:
         throw new Error(`Unsupported AI provider: ${this.provider}`);
     }
@@ -266,6 +298,8 @@ export class UnifiedAIService {
         return "Google AI (Gemini)";
       case OLLAMA_API_KEY_INDEX:
         return "Ollama (Local)";
+      case OPENROUTER_API_KEY_INDEX:
+        return "OpenRouter (Multi-Provider)";
       default:
         return this.provider;
     }
@@ -276,9 +310,10 @@ export class UnifiedAIService {
 export const openAIService = new UnifiedAIService(OPEN_AI_API_KEY_INDEX);
 export const googleAIService = new UnifiedAIService(GOOGLE_AI_API_KEY_INDEX);
 export const ollamaService = new UnifiedAIService(OLLAMA_API_KEY_INDEX);
+export const openRouterService = new UnifiedAIService(OPENROUTER_API_KEY_INDEX);
 
 // Export individual services for direct access if needed
-export { OpenAIService, GoogleAIService, OllamaService };
+export { OpenAIService, GoogleAIService, OllamaService, OpenRouterService };
 
 // Export a factory function to create configured services
 export const createAIService = (provider: AIProvider): UnifiedAIService => {

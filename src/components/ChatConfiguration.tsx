@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { Chat } from "@/types";
 import { useAI } from "@/hooks/useAI";
 
@@ -12,10 +12,12 @@ import {
 import DatabaseService from "@/services/databaseService";
 import { refreshApiKey as refreshGoogleApiKey } from "@/services/googleAIService";
 import { refreshApiKey as refreshOpenAIApiKey } from "@/services/openaiService";
+import { refreshApiKey as refreshOpenRouterApiKey } from "@/services/openrouterService";
 import {
   validateOpenAIKey,
   validateGoogleAIKey,
   validateOllamaBaseUrl,
+  validateOpenRouterKey,
 } from "@/utils/apiKeyUtils";
 
 import { TbRefreshAlert } from "react-icons/tb";
@@ -25,6 +27,7 @@ import {
   GOOGLE_AI_API_KEY_INDEX,
   OPEN_AI_API_KEY_INDEX,
   OLLAMA_API_KEY_INDEX,
+  OPENROUTER_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -65,9 +68,11 @@ export default function ChatConfiguration({
   const [openaiKey, setOpenaiKey] = useState("");
   const [googleKey, setGoogleKey] = useState("");
   const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
+  const [openrouterKey, setOpenrouterKey] = useState("");
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
   const [hasGoogleKey, setHasGoogleKey] = useState(false);
   const [hasOllamaKey, setHasOllamaKey] = useState(false);
+  const [hasOpenRouterKey, setHasOpenRouterKey] = useState(false);
   const [isSavingKey, setIsSavingKey] = useState(false);
   const [userName, setUserName] = useState(currentChat.userName ?? "User");
   const [isSavingUserName, setIsSavingUserName] = useState(false);
@@ -83,7 +88,6 @@ export default function ChatConfiguration({
     getAvailableModels,
     switchProvider,
     getProviderDisplayName,
-    getDefaultModel,
     hasApiKey,
   } = useAI(selectedProvider);
 
@@ -118,42 +122,111 @@ export default function ChatConfiguration({
     saveSelectedModelForProvider(model, selectedProvider);
   };
 
+  // Fetch models function
+  const fetchModels = useCallback(async () => {
+    try {
+      // For OpenRouter, we can fetch models without API key
+      // For other providers, we need API key
+      if (selectedProvider !== OPENROUTER_API_KEY_INDEX) {
+        const hasKey = await hasApiKey();
+        if (!hasKey) {
+          setAvailableModels([]);
+          setModelsFromCache(false);
+          return;
+        }
+      }
+
+      // Check cached models first
+      const { models: cachedModels, timestamp } =
+        loadAvailableModelsForProvider(selectedProvider, undefined, true);
+      const modelsAreStale = areModelsStale(timestamp, 24);
+
+      if (!modelsAreStale && cachedModels.length > 0) {
+        setAvailableModels(cachedModels);
+        setModelsFromCache(true);
+        // Ensure we have a valid selected model
+        if (!selectedModel || !cachedModels.includes(selectedModel)) {
+          const firstModel = cachedModels[0];
+          onModelChange(firstModel);
+          saveSelectedModelForProvider(firstModel, selectedProvider);
+        }
+        return;
+      }
+
+      // Fetch fresh models
+      const freshModels = await getAvailableModels();
+
+      if (freshModels.length > 0) {
+        setAvailableModels(freshModels);
+        saveAvailableModelsForProvider(freshModels, selectedProvider);
+        setModelsFromCache(false);
+        // Ensure we have a valid selected model
+        if (!selectedModel || !freshModels.includes(selectedModel)) {
+          const firstModel = freshModels[0];
+          onModelChange(firstModel);
+          saveSelectedModelForProvider(firstModel, selectedProvider);
+        }
+      }
+    } catch {
+      // For OpenRouter, try to get cached models even without API key
+      const shouldUseCached =
+        selectedProvider === OPENROUTER_API_KEY_INDEX || (await hasApiKey());
+
+      if (shouldUseCached) {
+        const { models: cachedModels } = loadAvailableModelsForProvider(
+          selectedProvider,
+          undefined,
+          true
+        );
+        if (cachedModels.length > 0) {
+          setAvailableModels(cachedModels);
+          setModelsFromCache(true);
+          // Ensure we have a valid selected model
+          if (!selectedModel || !cachedModels.includes(selectedModel)) {
+            const firstModel = cachedModels[0];
+            onModelChange(firstModel);
+            saveSelectedModelForProvider(firstModel, selectedProvider);
+          }
+        } else {
+          setAvailableModels([]);
+        }
+      } else {
+        setAvailableModels([]);
+      }
+    }
+  }, [
+    selectedProvider,
+    hasApiKey,
+    getAvailableModels,
+    selectedModel,
+    onModelChange,
+  ]);
+
   // Handle provider change
   const handleProviderChange = async (provider: AIProvider) => {
     onProviderChange(provider);
     switchProvider(provider);
     saveSelectedProvider(provider);
 
-    // Check if API key exists for the new provider before loading models
-    const hasKey = await hasApiKey();
-    if (hasKey) {
-      // Load models for the new provider
-      const { models } = loadAvailableModelsForProvider(
-        provider,
-        undefined,
-        true
-      );
-      setAvailableModels(models);
+    // Clear current models to show loading state
+    setAvailableModels([]);
+    setModelsFromCache(false);
 
-      // Set default model for the new provider
-      const defaultModel = getDefaultModel();
-      onModelChange(defaultModel);
-      saveSelectedModelForProvider(defaultModel, provider);
-    } else {
-      // Clear models if no API key is configured
-      setAvailableModels([]);
-    }
+    // Note: fetchModels will be called automatically via useEffect when selectedProvider changes
+    // This ensures we use the correct provider context
   };
 
   // Manually refresh models from API
   const refreshModels = async () => {
     try {
-      // First check if API key is configured
-      const hasKey = await hasApiKey();
-      if (!hasKey) {
-        console.log("No API key configured for", selectedProvider);
-        setAvailableModels([]);
-        return;
+      // For OpenRouter, we can fetch models without API key
+      // For other providers, we need API key
+      if (selectedProvider !== OPENROUTER_API_KEY_INDEX) {
+        const hasKey = await hasApiKey();
+        if (!hasKey) {
+          setAvailableModels([]);
+          return;
+        }
       }
 
       setIsFetchingModels(true);
@@ -180,14 +253,17 @@ export default function ChatConfiguration({
   // Check for existing API keys on component mount
   const checkApiKeys = async () => {
     try {
-      const [openaiExists, googleExists, ollamaExists] = await Promise.all([
-        DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
-        DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
-        DatabaseService.hasApiKey(OLLAMA_API_KEY_INDEX),
-      ]);
+      const [openaiExists, googleExists, ollamaExists, openrouterExists] =
+        await Promise.all([
+          DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
+          DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
+          DatabaseService.hasApiKey(OLLAMA_API_KEY_INDEX),
+          DatabaseService.hasApiKey(OPENROUTER_API_KEY_INDEX),
+        ]);
       setHasOpenAIKey(openaiExists);
       setHasGoogleKey(googleExists);
       setHasOllamaKey(ollamaExists);
+      setHasOpenRouterKey(openrouterExists);
     } catch (error) {
       console.error("Error checking API keys:", error);
     }
@@ -275,6 +351,36 @@ export default function ChatConfiguration({
     }
   };
 
+  // Save OpenRouter API key
+  const handleSaveOpenRouterKey = async () => {
+    if (!openrouterKey.trim()) return;
+
+    if (!validateOpenRouterKey(openrouterKey.trim())) {
+      alert(
+        "Invalid OpenRouter API key format. Keys should start with 'sk-or-' and be at least 40 characters long."
+      );
+      return;
+    }
+
+    setIsSavingKey(true);
+    try {
+      await DatabaseService.saveApiKey(
+        OPENROUTER_API_KEY_INDEX,
+        openrouterKey.trim()
+      );
+      await refreshOpenRouterApiKey();
+      setOpenrouterKey("");
+      setHasOpenRouterKey(true);
+      // Refresh models after setting API key
+      await refreshModels();
+    } catch (error) {
+      console.error("Error saving OpenRouter key:", error);
+      alert("Error saving OpenRouter API key. Please try again.");
+    } finally {
+      setIsSavingKey(false);
+    }
+  };
+
   // Remove API key
   const handleRemoveKey = async (provider: AIProvider) => {
     setIsSavingKey(true);
@@ -292,6 +398,9 @@ export default function ChatConfiguration({
         setHasGoogleKey(false);
       } else if (provider === OLLAMA_API_KEY_INDEX) {
         setHasOllamaKey(false);
+      } else if (provider === OPENROUTER_API_KEY_INDEX) {
+        await refreshOpenRouterApiKey();
+        setHasOpenRouterKey(false);
       }
     } catch (error) {
       console.error(`Error removing ${provider} key:`, error);
@@ -379,105 +488,36 @@ export default function ChatConfiguration({
 
   // Fetch available models on provider change
   useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        // First check if API key is configured for the current provider
-        const hasKey = await hasApiKey();
-        if (!hasKey) {
-          // No API key configured, clear models
-          setAvailableModels([]);
-          setModelsFromCache(false);
-          return;
-        }
-
-        // Check if cached models are still fresh
-        const { models: cachedModels, timestamp } =
-          loadAvailableModelsForProvider(selectedProvider, undefined, true);
-        const modelsAreStale = areModelsStale(timestamp, 24); // 24 hours cache
-
-        if (!modelsAreStale && cachedModels.length > 0) {
-          setAvailableModels(cachedModels);
-          setModelsFromCache(true);
-          return;
-        }
-
-        // Fetch fresh models from API
-        const freshModels = await getAvailableModels();
-        if (freshModels.length > 0) {
-          setAvailableModels(freshModels);
-          saveAvailableModelsForProvider(freshModels, selectedProvider);
-          setModelsFromCache(false);
-
-          // Automatically select the first model if current selected model is not in the list
-          if (!freshModels.includes(selectedModel)) {
-            const firstModel = freshModels[0];
-            onModelChange(firstModel);
-            saveSelectedModelForProvider(firstModel, selectedProvider);
-          }
-        }
-      } catch (fetchError) {
-        console.log(
-          "Could not fetch models, using cached/defaults:",
-          fetchError
-        );
-        // If API key exists but fetching fails, try to use cached models
-        const hasKey = await hasApiKey();
-        if (hasKey) {
-          const { models: cachedModels } = loadAvailableModelsForProvider(
-            selectedProvider,
-            undefined,
-            true
-          );
-          setAvailableModels(cachedModels);
-          setModelsFromCache(true);
-        } else {
-          setAvailableModels([]);
-        }
-      }
-    };
-
     fetchModels();
-  }, [
-    selectedProvider,
-    getAvailableModels,
-    selectedModel,
-    onModelChange,
-    hasApiKey,
-  ]);
+  }, [fetchModels]);
 
   // Check for existing API keys on component mount
   useEffect(() => {
     checkApiKeys();
   }, []);
 
-  // Load models when API key states change
+  // Load cached models when API key states change (but let fetchModels handle fresh fetching)
   useEffect(() => {
-    const loadModelsIfKeyExists = async () => {
-      const hasKey = await hasApiKey();
-      if (hasKey && availableModels.length === 0) {
-        // If we have a key but no models loaded, try to load them
-        const { models: cachedModels } = loadAvailableModelsForProvider(
-          selectedProvider,
-          undefined,
-          true
-        );
-        setAvailableModels(cachedModels);
-        setModelsFromCache(true);
-      } else if (!hasKey) {
-        // If no key, clear models
-        setAvailableModels([]);
-        setModelsFromCache(false);
+    const loadCachedModelsIfKeyExists = async () => {
+      // Only clear models if we don't have API key for non-OpenRouter providers
+      if (selectedProvider !== OPENROUTER_API_KEY_INDEX) {
+        const hasKey = await hasApiKey();
+        if (!hasKey) {
+          // If no key, clear models
+          setAvailableModels([]);
+          setModelsFromCache(false);
+        }
       }
     };
 
-    loadModelsIfKeyExists();
+    loadCachedModelsIfKeyExists();
   }, [
     hasOpenAIKey,
     hasGoogleKey,
     hasOllamaKey,
+    hasOpenRouterKey,
     selectedProvider,
     hasApiKey,
-    availableModels.length,
   ]);
 
   useEffect(() => {
@@ -729,6 +769,66 @@ export default function ChatConfiguration({
           </p>
         </div>
 
+        {/* OpenRouter Configuration */}
+        <div className="mt-4 mb-2">
+          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            OpenRouter API Key
+          </span>
+          {hasOpenRouterKey ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                ✓ Configured
+              </span>
+              <button
+                onClick={() => handleRemoveKey(OPENROUTER_API_KEY_INDEX)}
+                disabled={isSavingKey}
+                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                id="openrouter-key-input"
+                type="password"
+                value={openrouterKey}
+                onChange={(e) => setOpenrouterKey(e.target.value)}
+                placeholder="sk-or-..."
+                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
+                  openrouterKey && !validateOpenRouterKey(openrouterKey)
+                    ? "border-red-300 dark:border-red-500"
+                    : "border-gray-300"
+                }`}
+                disabled={isSavingKey}
+              />
+              <button
+                onClick={handleSaveOpenRouterKey}
+                disabled={
+                  isSavingKey ||
+                  !openrouterKey.trim() ||
+                  !validateOpenRouterKey(openrouterKey)
+                }
+                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
+              >
+                {isSavingKey ? "..." : "Save"}
+              </button>
+            </div>
+          )}
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Get your key from{" "}
+            <a
+              href="https://openrouter.ai/keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              OpenRouter
+            </a>
+            {". "}Access hundreds of AI models through one API.
+          </p>
+        </div>
+
         {/* Ollama Configuration */}
         <div className="mt-4 mb-2">
           <p className="flex gap-2 text-xs font-medium text-gray-600 dark:text-gray-400 my-1">
@@ -814,11 +914,14 @@ export default function ChatConfiguration({
           className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           disabled={isLoading}
         >
+          <option value={OLLAMA_API_KEY_INDEX}>Ollama (Local Models)</option>
+          <option value={OPENROUTER_API_KEY_INDEX}>
+            OpenRouter (Multiple Providers)
+          </option>
           <option value={OPEN_AI_API_KEY_INDEX}>OpenAI (GPT Models)</option>
           <option value={GOOGLE_AI_API_KEY_INDEX}>
             Google AI (Gemini Models)
           </option>
-          <option value={OLLAMA_API_KEY_INDEX}>Ollama (Local Models)</option>
         </select>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Current: {getProviderDisplayName()}
@@ -892,7 +995,9 @@ export default function ChatConfiguration({
               </button>
             ) : (
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                Configure an API key above to load models
+                {selectedProvider === OPENROUTER_API_KEY_INDEX
+                  ? "Models are loading..."
+                  : "Configure an API key above to load models"}
               </span>
             )}
 

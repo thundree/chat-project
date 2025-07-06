@@ -6,6 +6,7 @@ import {
   OLLAMA_API_KEY_INDEX,
   OPEN_AI_API_KEY_INDEX,
   GOOGLE_AI_API_KEY_INDEX,
+  OPENROUTER_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -45,6 +46,15 @@ export const validateOllamaBaseUrl = (url: string): boolean => {
 };
 
 /**
+ * Validate OpenRouter API key format
+ */
+export const validateOpenRouterKey = (key: string): boolean => {
+  if (!key || typeof key !== "string") return false;
+  // OpenRouter keys start with "sk-or-" and are typically longer than 40 characters
+  return key.startsWith("sk-or-") && key.length >= 40;
+};
+
+/**
  * Validate API key/config for the given provider
  */
 export const validateApiKeyForProvider = (
@@ -58,6 +68,8 @@ export const validateApiKeyForProvider = (
       return validateGoogleAIKey(key);
     case OLLAMA_API_KEY_INDEX:
       return validateOllamaBaseUrl(key);
+    case OPENROUTER_API_KEY_INDEX:
+      return validateOpenRouterKey(key);
     default:
       return false;
   }
@@ -82,6 +94,8 @@ export const getProviderDisplayName = (provider: AIProvider): string => {
       return "Google AI";
     case OLLAMA_API_KEY_INDEX:
       return "Ollama";
+    case OPENROUTER_API_KEY_INDEX:
+      return "OpenRouter";
     default:
       return provider;
   }
@@ -98,6 +112,8 @@ export const getApiKeyDocUrl = (provider: AIProvider): string => {
       return "https://aistudio.google.com/app/apikey";
     case OLLAMA_API_KEY_INDEX:
       return "https://ollama.readthedocs.io/en/installation/";
+    case OPENROUTER_API_KEY_INDEX:
+      return "https://openrouter.ai/keys";
     default:
       return "#";
   }

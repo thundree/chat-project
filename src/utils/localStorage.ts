@@ -4,6 +4,7 @@ import {
   OPEN_AI_API_KEY_INDEX,
   GOOGLE_AI_API_KEY_INDEX,
   OLLAMA_API_KEY_INDEX,
+  OPENROUTER_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -102,6 +103,8 @@ export const STORAGE_KEYS = {
   GOOGLE_AI_AVAILABLE_MODELS: "ttinteractive_google_ai_available_models",
   OLLAMA_SELECTED_MODEL: "ttinteractive_ollama_selected_model",
   OLLAMA_AVAILABLE_MODELS: "ttinteractive_ollama_available_models",
+  OPENROUTER_SELECTED_MODEL: "ttinteractive_openrouter_selected_model",
+  OPENROUTER_AVAILABLE_MODELS: "ttinteractive_openrouter_available_models",
 
   // Migration flag (to track if we've moved from localStorage to IndexedDB)
   MIGRATION_COMPLETED: "ttinteractive_migration_completed",
@@ -168,6 +171,8 @@ export const saveSelectedModelForProvider = (
     key = STORAGE_KEYS.OPENAI_SELECTED_MODEL;
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_SELECTED_MODEL;
+  } else if (provider === OPENROUTER_API_KEY_INDEX) {
+    key = STORAGE_KEYS.OPENROUTER_SELECTED_MODEL;
   } else {
     key = STORAGE_KEYS.OLLAMA_SELECTED_MODEL;
   }
@@ -187,6 +192,9 @@ export const loadSelectedModelForProvider = (
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_SELECTED_MODEL;
     providerDefault = "";
+  } else if (provider === OPENROUTER_API_KEY_INDEX) {
+    key = STORAGE_KEYS.OPENROUTER_SELECTED_MODEL;
+    providerDefault = "";
   } else {
     key = STORAGE_KEYS.OLLAMA_SELECTED_MODEL;
     providerDefault = "";
@@ -204,6 +212,8 @@ export const saveAvailableModelsForProvider = (
     key = STORAGE_KEYS.OPENAI_AVAILABLE_MODELS;
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_AVAILABLE_MODELS;
+  } else if (provider === OPENROUTER_API_KEY_INDEX) {
+    key = STORAGE_KEYS.OPENROUTER_AVAILABLE_MODELS;
   } else {
     key = STORAGE_KEYS.OLLAMA_AVAILABLE_MODELS;
   }
@@ -228,6 +238,9 @@ export const loadAvailableModelsForProvider = (
     providerDefaults = [];
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_AVAILABLE_MODELS;
+    providerDefaults = [];
+  } else if (provider === OPENROUTER_API_KEY_INDEX) {
+    key = STORAGE_KEYS.OPENROUTER_AVAILABLE_MODELS;
     providerDefaults = [];
   } else {
     key = STORAGE_KEYS.OLLAMA_AVAILABLE_MODELS;

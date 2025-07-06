@@ -207,6 +207,7 @@
     "initialPromptPlaceholder": "Define the character's role and behavior...",
     "initialMessage": "Initial Message",
     "initialMessagePlaceholder": "The first message the character sends",
-    "characterPreview": "Character Preview"
+    "characterPreview": "Character Preview",
+    "backgroundPreview": "Background Preview"
   }
 }

@@ -121,6 +121,24 @@ export default function CharacterManager({
             />
           </div>
 
+          {/* Preview */}
+          {formData.backgroundImage && (
+            <div className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-center">
+                <img
+                  src={`${
+                    formData.backgroundImage
+                  }?size=${new Date().getTime()}`} // Cache busting
+                  alt={t("characterManager.backgroundPreview")}
+                  className="mx-auto h-42 w-auto object-cover rounded-lg"
+                />
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                  {t("characterManager.backgroundPreview")}
+                </p>
+              </div>
+            </div>
+          )}
+
           <div>
             <Label htmlFor="characterImage">
               {t("characterManager.characterImage")}
@@ -145,8 +163,7 @@ export default function CharacterManager({
                     formData.characterImage
                   }?size=${new Date().getTime()}`} // Cache busting
                   alt={formData.characterName || "Character preview"}
-                  className="mx-auto object-cover rounded-lg"
-                  style={{ width: 80, height: 80 }}
+                  className="mx-auto h-42 w-auto object-cover rounded-lg"
                 />
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                   {t("characterManager.characterPreview")}

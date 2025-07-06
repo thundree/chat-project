@@ -151,7 +151,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
               <input
                 type="range"
                 min="0"
-                max="2"
+                max="1"
                 step="0.1"
                 value={userPrefs.temperature}
                 onChange={(e) =>

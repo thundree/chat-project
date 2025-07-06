@@ -76,14 +76,15 @@ export default function CharacterManager({
           {t("characterManager.title")}
         </h3>
         <div className="flex gap-2">
-          {hasChanges && (
-            <CustomButton onClick={handleReset}>
-              {t("common.cancel")}
-            </CustomButton>
-          )}
           <CustomButton onClick={handleSave} disabled={!hasChanges}>
             {t("common.save")}
           </CustomButton>
+
+          {hasChanges && (
+            <CustomButton variant="gray" onClick={handleReset}>
+              {t("common.discard")}
+            </CustomButton>
+          )}
         </div>
       </div>
 

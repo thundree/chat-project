@@ -84,9 +84,11 @@ export default function CharacterEditor({
             : t("characterEditor.createTitle")}
         </h2>
         <div className="flex gap-2">
-          <CustomButton onClick={onCancel}>{t("common.cancel")}</CustomButton>
           <CustomButton onClick={handleSave} disabled={!isValid}>
             {t("common.save")}
+          </CustomButton>
+          <CustomButton variant="gray" onClick={onCancel}>
+            {t("common.cancel")}
           </CustomButton>
         </div>
       </div>

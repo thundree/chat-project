@@ -114,9 +114,7 @@ export const saveSelectedModel = (model: string): boolean => {
   return saveToLocalStorage(STORAGE_KEYS.SELECTED_MODEL, model);
 };
 
-export const loadSelectedModel = (
-  defaultModel: string = "gpt-3.5-turbo"
-): string => {
+export const loadSelectedModel = (defaultModel: string = ""): string => {
   return loadFromLocalStorage(STORAGE_KEYS.SELECTED_MODEL, defaultModel);
 };
 
@@ -129,13 +127,7 @@ export const saveAvailableModels = (models: string[]): boolean => {
 };
 
 export const loadAvailableModels = (
-  defaultModels: string[] = [
-    "gpt-3.5-turbo",
-    "gpt-4",
-    "gpt-4-turbo",
-    "gpt-4o",
-    "gpt-4o-mini",
-  ]
+  defaultModels: string[] = []
 ): { models: string[]; timestamp: number | null } => {
   const data = loadFromLocalStorage(STORAGE_KEYS.AVAILABLE_MODELS, {
     models: defaultModels,
@@ -190,13 +182,13 @@ export const loadSelectedModelForProvider = (
 
   if (provider === OPEN_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.OPENAI_SELECTED_MODEL;
-    providerDefault = "gpt-3.5-turbo";
+    providerDefault = "";
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_SELECTED_MODEL;
-    providerDefault = "gemini-1.5-flash";
+    providerDefault = "";
   } else {
     key = STORAGE_KEYS.OLLAMA_SELECTED_MODEL;
-    providerDefault = "llama3.2";
+    providerDefault = "";
   }
 
   return loadFromLocalStorage(key, defaultModel ?? providerDefault);
@@ -224,32 +216,26 @@ export const saveAvailableModelsForProvider = (
 
 export const loadAvailableModelsForProvider = (
   provider: AIProvider,
-  defaultModels?: string[]
+  defaultModels?: string[],
+  useDefaults: boolean = true
 ): { models: string[]; timestamp: number | null } => {
   let key: string;
   let providerDefaults: string[];
 
   if (provider === OPEN_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.OPENAI_AVAILABLE_MODELS;
-    providerDefaults = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview"];
+    providerDefaults = [];
   } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
     key = STORAGE_KEYS.GOOGLE_AI_AVAILABLE_MODELS;
-    providerDefaults = ["gemini-2.5-flash", "gemini-2.5-pro"];
+    providerDefaults = [];
   } else {
     key = STORAGE_KEYS.OLLAMA_AVAILABLE_MODELS;
-    providerDefaults = [
-      "llama3.2",
-      "llama3.1",
-      "llama3",
-      "mistral",
-      "codellama",
-      "phi3",
-      "gemma2",
-    ];
+    providerDefaults = [];
   }
 
+  const fallbackModels = useDefaults ? defaultModels ?? providerDefaults : [];
   const data = loadFromLocalStorage(key, {
-    models: defaultModels ?? providerDefaults,
+    models: fallbackModels,
     timestamp: null,
   });
   return data;
@@ -274,7 +260,7 @@ export const saveUserPreferences = (
 
 export const loadUserPreferences = (): UserPreferences => {
   const defaultPreferences: UserPreferences = {
-    selectedModel: "gpt-3.5-turbo",
+    selectedModel: "",
     maxTokens: 1000,
     temperature: 0.7,
     enableStreaming: true,

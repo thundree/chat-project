@@ -46,7 +46,7 @@ export const useOpenAI = (): UseOpenAIReturn => {
         setIsLoading(true);
         setError(null);
 
-        const { model = "gpt-3.5-turbo", maxTokens = 1000 } = options;
+        const { model = "", maxTokens = 1000 } = options;
 
         const response = await getChatCompletion(chat, model, maxTokens);
         const message = createMessageFromResponse(response, "character");
@@ -74,7 +74,7 @@ export const useOpenAI = (): UseOpenAIReturn => {
         setIsLoading(true);
         setError(null);
 
-        const { model = "gpt-3.5-turbo", maxTokens = 1000 } = options;
+        const { model = "", maxTokens = 1000 } = options;
 
         const response = await getStreamingChatCompletion(
           chat,

@@ -122,7 +122,7 @@ export const prepareMessagesForOpenAI = (chat: Chat): OpenAIMessage[] => {
  */
 export const getChatCompletion = async (
   chat: Chat,
-  model: string = "gpt-3.5-turbo",
+  model: string = "",
   maxTokens: number = 1000
 ): Promise<string> => {
   try {
@@ -166,7 +166,7 @@ export const getChatCompletion = async (
  */
 export const getStreamingChatCompletion = async (
   chat: Chat,
-  model: string = "gpt-3.5-turbo",
+  model: string = "",
   maxTokens: number = 1000,
   onChunk?: (chunk: string) => void
 ): Promise<string> => {
@@ -216,7 +216,7 @@ export const getStreamingChatCompletion = async (
  */
 export const getChatCompletionViaProxy = async (
   chat: Chat,
-  model: string = "gpt-3.5-turbo",
+  model: string = "",
   maxTokens: number = 1000,
   proxyEndpoint: string = "/api/openai/chat/completions"
 ): Promise<string> => {
@@ -302,7 +302,7 @@ export const getAvailableModels = async (): Promise<string[]> => {
   try {
     const client = await initializeOpenAI();
     if (!client) {
-      return ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview"];
+      return [];
     }
 
     const models = await client.models.list();
@@ -320,6 +320,6 @@ export const getAvailableModels = async (): Promise<string[]> => {
       .sort((a, b) => a.localeCompare(b));
   } catch (error) {
     console.error("Error fetching available models:", error);
-    return ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview"];
+    return [];
   }
 };

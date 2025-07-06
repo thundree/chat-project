@@ -183,9 +183,9 @@ export class UnifiedAIService {
   getDefaultModel(): string {
     switch (this.provider) {
       case OPEN_AI_API_KEY_INDEX:
-        return "gpt-3.5-turbo";
+        return "";
       case GOOGLE_AI_API_KEY_INDEX:
-        return "gemini-1.5-flash";
+        return "";
       case OLLAMA_API_KEY_INDEX:
         // For Ollama, we should try to get the first available model
         // This is a fallback if no models are available yet
@@ -201,9 +201,9 @@ export class UnifiedAIService {
   async getDefaultModelAsync(): Promise<string> {
     switch (this.provider) {
       case OPEN_AI_API_KEY_INDEX:
-        return "gpt-3.5-turbo";
+        return "";
       case GOOGLE_AI_API_KEY_INDEX:
-        return "gemini-2.5-flash";
+        return "";
       case OLLAMA_API_KEY_INDEX:
         try {
           const availableModels = await this.getAvailableModels();

@@ -58,10 +58,7 @@ export default function ChatConfiguration({
   onTestApiConnection,
 }: ChatConfigurationProps) {
   const [isFetchingModels, setIsFetchingModels] = useState(false);
-  const [availableModels, setAvailableModels] = useState<string[]>(() => {
-    const { models } = loadAvailableModelsForProvider(selectedProvider);
-    return models;
-  });
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [modelsFromCache, setModelsFromCache] = useState<boolean>(false);
 
   // API Key states
@@ -87,6 +84,7 @@ export default function ChatConfiguration({
     switchProvider,
     getProviderDisplayName,
     getDefaultModel,
+    hasApiKey,
   } = useAI(selectedProvider);
 
   // Helper function to format model names for display
@@ -100,7 +98,7 @@ export default function ChatConfiguration({
   const getModelTier = (model: string): "free" | "pro" | "premium" => {
     if (model.includes("gpt-4")) return "premium";
     if (model.includes("gpt")) return "pro";
-    if (model.includes("gemini-1.5-flash")) return "free";
+    if (model.includes("gemini-2.5-flash")) return "free";
     if (model.includes("gemini")) return "pro";
     // Ollama models are generally free (running locally)
     if (
@@ -121,24 +119,43 @@ export default function ChatConfiguration({
   };
 
   // Handle provider change
-  const handleProviderChange = (provider: AIProvider) => {
+  const handleProviderChange = async (provider: AIProvider) => {
     onProviderChange(provider);
     switchProvider(provider);
     saveSelectedProvider(provider);
 
-    // Load models for the new provider
-    const { models } = loadAvailableModelsForProvider(provider);
-    setAvailableModels(models);
+    // Check if API key exists for the new provider before loading models
+    const hasKey = await hasApiKey();
+    if (hasKey) {
+      // Load models for the new provider
+      const { models } = loadAvailableModelsForProvider(
+        provider,
+        undefined,
+        true
+      );
+      setAvailableModels(models);
 
-    // Set default model for the new provider
-    const defaultModel = getDefaultModel();
-    onModelChange(defaultModel);
-    saveSelectedModelForProvider(defaultModel, provider);
+      // Set default model for the new provider
+      const defaultModel = getDefaultModel();
+      onModelChange(defaultModel);
+      saveSelectedModelForProvider(defaultModel, provider);
+    } else {
+      // Clear models if no API key is configured
+      setAvailableModels([]);
+    }
   };
 
   // Manually refresh models from API
   const refreshModels = async () => {
     try {
+      // First check if API key is configured
+      const hasKey = await hasApiKey();
+      if (!hasKey) {
+        console.log("No API key configured for", selectedProvider);
+        setAvailableModels([]);
+        return;
+      }
+
       setIsFetchingModels(true);
       const freshModels = await getAvailableModels();
       if (freshModels.length > 0) {
@@ -364,9 +381,18 @@ export default function ChatConfiguration({
   useEffect(() => {
     const fetchModels = async () => {
       try {
+        // First check if API key is configured for the current provider
+        const hasKey = await hasApiKey();
+        if (!hasKey) {
+          // No API key configured, clear models
+          setAvailableModels([]);
+          setModelsFromCache(false);
+          return;
+        }
+
         // Check if cached models are still fresh
         const { models: cachedModels, timestamp } =
-          loadAvailableModelsForProvider(selectedProvider);
+          loadAvailableModelsForProvider(selectedProvider, undefined, true);
         const modelsAreStale = areModelsStale(timestamp, 24); // 24 hours cache
 
         if (!modelsAreStale && cachedModels.length > 0) {
@@ -394,17 +420,65 @@ export default function ChatConfiguration({
           "Could not fetch models, using cached/defaults:",
           fetchError
         );
-        // Keep the cached/default models if fetching fails
+        // If API key exists but fetching fails, try to use cached models
+        const hasKey = await hasApiKey();
+        if (hasKey) {
+          const { models: cachedModels } = loadAvailableModelsForProvider(
+            selectedProvider,
+            undefined,
+            true
+          );
+          setAvailableModels(cachedModels);
+          setModelsFromCache(true);
+        } else {
+          setAvailableModels([]);
+        }
       }
     };
 
     fetchModels();
-  }, [selectedProvider, getAvailableModels, selectedModel, onModelChange]);
+  }, [
+    selectedProvider,
+    getAvailableModels,
+    selectedModel,
+    onModelChange,
+    hasApiKey,
+  ]);
 
   // Check for existing API keys on component mount
   useEffect(() => {
     checkApiKeys();
   }, []);
+
+  // Load models when API key states change
+  useEffect(() => {
+    const loadModelsIfKeyExists = async () => {
+      const hasKey = await hasApiKey();
+      if (hasKey && availableModels.length === 0) {
+        // If we have a key but no models loaded, try to load them
+        const { models: cachedModels } = loadAvailableModelsForProvider(
+          selectedProvider,
+          undefined,
+          true
+        );
+        setAvailableModels(cachedModels);
+        setModelsFromCache(true);
+      } else if (!hasKey) {
+        // If no key, clear models
+        setAvailableModels([]);
+        setModelsFromCache(false);
+      }
+    };
+
+    loadModelsIfKeyExists();
+  }, [
+    hasOpenAIKey,
+    hasGoogleKey,
+    hasOllamaKey,
+    selectedProvider,
+    hasApiKey,
+    availableModels.length,
+  ]);
 
   useEffect(() => {
     setUserName(currentChat.userName ?? "User");
@@ -656,10 +730,18 @@ export default function ChatConfiguration({
         </div>
 
         {/* Ollama Configuration */}
-        <div className="mb-2">
-          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            Ollama Server URL
-          </span>
+        <div className="mt-4 mb-2">
+          <p className="flex gap-2 text-xs font-medium text-gray-600 dark:text-gray-400 my-1">
+            Ollama Server URL{" "}
+            <a
+              href={ollamaUrl.trim()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block mb-2 text-xs underline text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+            >
+              <i>{ollamaUrl.trim()}</i>
+            </a>
+          </p>
           {hasOllamaKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
@@ -776,31 +858,45 @@ export default function ChatConfiguration({
           value={selectedModel}
           onChange={(e) => handleModelChange(e.target.value)}
           className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          disabled={isLoading}
+          disabled={isLoading || availableModels.length === 0}
         >
-          {availableModels.map((model) => (
-            <option key={model} value={model}>
-              {formatModelName(model)}
+          {availableModels.length === 0 ? (
+            <option value="">
+              No models available - Configure API key first
             </option>
-          ))}
+          ) : (
+            availableModels.map((model) => (
+              <option key={model} value={model}>
+                {formatModelName(model)}
+              </option>
+            ))
+          )}
         </select>
 
         <div className="text-xs text-gray-500 dark:text-gray-400 flex gap-2 mt-3">
           <div className="flex flex-row items-start gap-5">
-            <button
-              onClick={() => {
-                if (isFetchingModels) return;
-                refreshModels();
-              }}
-              disabled={isLoading || isFetchingModels}
-              className="flex items-center justify-center gap-1 cursor-pointer text-xs text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
-              title="Refresh available models"
-            >
-              <TbRefreshAlert size={16} />
-              <span>{isFetchingModels ? "Refreshing..." : "Refresh list"}</span>
-            </button>
+            {availableModels.length > 0 ? (
+              <button
+                onClick={() => {
+                  if (isFetchingModels) return;
+                  refreshModels();
+                }}
+                disabled={isLoading || isFetchingModels}
+                className="flex items-center justify-center gap-1 cursor-pointer text-xs text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
+                title="Refresh available models"
+              >
+                <TbRefreshAlert size={16} />
+                <span>
+                  {isFetchingModels ? "Refreshing..." : "Refresh list"}
+                </span>
+              </button>
+            ) : (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Configure an API key above to load models
+              </span>
+            )}
 
-            {modelsFromCache && (
+            {modelsFromCache && availableModels.length > 0 && (
               <span
                 title="Models list loaded from cache, might be outdated"
                 className="cursor-help flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400"

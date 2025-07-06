@@ -545,6 +545,7 @@ export default function ChatConfiguration({
           <div className="flex flex-row gap-2">
             <input
               id="user-name-input"
+              name="user-name"
               type="text"
               value={userName}
               onChange={handleUserNameChange}
@@ -578,6 +579,7 @@ export default function ChatConfiguration({
           <div className="flex flex-row gap-2">
             <input
               id="chat-title-input"
+              name="chat-title"
               type="text"
               value={chatTitle}
               onChange={handleTitleChange}
@@ -611,6 +613,7 @@ export default function ChatConfiguration({
           <div className="flex flex-row gap-0 items-center">
             <input
               id="temperature-slider"
+              name="temperature"
               type="range"
               min="0"
               max="1"
@@ -668,6 +671,7 @@ export default function ChatConfiguration({
             <div className="flex gap-2">
               <input
                 id="openai-key-input"
+                name="openai-api-key"
                 type="password"
                 value={openaiKey}
                 onChange={(e) => setOpenaiKey(e.target.value)}
@@ -727,6 +731,7 @@ export default function ChatConfiguration({
             <div className="flex gap-2">
               <input
                 id="google-key-input"
+                name="google-ai-api-key"
                 type="password"
                 value={googleKey}
                 onChange={(e) => setGoogleKey(e.target.value)}
@@ -786,6 +791,7 @@ export default function ChatConfiguration({
             <div className="flex gap-2">
               <input
                 id="openrouter-key-input"
+                name="openrouter-api-key"
                 type="password"
                 value={openrouterKey}
                 onChange={(e) => setOpenrouterKey(e.target.value)}
@@ -855,6 +861,7 @@ export default function ChatConfiguration({
             <div className="flex gap-2">
               <input
                 id="ollama-url-input"
+                name="ollama-base-url"
                 type="url"
                 value={ollamaUrl}
                 onChange={(e) => setOllamaUrl(e.target.value)}

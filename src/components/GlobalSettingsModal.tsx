@@ -126,10 +126,12 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
           </Label>
           <div className="space-y-3">
             <div>
-              <Label className="mb-1 block text-sm">
+              <Label htmlFor="max-tokens-range" className="mb-1 block text-sm">
                 {t("settings.maxTokens")}: {userPrefs.maxTokens}
               </Label>
               <input
+                id="max-tokens-range"
+                name="max-tokens"
                 type="range"
                 min="100"
                 max="4000"
@@ -145,10 +147,12 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
               </p>
             </div>
             <div>
-              <Label className="mb-1 block text-sm">
+              <Label htmlFor="temperature-range" className="mb-1 block text-sm">
                 {t("chat.temperature")}: {userPrefs.temperature}
               </Label>
               <input
+                id="temperature-range"
+                name="temperature"
                 type="range"
                 min="0"
                 max="1"

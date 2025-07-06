@@ -142,7 +142,15 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
               </div>
             ) : (
               <div className="space-y-2">
+                <label
+                  htmlFor="openai-api-key-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  API Key
+                </label>
                 <input
+                  id="openai-api-key-input"
+                  name="openai-api-key"
                   type="password"
                   value={openaiKey}
                   onChange={(e) => setOpenaiKey(e.target.value)}
@@ -188,7 +196,15 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
               </div>
             ) : (
               <div className="space-y-2">
+                <label
+                  htmlFor="google-ai-api-key-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  API Key
+                </label>
                 <input
+                  id="google-ai-api-key-input"
+                  name="google-ai-api-key"
                   type="password"
                   value={googleKey}
                   onChange={(e) => setGoogleKey(e.target.value)}

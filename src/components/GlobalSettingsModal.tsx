@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Label, Select } from "flowbite-react";
 import { useTheme } from "@/contexts/useTheme";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { Theme } from "@/contexts/themeContext";
 import GenericModal from "@/components/GenericModal";
+import LanguageSelector from "@/components/LanguageSelector";
 import {
   saveUserPreferences,
   loadUserPreferences,
@@ -22,6 +24,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
   onClose,
 }) => {
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const [userPrefs, setUserPrefs] = useState<UserPreferences>(
     loadUserPreferences()
   );
@@ -72,22 +75,32 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
     <GenericModal
       show={show}
       onClose={onClose}
-      title="Global Settings"
-      cancelText="Close"
+      title={t("settings.title")}
+      cancelText={t("common.close")}
     >
       <div className="space-y-6">
+        {/* Language Settings */}
+        <div>
+          <Label className="mb-2 block text-lg font-semibold">
+            {t("settings.general")}
+          </Label>
+          <div className="space-y-3">
+            <LanguageSelector />
+          </div>
+        </div>
+
         {/* Theme Settings */}
         <div>
           <Label
             htmlFor="theme-select"
             className="mb-2 block text-lg font-semibold"
           >
-            Appearance
+            {t("settings.appearance")}
           </Label>
           <div className="space-y-3">
             <div>
               <Label htmlFor="theme-select" className="mb-1 block text-sm">
-                Theme
+                {t("settings.theme")}
               </Label>
               <Select
                 id="theme-select"
@@ -95,9 +108,9 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 onChange={handleThemeChange}
                 className="w-full"
               >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto (System)</option>
+                <option value="light">{t("settings.themes.light")}</option>
+                <option value="dark">{t("settings.themes.dark")}</option>
+                <option value="auto">{t("settings.themes.auto")}</option>
               </Select>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Choose your preferred theme. Auto will follow your system
@@ -110,7 +123,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
         {/* AI Settings */}
         <div>
           <Label className="mb-2 block text-lg font-semibold">
-            AI Configuration
+            {t("settings.advanced")}
           </Label>
           <div className="space-y-3">
             <div>
@@ -134,7 +147,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
             </div>
             <div>
               <Label className="mb-1 block text-sm">
-                Temperature: {userPrefs.temperature}
+                {t("chat.temperature")}: {userPrefs.temperature}
               </Label>
               <input
                 type="range"
@@ -148,7 +161,7 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 className="w-full slider"
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Controls randomness in AI responses (0 = focused, 2 = creative)
+                {t("chat.temperatureDescription")}
               </p>
             </div>
           </div>

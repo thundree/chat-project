@@ -1,0 +1,121 @@
+{
+  "common": {
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "remove": "Remove",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "refresh": "Refresh",
+    "test": "Test",
+    "configure": "Configure",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "chat": {
+    "title": "Chat Title",
+    "temperature": "Temperature",
+    "temperatureDescription": "Controls randomness: 0 (focused) to 1 (creative)",
+    "temperatureLabels": {
+      "focused": "Focused",
+      "balanced": "Balanced",
+      "creative": "Creative"
+    },
+    "userName": "Your Name",
+    "userNamePlaceholder": "Enter your name",
+    "titlePlaceholder": "Enter a title for your chat",
+    "testConnection": "Test API Connection",
+    "connectionSuccess": "API connection successful!",
+    "connectionError": "Failed to connect to API"
+  },
+  "apiKeys": {
+    "title": "API Key Configuration",
+    "openai": {
+      "title": "OpenAI API Key",
+      "placeholder": "sk-...",
+      "description": "Get your key from",
+      "link": "OpenAI Platform",
+      "validation": "Invalid OpenAI API key format. Keys should start with 'sk-' and be at least 40 characters long."
+    },
+    "google": {
+      "title": "Google AI API Key",
+      "placeholder": "AI...",
+      "description": "Get your key from",
+      "link": "Google AI Studio",
+      "validation": "Invalid Google AI API key format. Keys should start with 'AI' and be at least 35 characters long."
+    },
+    "openrouter": {
+      "title": "OpenRouter API Key",
+      "placeholder": "sk-or-...",
+      "description": "Get your key from",
+      "link": "OpenRouter",
+      "additionalInfo": "Access hundreds of AI models through one API.",
+      "validation": "Invalid OpenRouter API key format. Keys should start with 'sk-or-' and be at least 40 characters long."
+    },
+    "ollama": {
+      "title": "Ollama Server URL",
+      "placeholder": "http://localhost:11434",
+      "description": "Local Ollama server URL. Install Ollama from",
+      "link": "ollama.ai",
+      "validation": "Invalid Ollama URL format. Please enter a valid URL (e.g., http://localhost:11434)."
+    },
+    "configured": "✓ Configured",
+    "saveError": "Error saving API key. Please try again.",
+    "removeError": "Error removing API key."
+  },
+  "providers": {
+    "title": "AI Provider",
+    "current": "Current",
+    "ollama": "Ollama (Local Models)",
+    "openrouter": "OpenRouter (Multiple Providers)",
+    "openai": "OpenAI (GPT Models)",
+    "google": "Google AI (Gemini Models)"
+  },
+  "models": {
+    "title": "Model",
+    "noModels": "No models available - Configure API key first",
+    "refreshList": "Refresh list",
+    "refreshing": "Refreshing...",
+    "loadingModels": "Models are loading...",
+    "configureApiKey": "Configure an API key above to load models",
+    "cachedModels": "Cached models",
+    "cachedTooltip": "Models list loaded from cache, might be outdated",
+    "refreshTooltip": "Refresh available models",
+    "tiers": {
+      "free": "🆓 Free",
+      "pro": "Pro",
+      "premium": "⚡ Premium"
+    },
+    "tierTooltips": {
+      "free": "Free tier model",
+      "pro": "Professional tier model",
+      "premium": "Premium models may be more expensive"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "general": "General Settings",
+    "appearance": "Appearance",
+    "advanced": "Advanced"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "networkError": "Network error. Please check your connection.",
+    "validationError": "Please check your input and try again.",
+    "apiKeyRequired": "API key is required for this provider.",
+    "modelLoadFailed": "Failed to load models. Please try again.",
+    "saveFailed": "Failed to save changes. Please try again."
+  }
+}

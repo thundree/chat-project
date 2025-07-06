@@ -1,0 +1,121 @@
+{
+  "common": {
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "saved": "Salvo",
+    "remove": "Remover",
+    "edit": "Editar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "refresh": "Atualizar",
+    "test": "Testar",
+    "configure": "Configurar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "chat": {
+    "title": "Título do Chat",
+    "temperature": "Temperatura",
+    "temperatureDescription": "Controla aleatoriedade: 0 (focado) a 1 (criativo)",
+    "temperatureLabels": {
+      "focused": "Focado",
+      "balanced": "Equilibrado",
+      "creative": "Criativo"
+    },
+    "userName": "Seu Nome",
+    "userNamePlaceholder": "Digite seu nome",
+    "titlePlaceholder": "Digite um título para seu chat",
+    "testConnection": "Testar Conexão API",
+    "connectionSuccess": "Conexão API bem-sucedida!",
+    "connectionError": "Falha ao conectar com a API"
+  },
+  "apiKeys": {
+    "title": "Configuração de Chaves API",
+    "openai": {
+      "title": "Chave API OpenAI",
+      "placeholder": "sk-...",
+      "description": "Obtenha sua chave em",
+      "link": "Plataforma OpenAI",
+      "validation": "Formato de chave API OpenAI inválido. Chaves devem começar com 'sk-' e ter pelo menos 40 caracteres."
+    },
+    "google": {
+      "title": "Chave API Google AI",
+      "placeholder": "AI...",
+      "description": "Obtenha sua chave em",
+      "link": "Google AI Studio",
+      "validation": "Formato de chave API Google AI inválido. Chaves devem começar com 'AI' e ter pelo menos 35 caracteres."
+    },
+    "openrouter": {
+      "title": "Chave API OpenRouter",
+      "placeholder": "sk-or-...",
+      "description": "Obtenha sua chave em",
+      "link": "OpenRouter",
+      "additionalInfo": "Acesse centenas de modelos de IA através de uma API.",
+      "validation": "Formato de chave API OpenRouter inválido. Chaves devem começar com 'sk-or-' e ter pelo menos 40 caracteres."
+    },
+    "ollama": {
+      "title": "URL do Servidor Ollama",
+      "placeholder": "http://localhost:11434",
+      "description": "URL do servidor Ollama local. Instale o Ollama em",
+      "link": "ollama.ai",
+      "validation": "Formato de URL Ollama inválido. Digite uma URL válida (ex: http://localhost:11434)."
+    },
+    "configured": "✓ Configurado",
+    "saveError": "Erro ao salvar chave API. Tente novamente.",
+    "removeError": "Erro ao remover chave API."
+  },
+  "providers": {
+    "title": "Provedor de IA",
+    "current": "Atual",
+    "ollama": "Ollama (Modelos Locais)",
+    "openrouter": "OpenRouter (Múltiplos Provedores)",
+    "openai": "OpenAI (Modelos GPT)",
+    "google": "Google AI (Modelos Gemini)"
+  },
+  "models": {
+    "title": "Modelo",
+    "noModels": "Nenhum modelo disponível - Configure uma chave API primeiro",
+    "refreshList": "Atualizar lista",
+    "refreshing": "Atualizando...",
+    "loadingModels": "Modelos carregando...",
+    "configureApiKey": "Configure uma chave API acima para carregar modelos",
+    "cachedModels": "Modelos em cache",
+    "cachedTooltip": "Lista de modelos carregada do cache, pode estar desatualizada",
+    "refreshTooltip": "Atualizar modelos disponíveis",
+    "tiers": {
+      "free": "🆓 Gratuito",
+      "pro": "Pro",
+      "premium": "⚡ Premium"
+    },
+    "tierTooltips": {
+      "free": "Modelo de nível gratuito",
+      "pro": "Modelo de nível profissional",
+      "premium": "Modelos premium podem ser mais caros"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "auto": "Automático"
+    },
+    "general": "Configurações Gerais",
+    "appearance": "Aparência",
+    "advanced": "Avançado"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro. Tente novamente.",
+    "networkError": "Erro de rede. Verifique sua conexão.",
+    "validationError": "Verifique sua entrada e tente novamente.",
+    "apiKeyRequired": "Chave API é obrigatória para este provedor.",
+    "modelLoadFailed": "Falha ao carregar modelos. Tente novamente.",
+    "saveFailed": "Falha ao salvar alterações. Tente novamente."
+  }
+}

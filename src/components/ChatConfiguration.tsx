@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Chat } from "@/types";
 import { useAI } from "@/hooks/useAI";
+import { useTranslation } from "@/hooks/useTranslation";
 
 import {
   saveSelectedModelForProvider,
@@ -90,6 +91,8 @@ export default function ChatConfiguration({
     getProviderDisplayName,
     hasApiKey,
   } = useAI(selectedProvider);
+
+  const { t } = useTranslation();
 
   // Helper function to format model names for display
   const formatModelName = (model: string): string => {
@@ -274,9 +277,7 @@ export default function ChatConfiguration({
     if (!openaiKey.trim()) return;
 
     if (!validateOpenAIKey(openaiKey.trim())) {
-      alert(
-        "Invalid OpenAI API key format. Keys should start with 'sk-' and be at least 40 characters long."
-      );
+      alert(t("apiKeys.openai.validation"));
       return;
     }
 
@@ -290,7 +291,7 @@ export default function ChatConfiguration({
       await refreshModels();
     } catch (error) {
       console.error("Error saving OpenAI key:", error);
-      alert("Error saving OpenAI API key. Please try again.");
+      alert(t("apiKeys.saveError"));
     } finally {
       setIsSavingKey(false);
     }
@@ -301,9 +302,7 @@ export default function ChatConfiguration({
     if (!googleKey.trim()) return;
 
     if (!validateGoogleAIKey(googleKey.trim())) {
-      alert(
-        "Invalid Google AI API key format. Keys should start with 'AI' and be at least 35 characters long."
-      );
+      alert(t("apiKeys.google.validation"));
       return;
     }
 
@@ -320,7 +319,7 @@ export default function ChatConfiguration({
       await refreshModels();
     } catch (error) {
       console.error("Error saving Google AI key:", error);
-      alert("Error saving Google AI API key. Please try again.");
+      alert(t("apiKeys.saveError"));
     } finally {
       setIsSavingKey(false);
     }
@@ -331,9 +330,7 @@ export default function ChatConfiguration({
     if (!ollamaUrl.trim()) return;
 
     if (!validateOllamaBaseUrl(ollamaUrl.trim())) {
-      alert(
-        "Invalid Ollama URL format. Please enter a valid URL (e.g., http://localhost:11434)."
-      );
+      alert(t("apiKeys.ollama.validation"));
       return;
     }
 
@@ -345,7 +342,7 @@ export default function ChatConfiguration({
       await refreshModels();
     } catch (error) {
       console.error("Error saving Ollama URL:", error);
-      alert("Error saving Ollama URL. Please try again.");
+      alert(t("apiKeys.saveError"));
     } finally {
       setIsSavingKey(false);
     }
@@ -356,9 +353,7 @@ export default function ChatConfiguration({
     if (!openrouterKey.trim()) return;
 
     if (!validateOpenRouterKey(openrouterKey.trim())) {
-      alert(
-        "Invalid OpenRouter API key format. Keys should start with 'sk-or-' and be at least 40 characters long."
-      );
+      alert(t("apiKeys.openrouter.validation"));
       return;
     }
 
@@ -375,7 +370,7 @@ export default function ChatConfiguration({
       await refreshModels();
     } catch (error) {
       console.error("Error saving OpenRouter key:", error);
-      alert("Error saving OpenRouter API key. Please try again.");
+      alert(t("apiKeys.saveError"));
     } finally {
       setIsSavingKey(false);
     }
@@ -429,11 +424,11 @@ export default function ChatConfiguration({
   };
 
   // Extracted label for Save button
-  let saveUserNameLabel = "Save";
+  let saveUserNameLabel = t("common.save");
   if (isSavingUserName) {
-    saveUserNameLabel = "Saving...";
+    saveUserNameLabel = t("common.saving");
   } else if (userNameSaved) {
-    saveUserNameLabel = "Saved";
+    saveUserNameLabel = t("common.saved");
   }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -454,11 +449,11 @@ export default function ChatConfiguration({
     }
   };
 
-  let saveTitleLabel = "Save";
+  let saveTitleLabel = t("common.save");
   if (isSavingTitle) {
-    saveTitleLabel = "Saving...";
+    saveTitleLabel = t("common.saving");
   } else if (titleSaved) {
-    saveTitleLabel = "Saved";
+    saveTitleLabel = t("common.saved");
   }
 
   const handleTemperatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -479,11 +474,11 @@ export default function ChatConfiguration({
     }
   };
 
-  let saveTemperatureLabel = "Save";
+  let saveTemperatureLabel = t("common.save");
   if (isSavingTemperature) {
-    saveTemperatureLabel = "Saving...";
+    saveTemperatureLabel = t("common.saving");
   } else if (temperatureSaved) {
-    saveTemperatureLabel = "Saved";
+    saveTemperatureLabel = t("common.saved");
   }
 
   // Fetch available models on provider change
@@ -534,10 +529,10 @@ export default function ChatConfiguration({
       <div className="w-full">
         {/* Cognitive Complexity warning suppressed by splitting logic into helpers if needed */}
         <h2 className="text-gray-800 dark:text-gray-200">
-          Chat: <b>{currentChat.title}</b>
+          {t("chat.title")}: <b>{currentChat.title}</b>
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Temperature: <b>{currentChat.temperature}</b>
+          {t("chat.temperature")}: <b>{currentChat.temperature}</b>
         </p>
         {/* User Name Field */}
         <div className="mt-2">
@@ -545,7 +540,7 @@ export default function ChatConfiguration({
             htmlFor="user-name-input"
             className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
           >
-            Your Name
+            {t("chat.userName")}
           </label>
           <div className="flex flex-row gap-2">
             <input
@@ -555,7 +550,7 @@ export default function ChatConfiguration({
               onChange={handleUserNameChange}
               className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
               disabled={isLoading || isSavingUserName}
-              placeholder="Enter your name"
+              placeholder={t("chat.userNamePlaceholder")}
               maxLength={64}
             />
             <button
@@ -578,7 +573,7 @@ export default function ChatConfiguration({
             htmlFor="chat-title-input"
             className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1"
           >
-            Chat Title
+            {t("chat.title")}
           </label>
           <div className="flex flex-row gap-2">
             <input
@@ -588,7 +583,7 @@ export default function ChatConfiguration({
               onChange={handleTitleChange}
               className="flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300"
               disabled={isLoading || isSavingTitle}
-              placeholder="Enter a title for your chat"
+              placeholder={t("chat.titlePlaceholder")}
               maxLength={128}
             />
             <button
@@ -611,7 +606,7 @@ export default function ChatConfiguration({
             htmlFor="temperature-slider"
             className="block text-xs font-medium text-gray-600 dark:text-gray-400 -mb-1 pt-1"
           >
-            Temperature: {temperature}
+            {t("chat.temperature")}: {temperature}
           </label>
           <div className="flex flex-row gap-0 items-center">
             <input
@@ -638,9 +633,9 @@ export default function ChatConfiguration({
             </button>
           </div>
           <div className="flex max-w-xs justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span>0 (Focused)</span>
-            <span>.5 (Balanced)</span>
-            <span>1 (Creative)</span>
+            <span>0 ({t("chat.temperatureLabels.focused")})</span>
+            <span>.5 ({t("chat.temperatureLabels.balanced")})</span>
+            <span>1 ({t("chat.temperatureLabels.creative")})</span>
           </div>
         </div>
       </div>
@@ -648,25 +643,25 @@ export default function ChatConfiguration({
       {/* API Key Configuration */}
       <div className="w-full border-t border-gray-300 dark:border-gray-600 pt-3">
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          API Key Configuration
+          {t("apiKeys.title")}
         </h3>
 
         {/* OpenAI API Key */}
         <div className="mb-4">
           <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            OpenAI API Key
+            {t("apiKeys.openai.title")}
           </span>
           {hasOpenAIKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                ✓ Configured
+                {t("apiKeys.configured")}
               </span>
               <button
                 onClick={() => handleRemoveKey(OPEN_AI_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
-                Remove
+                {t("common.remove")}
               </button>
             </div>
           ) : (
@@ -676,7 +671,7 @@ export default function ChatConfiguration({
                 type="password"
                 value={openaiKey}
                 onChange={(e) => setOpenaiKey(e.target.value)}
-                placeholder="sk-..."
+                placeholder={t("apiKeys.openai.placeholder")}
                 className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
                   openaiKey && !validateOpenAIKey(openaiKey)
                     ? "border-red-300 dark:border-red-500"
@@ -693,19 +688,19 @@ export default function ChatConfiguration({
                 }
                 className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
-                {isSavingKey ? "..." : "Save"}
+                {isSavingKey ? "..." : t("common.save")}
               </button>
             </div>
           )}
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Get your key from{" "}
+            {t("apiKeys.openai.description")}{" "}
             <a
               href="https://platform.openai.com/api-keys"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              OpenAI Platform
+              {t("apiKeys.openai.link")}
             </a>
           </p>
         </div>
@@ -713,19 +708,19 @@ export default function ChatConfiguration({
         {/* Google AI API Key */}
         <div className="mb-2">
           <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            Google AI API Key
+            {t("apiKeys.google.title")}
           </span>
           {hasGoogleKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                ✓ Configured
+                {t("apiKeys.configured")}
               </span>
               <button
                 onClick={() => handleRemoveKey(GOOGLE_AI_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
-                Remove
+                {t("common.remove")}
               </button>
             </div>
           ) : (
@@ -735,7 +730,7 @@ export default function ChatConfiguration({
                 type="password"
                 value={googleKey}
                 onChange={(e) => setGoogleKey(e.target.value)}
-                placeholder="AI..."
+                placeholder={t("apiKeys.google.placeholder")}
                 className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
                   googleKey && !validateGoogleAIKey(googleKey)
                     ? "border-red-300 dark:border-red-500"
@@ -752,19 +747,19 @@ export default function ChatConfiguration({
                 }
                 className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
-                {isSavingKey ? "..." : "Save"}
+                {isSavingKey ? "..." : t("common.save")}
               </button>
             </div>
           )}
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Get your key from{" "}
+            {t("apiKeys.google.description")}{" "}
             <a
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              Google AI Studio
+              {t("apiKeys.google.link")}
             </a>
           </p>
         </div>
@@ -772,19 +767,19 @@ export default function ChatConfiguration({
         {/* OpenRouter Configuration */}
         <div className="mt-4 mb-2">
           <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            OpenRouter API Key
+            {t("apiKeys.openrouter.title")}
           </span>
           {hasOpenRouterKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                ✓ Configured
+                {t("apiKeys.configured")}
               </span>
               <button
                 onClick={() => handleRemoveKey(OPENROUTER_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
-                Remove
+                {t("common.remove")}
               </button>
             </div>
           ) : (
@@ -794,7 +789,7 @@ export default function ChatConfiguration({
                 type="password"
                 value={openrouterKey}
                 onChange={(e) => setOpenrouterKey(e.target.value)}
-                placeholder="sk-or-..."
+                placeholder={t("apiKeys.openrouter.placeholder")}
                 className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
                   openrouterKey && !validateOpenRouterKey(openrouterKey)
                     ? "border-red-300 dark:border-red-500"
@@ -811,28 +806,29 @@ export default function ChatConfiguration({
                 }
                 className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
-                {isSavingKey ? "..." : "Save"}
+                {isSavingKey ? "..." : t("common.save")}
               </button>
             </div>
           )}
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Get your key from{" "}
+            {t("apiKeys.openrouter.description")}{" "}
             <a
               href="https://openrouter.ai/keys"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              OpenRouter
+              {t("apiKeys.openrouter.link")}
             </a>
-            {". "}Access hundreds of AI models through one API.
+            {". "}
+            {t("apiKeys.openrouter.additionalInfo")}
           </p>
         </div>
 
         {/* Ollama Configuration */}
         <div className="mt-4 mb-2">
           <p className="flex gap-2 text-xs font-medium text-gray-600 dark:text-gray-400 my-1">
-            Ollama Server URL{" "}
+            {t("apiKeys.ollama.title")}{" "}
             <a
               href={ollamaUrl.trim()}
               target="_blank"
@@ -845,14 +841,14 @@ export default function ChatConfiguration({
           {hasOllamaKey ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                ✓ Configured
+                {t("apiKeys.configured")}
               </span>
               <button
                 onClick={() => handleRemoveKey(OLLAMA_API_KEY_INDEX)}
                 disabled={isSavingKey}
                 className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
               >
-                Edit
+                {t("common.edit")}
               </button>
             </div>
           ) : (
@@ -862,7 +858,7 @@ export default function ChatConfiguration({
                 type="url"
                 value={ollamaUrl}
                 onChange={(e) => setOllamaUrl(e.target.value)}
-                placeholder="http://localhost:11434"
+                placeholder={t("apiKeys.ollama.placeholder")}
                 className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
                   ollamaUrl && !validateOllamaBaseUrl(ollamaUrl)
                     ? "border-red-300 dark:border-red-500"
@@ -879,19 +875,19 @@ export default function ChatConfiguration({
                 }
                 className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
               >
-                {isSavingKey ? "..." : "Save"}
+                {isSavingKey ? "..." : t("common.save")}
               </button>
             </div>
           )}
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Local Ollama server URL. Install Ollama from{" "}
+            {t("apiKeys.ollama.description")}{" "}
             <a
               href="https://ollama.ai"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              ollama.ai
+              {t("apiKeys.ollama.link")}
             </a>
           </p>
         </div>
@@ -904,7 +900,7 @@ export default function ChatConfiguration({
             htmlFor="provider-select"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            AI Provider
+            {t("providers.title")}
           </label>
         </div>
         <select
@@ -914,17 +910,17 @@ export default function ChatConfiguration({
           className="w-full max-w-xs p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           disabled={isLoading}
         >
-          <option value={OLLAMA_API_KEY_INDEX}>Ollama (Local Models)</option>
+          <option value={OLLAMA_API_KEY_INDEX}>{t("providers.ollama")}</option>
           <option value={OPENROUTER_API_KEY_INDEX}>
-            OpenRouter (Multiple Providers)
+            {t("providers.openrouter")}
           </option>
-          <option value={OPEN_AI_API_KEY_INDEX}>OpenAI (GPT Models)</option>
+          <option value={OPEN_AI_API_KEY_INDEX}>{t("providers.openai")}</option>
           <option value={GOOGLE_AI_API_KEY_INDEX}>
-            Google AI (Gemini Models)
+            {t("providers.google")}
           </option>
         </select>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Current: {getProviderDisplayName()}
+          {t("providers.current")}: {getProviderDisplayName()}
         </p>
       </div>
 
@@ -935,24 +931,24 @@ export default function ChatConfiguration({
             htmlFor="model-select"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            Model
+            {t("models.title")}
           </label>
 
           {getModelTier(selectedModel) === "premium" && (
             <span
-              title="Premium models may be more expensive"
+              title={t("models.tierTooltips.premium")}
               className="cursor-help text-amber-600 dark:text-amber-400"
             >
-              ⚡ Premium
+              {t("models.tiers.premium")}
             </span>
           )}
 
           {getModelTier(selectedModel) === "free" && (
             <span
-              title="Free tier model"
+              title={t("models.tierTooltips.free")}
               className="cursor-help text-green-600 dark:text-green-400"
             >
-              🆓 Free
+              {t("models.tiers.free")}
             </span>
           )}
         </div>
@@ -964,9 +960,7 @@ export default function ChatConfiguration({
           disabled={isLoading || availableModels.length === 0}
         >
           {availableModels.length === 0 ? (
-            <option value="">
-              No models available - Configure API key first
-            </option>
+            <option value="">{t("models.noModels")}</option>
           ) : (
             availableModels.map((model) => (
               <option key={model} value={model}>
@@ -986,27 +980,30 @@ export default function ChatConfiguration({
                 }}
                 disabled={isLoading || isFetchingModels}
                 className="flex items-center justify-center gap-1 cursor-pointer text-xs text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
-                title="Refresh available models"
+                title={t("models.refreshTooltip")}
               >
                 <TbRefreshAlert size={16} />
                 <span>
-                  {isFetchingModels ? "Refreshing..." : "Refresh list"}
+                  {isFetchingModels
+                    ? t("models.refreshing")
+                    : t("models.refreshList")}
                 </span>
               </button>
             ) : (
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {selectedProvider === OPENROUTER_API_KEY_INDEX
-                  ? "Models are loading..."
-                  : "Configure an API key above to load models"}
+                  ? t("models.loadingModels")
+                  : t("models.configureApiKey")}
               </span>
             )}
 
             {modelsFromCache && availableModels.length > 0 && (
               <span
-                title="Models list loaded from cache, might be outdated"
+                title={t("models.cachedTooltip")}
                 className="cursor-help flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400"
               >
-                <BsDatabaseFillExclamation size={16} /> Cached models
+                <BsDatabaseFillExclamation size={16} />{" "}
+                {t("models.cachedModels")}
               </span>
             )}
           </div>
@@ -1016,19 +1013,19 @@ export default function ChatConfiguration({
       {/* Test API Connection Button */}
       <div className="mt-6">
         <CustomButton onClick={onTestApiConnection} disabled={isLoading}>
-          Test API Connection
+          {t("chat.testConnection")}
         </CustomButton>
       </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          <p className="font-bold">Error:</p>
+          <p className="font-bold">{t("common.error")}:</p>
           <p>{error}</p>
           <button
             onClick={clearError}
             className="cursor-pointer mt-2 text-sm hover:underline no-underline"
           >
-            Clear Error
+            {t("common.close")}
           </button>
         </div>
       )}

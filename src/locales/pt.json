@@ -140,12 +140,17 @@
     "errorCheckingApiKey": "Erro ao verificar configuração da chave API."
   },
   "characters": {
-    "select": "Selecionar"
+    "select": "Selecionar",
+    "createCustom": "Criar Personalizado",
+    "createCustomDescription": "Projete seu próprio personagem com prompts e personalidade customizados",
+    "create": "Criar"
   },
   "tabs": {
     "messages": "Mensagens",
+    "character": "Personagem",
     "configuration": "Configuração",
     "loadingMessages": "Carregando mensagens...",
+    "loadingCharacter": "Carregando configurações do personagem...",
     "loadingConfiguration": "Carregando configuração...",
     "chatTabsLabel": "Abas do Chat"
   },
@@ -169,5 +174,38 @@
     "apiKeyRequired": "Chave API é obrigatória para este provedor.",
     "modelLoadFailed": "Falha ao carregar modelos. Tente novamente.",
     "saveFailed": "Falha ao salvar alterações. Tente novamente."
+  },
+  "characterEditor": {
+    "createTitle": "Criar Personagem Personalizado",
+    "editTitle": "Editar Personagem",
+    "name": "Nome do Personagem",
+    "namePlaceholder": "Digite o nome do personagem",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Breve descrição do personagem",
+    "avatarUrl": "URL do Avatar",
+    "avatarUrlPlaceholder": "https://exemplo.com/avatar.jpg",
+    "backgroundUrl": "URL da Imagem de Fundo",
+    "backgroundUrlPlaceholder": "https://exemplo.com/fundo.jpg",
+    "roleInstruction": "Instrução de Papel / Prompt do Sistema",
+    "roleInstructionPlaceholder": "Defina o papel, personalidade e comportamento do personagem...",
+    "reminderMessage": "Mensagem de Lembrete",
+    "reminderMessagePlaceholder": "Breve lembrete para manter o personagem no papel",
+    "initialMessage": "Mensagem Inicial",
+    "initialMessagePlaceholder": "A primeira mensagem que o personagem enviará",
+    "avatarPreview": "Visualização do Avatar"
+  },
+  "characterManager": {
+    "title": "Configurações do Personagem",
+    "characterName": "Nome do Personagem",
+    "characterNamePlaceholder": "Digite o nome do personagem",
+    "characterImage": "URL do Avatar do Personagem",
+    "characterImagePlaceholder": "https://exemplo.com/avatar.jpg",
+    "backgroundImage": "URL da Imagem de Fundo",
+    "backgroundImagePlaceholder": "https://exemplo.com/fundo.jpg",
+    "initialPrompt": "Prompt do Sistema / Instrução de Papel",
+    "initialPromptPlaceholder": "Defina o papel e comportamento do personagem...",
+    "initialMessage": "Mensagem Inicial",
+    "initialMessagePlaceholder": "A primeira mensagem que o personagem envia",
+    "characterPreview": "Visualização do Personagem"
   }
 }

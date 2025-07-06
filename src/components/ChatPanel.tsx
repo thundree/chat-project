@@ -2,11 +2,14 @@ import React, { Suspense, type RefObject } from "react";
 import { Tabs, TabItem } from "flowbite-react";
 import type { TabsRef } from "flowbite-react";
 import { BsChatLeftText } from "react-icons/bs";
-import { HiAdjustments } from "react-icons/hi";
+import { HiAdjustments, HiUser } from "react-icons/hi";
 
 const MessageList = React.lazy(() => import("@/components/MessageList"));
 const ChatConfiguration = React.lazy(
   () => import("@/components/ChatConfiguration")
+);
+const CharacterManager = React.lazy(
+  () => import("@/components/CharacterManager")
 );
 
 import type { Chat } from "@/types";
@@ -104,6 +107,19 @@ function ChatPanel({
               onGenerateResponse={handleGenerateResponse}
               isLoading={isLoading}
             />
+          </Suspense>
+        </TabItem>
+
+        <TabItem title={t("tabs.character")} icon={HiUser}>
+          {/* Character Management */}
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
+                {t("tabs.loadingCharacter")}
+              </div>
+            }
+          >
+            <CharacterManager currentChat={currentChat} />
           </Suspense>
         </TabItem>
 

@@ -140,12 +140,17 @@
     "errorCheckingApiKey": "Error checking API key configuration."
   },
   "characters": {
-    "select": "Select"
+    "select": "Select",
+    "createCustom": "Create Custom",
+    "createCustomDescription": "Design your own character with custom prompts and personality",
+    "create": "Create"
   },
   "tabs": {
     "messages": "Messages",
+    "character": "Character",
     "configuration": "Configuration",
     "loadingMessages": "Loading messages...",
+    "loadingCharacter": "Loading character settings...",
     "loadingConfiguration": "Loading configuration...",
     "chatTabsLabel": "Chat Tabs"
   },
@@ -169,5 +174,38 @@
     "apiKeyRequired": "API key is required for this provider.",
     "modelLoadFailed": "Failed to load models. Please try again.",
     "saveFailed": "Failed to save changes. Please try again."
+  },
+  "characterEditor": {
+    "createTitle": "Create Custom Character",
+    "editTitle": "Edit Character",
+    "name": "Character Name",
+    "namePlaceholder": "Enter character name",
+    "description": "Description",
+    "descriptionPlaceholder": "Brief description of the character",
+    "avatarUrl": "Avatar URL",
+    "avatarUrlPlaceholder": "https://example.com/avatar.jpg",
+    "backgroundUrl": "Background Image URL",
+    "backgroundUrlPlaceholder": "https://example.com/background.jpg",
+    "roleInstruction": "Role Instruction / System Prompt",
+    "roleInstructionPlaceholder": "Define the character's role, personality, and behavior...",
+    "reminderMessage": "Reminder Message",
+    "reminderMessagePlaceholder": "Brief reminder to keep the character in role",
+    "initialMessage": "Initial Message",
+    "initialMessagePlaceholder": "The first message the character will send",
+    "avatarPreview": "Avatar Preview"
+  },
+  "characterManager": {
+    "title": "Character Settings",
+    "characterName": "Character Name",
+    "characterNamePlaceholder": "Enter character name",
+    "characterImage": "Character Avatar URL",
+    "characterImagePlaceholder": "https://example.com/avatar.jpg",
+    "backgroundImage": "Background Image URL",
+    "backgroundImagePlaceholder": "https://example.com/background.jpg",
+    "initialPrompt": "System Prompt / Role Instruction",
+    "initialPromptPlaceholder": "Define the character's role and behavior...",
+    "initialMessage": "Initial Message",
+    "initialMessagePlaceholder": "The first message the character sends",
+    "characterPreview": "Character Preview"
   }
 }

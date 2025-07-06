@@ -104,13 +104,13 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                   <a
                     className={`flex-1 flex rounded-sm pl-2 py-1 items-center truncate ellipsis ${
                       currentChatId === chat.id
-                        ? "bg-gray-500 dark:bg-gray-600"
-                        : "bg-gray-400 dark:bg-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600"
+                        ? "bg-gray-300 dark:bg-gray-600"
+                        : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
                     }`}
                     href={`#${chat.id}`}
                   >
                     <span
-                      className="w-full text-white block truncate"
+                      className="w-full text-gray-800 dark:text-white block truncate"
                       style={{ color: chat.characterColor }}
                     >
                       {chat.title}
@@ -146,23 +146,23 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
                 active={false}
                 onClick={() => {}}
               >
-                <span className="flex text-gray-400">No chats available</span>
+                <span className="flex text-gray-600 dark:text-gray-400">
+                  No chats available
+                </span>
               </SidebarItem>
             )}
           </SidebarItemGroup>
 
           {/* Settings section at the bottom */}
           <SidebarItemGroup className="mt-auto">
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <CustomButton
-                className="flex gap-3 items-center justify-start w-full"
-                variant="default"
-                onClick={() => setSettingsOpen(true)}
-              >
-                <IoSettings />
-                <span>Settings</span>
-              </CustomButton>
-            </div>
+            <CustomButton
+              className="flex gap-3 items-center justify-start w-full"
+              variant="default"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <IoSettings />
+              <span>Settings</span>
+            </CustomButton>
           </SidebarItemGroup>
         </SidebarItems>
       </MainSidebar>

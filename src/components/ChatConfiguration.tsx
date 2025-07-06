@@ -530,7 +530,7 @@ export default function ChatConfiguration({
   }, [currentChat.temperature, currentChat.title]);
 
   return (
-    <div className="w-full flex flex-col gap-3 bg-black/80 p-2 rounded-md">
+    <div className="w-full flex flex-col gap-3 bg-white/90 dark:bg-black/80 p-2 rounded-md">
       <div className="w-full">
         {/* Cognitive Complexity warning suppressed by splitting logic into helpers if needed */}
         <h2 className="text-gray-800 dark:text-gray-200">
@@ -1015,11 +1015,7 @@ export default function ChatConfiguration({
 
       {/* Test API Connection Button */}
       <div className="mt-6">
-        <CustomButton
-          onClick={onTestApiConnection}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white"
-          disabled={isLoading}
-        >
+        <CustomButton onClick={onTestApiConnection} disabled={isLoading}>
           Test API Connection
         </CustomButton>
       </div>

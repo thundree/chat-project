@@ -59,7 +59,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const userName = selectedChat?.userName ?? "User";
 
   return (
-    <div className="p-2 flex gap-2 bg-black/80 rounded-md">
+    <div className="p-2 flex gap-2 bg-white/90 dark:bg-black/80 rounded-md">
       {/* User Icon */}
       <div className="flex-shrink-0 w-14 text-gray-800 dark:text-blue-200">
         <SiNginxproxymanager className="mx-auto mt-1" size={38} />
@@ -67,7 +67,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
       <div className="flex flex-col w-full">
         {/* User Name */}
-        <strong className="text-blue-400">{userName}</strong>
+        <strong className="text-blue-600 dark:text-blue-400">{userName}</strong>
 
         {/* Input Area */}
         <div className="flex-1 flex items-end gap-2">
@@ -75,7 +75,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
             ref={textareaRef}
             id="message-input"
             name="message-input"
-            className="flex-1 min-h-[72px] max-h-[150px] resize-none rounded bg-gray-800/40 text-gray-200 p-2 pt-0 mt-1 border border-gray-600 focus:border-blue-500 focus:outline-none"
+            className="flex-1 min-h-[72px] max-h-[150px] resize-none rounded bg-gray-100/80 dark:bg-gray-800/40 text-gray-900 dark:text-gray-200 p-2 pt-0 mt-1 border border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:outline-none"
             placeholder="Your message (Enter for new lines; Ctrl+Enter to send and generate reply)"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}

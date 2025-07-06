@@ -96,19 +96,21 @@ export default function MessageItem({
   return (
     <div
       key={`chat-message-${message.id}`}
-      className="p-2 flex gap-2 bg-black/80 rounded-md"
+      className="p-2 flex gap-2 bg-white/90 dark:bg-black/80 rounded-md"
     >
       <div className="flex-shrink-0 w-14 text-gray-800 dark:text-blue-200">
         {messageIcon}
       </div>
 
       <div className="flex flex-col w-full">
-        <strong className="text-blue-400">{msgSender}</strong>
+        <strong className="text-blue-600 dark:text-blue-400">
+          {msgSender}
+        </strong>
         <div className="flex-1 space-y-[6px]">
           {editing ? (
             <>
               <textarea
-                className="w-full rounded bg-gray-800 text-gray-200 p-2 pt-0 border border-gray-600 mb-2"
+                className="w-full rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-2 pt-0 border border-gray-300 dark:border-gray-600 mb-2"
                 rows={Math.max(6, editText.split("\n\n").length)}
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
@@ -135,7 +137,7 @@ export default function MessageItem({
             message.text.map((text, index) => (
               <p
                 key={`message-text-${message.id}-${index}`}
-                className="text-gray-200"
+                className="text-gray-800 dark:text-gray-200"
                 style={{
                   color:
                     isCharacterMessage && selectedChat?.characterColor
@@ -155,14 +157,14 @@ export default function MessageItem({
         {!editing && chatId && updateMessage && (
           <div className="flex gap-2 mt-2">
             <button
-              className="cursor-pointer text-xs text-blue-400 hover:underline"
+              className="cursor-pointer text-xs text-blue-600 dark:text-blue-400 hover:underline"
               onClick={handleEdit}
             >
               Edit
             </button>
             {deleteMessage && (
               <button
-                className="cursor-pointer text-xs text-red-400 hover:underline"
+                className="cursor-pointer text-xs text-red-600 dark:text-red-400 hover:underline"
                 onClick={handleDelete}
               >
                 Delete

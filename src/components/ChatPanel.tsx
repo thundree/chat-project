@@ -81,7 +81,7 @@ function ChatPanel({
     <div className="w-full h-auto flex-1 rounded-lg shadow-lg p-2 mt-10 mb-auto">
       <Tabs
         ref={tabsRef}
-        className="[&>button]:cursor-pointer [&_[aria-label]]:bg-black/60 rounded-lg gap-0"
+        className="[&>button]:cursor-pointer [&_[aria-label]]:bg-white/80 dark:[&_[aria-label]]:bg-black/60 rounded-lg gap-0"
         aria-label="Chat Tabs"
         variant="underline"
       >

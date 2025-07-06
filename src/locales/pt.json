@@ -141,6 +141,12 @@
   "characters": {
     "select": "Selecionar"
   },
+  "tabs": {
+    "messages": "Mensagens",
+    "configuration": "Configuração",
+    "loadingMessages": "Carregando mensagens...",
+    "loadingConfiguration": "Carregando configuração..."
+  },
   "errors": {
     "generic": "Ocorreu um erro. Tente novamente.",
     "networkError": "Erro de rede. Verifique sua conexão.",

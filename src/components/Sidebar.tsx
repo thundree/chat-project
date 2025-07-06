@@ -83,7 +83,7 @@ export default function Sidebar({ open }: Readonly<SidebarProps>) {
         className={`fixed z-40 h-screen w-64 transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
         ${open ? "translate-x-0" : "-translate-x-full"}
         `}
-        aria-label="Chat list"
+        aria-label={t("sidebar.chatListLabel")}
       >
         <SidebarItems className="h-full flex flex-col">
           <SidebarItemGroup className="flex-1">

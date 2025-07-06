@@ -11,6 +11,7 @@ const ChatConfiguration = React.lazy(
 
 import type { Chat } from "@/types";
 import { useChat } from "@/contexts/useChat";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { AIProvider } from "@/constants";
 
 interface ChatPanelProps {
@@ -45,6 +46,7 @@ function ChatPanel({
   tabsRef,
 }: Readonly<ChatPanelProps>) {
   const { updateChat } = useChat();
+  const { t } = useTranslation();
 
   const onUserNameChange = (newName: string) => {
     if (currentChat) {
@@ -82,15 +84,15 @@ function ChatPanel({
       <Tabs
         ref={tabsRef}
         className="[&>button]:cursor-pointer [&_[aria-label]]:bg-white/80 dark:[&_[aria-label]]:bg-black/60 rounded-lg gap-0"
-        aria-label="Chat Tabs"
+        aria-label={t("tabs.chatTabsLabel")}
         variant="underline"
       >
-        <TabItem active title="Messages" icon={BsChatLeftText}>
+        <TabItem active title={t("tabs.messages")} icon={BsChatLeftText}>
           {/* Chat Messages */}
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
-                Loading messages...
+                {t("tabs.loadingMessages")}
               </div>
             }
           >
@@ -105,12 +107,12 @@ function ChatPanel({
           </Suspense>
         </TabItem>
 
-        <TabItem title="Configuration" icon={HiAdjustments}>
+        <TabItem title={t("tabs.configuration")} icon={HiAdjustments}>
           {/* Chat Configuration */}
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-64 text-gray-600 dark:text-gray-400">
-                Loading configuration...
+                {t("tabs.loadingConfiguration")}
               </div>
             }
           >

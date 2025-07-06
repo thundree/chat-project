@@ -3,6 +3,7 @@ import React from "react";
 import MessageItem from "@/components/MessageItem";
 import MessageInput from "@/components/MessageInput";
 import { useChat } from "@/contexts/useChat";
+import { useTranslation } from "@/hooks/useTranslation";
 import CustomButton from "./CustomButton";
 import { BiMessageSquareAdd } from "react-icons/bi";
 import { IoInfiniteOutline } from "react-icons/io5";
@@ -25,6 +26,7 @@ const MessageList: React.FC<MessageListProps> = ({
   isLoading = false,
 }) => {
   const { currentChatId, updateMessage, deleteMessage } = useChat();
+  const { t } = useTranslation();
 
   const handleGenerateResponse = () => {
     if (isLoading) return;
@@ -50,7 +52,7 @@ const MessageList: React.FC<MessageListProps> = ({
     <div className="w-full p-0 mb-4 h-auto overflow-y-auto">
       {allMessages.length === 0 ? (
         <p className="text-gray-500 dark:text-gray-400 italic">
-          No messages yet
+          {t("messageList.noMessages")}
         </p>
       ) : (
         allMessages.map((message) => {
@@ -80,7 +82,7 @@ const MessageList: React.FC<MessageListProps> = ({
       {streamingResponse && (
         <div className="mb-3 p-3 rounded bg-yellow-100 dark:bg-yellow-900 mr-8">
           <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-            Streaming... (Character)
+            {t("messageList.streaming")}
           </div>
           <div className="text-gray-800 dark:text-gray-200">
             {streamingResponse}
@@ -97,11 +99,11 @@ const MessageList: React.FC<MessageListProps> = ({
         >
           {isLoading ? (
             <span className="flex items-center gap-2 mr-auto">
-              <IoInfiniteOutline /> Generating...
+              <IoInfiniteOutline /> {t("messageList.generating")}
             </span>
           ) : (
             <span className="flex items-center gap-2 mr-auto">
-              <BiMessageSquareAdd /> New Response
+              <BiMessageSquareAdd /> {t("messageList.newResponse")}
             </span>
           )}
         </CustomButton>

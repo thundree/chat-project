@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import type { Chat, Message } from "@/types";
 import { UnifiedAIService } from "@/services/aiService";
 import type { AIProvider } from "@/constants";
-import { OPEN_AI_API_KEY_INDEX } from "@/constants";
+import { OLLAMA_API_KEY_INDEX } from "@/constants";
 
 export interface UseAIOptions {
   model?: string;
@@ -33,7 +33,7 @@ export interface UseAIReturn {
 }
 
 export const useAI = (
-  initialProvider: AIProvider = OPEN_AI_API_KEY_INDEX
+  initialProvider: AIProvider = OLLAMA_API_KEY_INDEX
 ): UseAIReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

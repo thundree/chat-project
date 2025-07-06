@@ -3,6 +3,7 @@
 import {
   OPEN_AI_API_KEY_INDEX,
   GOOGLE_AI_API_KEY_INDEX,
+  OLLAMA_API_KEY_INDEX,
   type AIProvider,
 } from "@/constants";
 
@@ -153,7 +154,7 @@ export const saveSelectedProvider = (provider: AIProvider): boolean => {
 };
 
 export const loadSelectedProvider = (
-  defaultProvider: AIProvider = OPEN_AI_API_KEY_INDEX
+  defaultProvider: AIProvider = OLLAMA_API_KEY_INDEX
 ): AIProvider => {
   return loadFromLocalStorage(STORAGE_KEYS.SELECTED_PROVIDER, defaultProvider);
 };

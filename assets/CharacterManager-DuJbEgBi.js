@@ -1,4 +1,4 @@
-import{e as b,d as M,r as h,j as a,C as I,L as n}from"./index-DpMysQw2.js";import{T as m,a as x}from"./Textarea-D4OujlAH.js";function P({currentChat:r}){var o;const{t:c}=b(),{updateChat:p}=M(),[t,g]=h.useState({characterName:r.characterName??"",characterInitialPrompt:r.characterInitialPrompt??"",characterInitialMessage:((o=r.characterInitialMessage)==null?void 0:o.join(`
+import{e as b,d as M,r as h,j as a,C as I,L as n}from"./index-C7uSYYWX.js";import{T as m,a as x}from"./Textarea-DUbu4X24.js";function P({currentChat:r}){var o;const{t:c}=b(),{updateChat:p}=M(),[t,g]=h.useState({characterName:r.characterName??"",characterInitialPrompt:r.characterInitialPrompt??"",characterInitialMessage:((o=r.characterInitialMessage)==null?void 0:o.join(`
 
 `))??"",characterImage:r.characterImage??"",backgroundImage:r.backgroundImage??""}),[d,l]=h.useState(!1);h.useEffect(()=>{var s;const e={characterName:r.characterName??"",characterInitialPrompt:r.characterInitialPrompt??"",characterInitialMessage:((s=r.characterInitialMessage)==null?void 0:s.join(`
 

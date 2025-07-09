@@ -16,24 +16,35 @@ export default function CharacterSelect({
 }: Readonly<CharacterSelectProps>) {
   const { t } = useTranslation();
   const [showEditor, setShowEditor] = useState(false);
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
 
   const handleCreateCustom = () => {
+    setEditingCharacter(null);
+    setShowEditor(true);
+  };
+
+  const handleEditCharacter = (character: Character) => {
+    setEditingCharacter(character);
     setShowEditor(true);
   };
 
   const handleSaveCustomCharacter = (character: Character) => {
     setShowEditor(false);
+    setEditingCharacter(null);
     onSelect(character);
   };
 
   const handleCancelEditor = () => {
     setShowEditor(false);
+    setEditingCharacter(null);
   };
 
   if (showEditor) {
     return (
       <Suspense fallback={<div>{t("mainContent.loading")}</div>}>
         <CharacterEditor
+          character={editingCharacter || undefined}
+          isEditing={editingCharacter !== null}
           onSave={handleSaveCustomCharacter}
           onCancel={handleCancelEditor}
         />
@@ -83,7 +94,7 @@ export default function CharacterSelect({
             {char.description}
           </p>
 
-          <CustomButton onClick={() => onSelect(char)}>
+          <CustomButton onClick={() => handleEditCharacter(char)}>
             {t("characters.select")}
           </CustomButton>
         </div>

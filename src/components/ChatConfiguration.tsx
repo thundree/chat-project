@@ -637,7 +637,7 @@ export default function ChatConfiguration({
           </div>
           <div className="flex max-w-xs justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>0 ({t("chat.temperatureLabels.focused")})</span>
-            <span>.5 ({t("chat.temperatureLabels.balanced")})</span>
+            <span>0.5 ({t("chat.temperatureLabels.balanced")})</span>
             <span>1 ({t("chat.temperatureLabels.creative")})</span>
           </div>
         </div>

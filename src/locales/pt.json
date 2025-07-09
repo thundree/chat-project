@@ -179,7 +179,7 @@
   },
   "characterEditor": {
     "createTitle": "Criar Personagem Personalizado",
-    "editTitle": "Editar Personagem",
+    "editTitle": "Editar Chat",
     "name": "Nome do Personagem",
     "namePlaceholder": "Digite o nome do personagem",
     "description": "Descrição",

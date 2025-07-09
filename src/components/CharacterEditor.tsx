@@ -6,10 +6,20 @@ import type { Character } from "@/types";
 
 interface CharacterEditorProps {
   character?: Character;
-  onSave: (character: Character, chatTitle?: string) => void;
+  onSave: (
+    character: Character,
+    chatTitle?: string,
+    temperature?: number
+  ) => void;
   onCancel: () => void;
   isEditing?: boolean;
   chatTitle?: string;
+  currentChat?: {
+    userName?: string;
+    temperature: number;
+  };
+  onUserNameChange?: (userName: string) => void;
+  onTemperatureChange?: (temperature: number) => void;
 }
 
 const defaultCharacter: Omit<Character, "isOriginal"> = {
@@ -28,7 +38,7 @@ const defaultCharacter: Omit<Character, "isOriginal"> = {
   avatarShape: "square",
   sceneBackgroundUrl: "",
   sceneMusicUrl: "",
-  userCharacterName: "User",
+  userCharacterName: "Username",
   userCharacterAvatarUrl: "",
   loreBookUrlsText: "",
   customCode: "",
@@ -40,6 +50,9 @@ export default function CharacterEditor({
   onCancel,
   isEditing = false,
   chatTitle,
+  currentChat,
+  onUserNameChange,
+  onTemperatureChange,
 }: Readonly<CharacterEditorProps>) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Character, "isOriginal">>(
@@ -51,17 +64,28 @@ export default function CharacterEditor({
   const [currentChatTitle, setCurrentChatTitle] = useState<string>(
     chatTitle || (character ? `Chat with ${character.name}` : "")
   );
+  const [userName, setUserName] = useState<string>(
+    currentChat?.userName ?? character?.userCharacterName ?? "Username"
+  );
+  const [temperature, setTemperature] = useState<number>(
+    currentChat?.temperature ?? 0.7
+  );
 
   useEffect(() => {
     if (character) {
       setFormData({ ...defaultCharacter, ...character });
+      setUserName(character?.userCharacterName ?? "Username");
     }
     if (chatTitle !== undefined) {
       setCurrentChatTitle(chatTitle);
     } else if (character) {
       setCurrentChatTitle(`Chat with ${character.name}`);
     }
-  }, [character, chatTitle]);
+    if (currentChat) {
+      setUserName(currentChat.userName ?? "Username");
+      setTemperature(currentChat.temperature);
+    }
+  }, [character, chatTitle, currentChat]);
 
   const handleInputChange = (
     field: keyof typeof formData,
@@ -75,12 +99,36 @@ export default function CharacterEditor({
       return;
     }
 
-    const characterToSave: Character = {
+    const chatWithCharacterToSave: Character = {
       ...formData,
+      userCharacterName: userName, // Update the character's user name
       isOriginal: false, // Custom characters are not original
     };
 
-    onSave(characterToSave, currentChatTitle.trim() || undefined);
+    onSave(
+      chatWithCharacterToSave,
+      currentChatTitle.trim() || undefined,
+      temperature
+    );
+
+    // If we have callback functions for user name and temperature, call them
+    if (
+      onUserNameChange &&
+      userName !== (currentChat?.userName ?? character?.userCharacterName)
+    ) {
+      onUserNameChange(userName);
+    }
+    if (onTemperatureChange && temperature !== currentChat?.temperature) {
+      onTemperatureChange(temperature);
+    }
+  };
+
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+  };
+
+  const handleTemperatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTemperature(parseFloat(e.target.value));
   };
 
   const isValid = formData.name.trim().length > 0;
@@ -118,6 +166,54 @@ export default function CharacterEditor({
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
             {t("characterEditor.chatTitleDescription")}
           </p>
+        </div>
+      </div>
+
+      {/* Chat Configuration Section */}
+      <div className="border-b border-gray-200 dark:border-gray-600 pb-4">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+          Chat Configuration
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* User Name Field - only show when editing */}
+          {isEditing && (
+            <div className="">
+              <Label htmlFor="user-name-input">{t("chat.userName")}</Label>
+              <TextInput
+                id="user-name-input"
+                name="user-name"
+                type="text"
+                value={userName}
+                onChange={handleUserNameChange}
+                placeholder={t("chat.userNamePlaceholder")}
+                maxLength={64}
+              />
+            </div>
+          )}
+
+          {/* Temperature Slider - always show */}
+          <div className={isEditing ? "" : "md:col-span-2"}>
+            <Label htmlFor="temperature-slider">
+              {t("chat.temperature")}: {temperature}
+            </Label>
+            <input
+              id="temperature-slider"
+              name="temperature"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={temperature}
+              onChange={handleTemperatureChange}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 mt-1"
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <span>0 ({t("chat.temperatureLabels.focused")})</span>
+              <span>0.5 ({t("chat.temperatureLabels.balanced")})</span>
+              <span>1 ({t("chat.temperatureLabels.creative")})</span>
+            </div>
+          </div>
         </div>
       </div>
 

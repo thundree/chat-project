@@ -280,10 +280,15 @@ export default function MainContent() {
                 <CharacterSelect
                   onSelect={async (
                     character: Character,
-                    chatTitle?: string
+                    chatTitle?: string,
+                    temperature?: number
                   ) => {
                     // Create a new chat using the context
-                    const newChatId = await createChat(character, chatTitle);
+                    const newChatId = await createChat(
+                      character,
+                      chatTitle,
+                      temperature
+                    );
                     window.location.hash = `#${newChatId}`;
                   }}
                 />

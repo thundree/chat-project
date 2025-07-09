@@ -174,7 +174,11 @@ export interface ChatContextType {
   streamingResponse: string;
 
   // Chat operations
-  createChat: (character: Character, title?: string) => Promise<string>;
+  createChat: (
+    character: Character,
+    title?: string,
+    temperature?: number
+  ) => Promise<string>;
   updateChat: (id: string, updates: Partial<Chat>) => Promise<void>;
   deleteChat: (id: string) => Promise<void>;
   duplicateChat: (id: string) => Promise<string>;
@@ -285,7 +289,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Chat operations
   const createChat = useCallback(
-    async (character: Character, title?: string): Promise<string> => {
+    async (
+      character: Character,
+      title?: string,
+      temperature?: number
+    ): Promise<string> => {
       const newChatId = generateId();
       const newChat: Chat = {
         id: newChatId,
@@ -295,9 +303,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         characterConversationBase: character.roleInstruction,
         characterInitialMessage: character?.characterInitialMessage ?? [],
         characterColor: "#3b82f6", // Default blue color
-        temperature: 0.7,
+        temperature: temperature ?? 0.7, // Use provided temperature or default to 0.7
         messages: [],
-        userName: "Username",
+        userName: character.userCharacterName || "Username",
         backgroundImage: character.sceneBackgroundUrl,
       };
 

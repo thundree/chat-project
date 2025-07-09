@@ -194,6 +194,7 @@
     "initialMessage": "Initial Message",
     "initialMessagePlaceholder": "The first message the character will send",
     "avatarPreview": "Avatar Preview",
+    "backgroundPreview": "Preview with background and avatar",
     "chatTitle": "Chat Title",
     "chatTitlePlaceholder": "Enter a title for your chat",
     "chatTitleDescription": "This will be the name of your chat conversation"

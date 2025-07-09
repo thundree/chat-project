@@ -194,6 +194,7 @@
     "initialMessage": "Mensagem Inicial",
     "initialMessagePlaceholder": "A primeira mensagem que o personagem enviará",
     "avatarPreview": "Visualização do Avatar",
+    "backgroundPreview": "Visualização com fundo e avatar",
     "chatTitle": "Título do Chat",
     "chatTitlePlaceholder": "Digite um título para seu chat",
     "chatTitleDescription": "Este será o nome da sua conversa de chat"

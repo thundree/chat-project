@@ -80,27 +80,49 @@ export default function CharacterSelect({
       {originalCharacters.map((char) => (
         <div
           key={char.name}
-          className="flex flex-col items-center w-full p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+          className="relative flex flex-col items-center w-full p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden"
         >
-          {char.avatarUrl && (
-            <img
-              src={char.avatarUrl}
-              alt={char.name}
-              className={`mb-3 object-cover mx-auto w-20 h-20 ${
-                char.avatarShape === "square" ? "rounded-lg" : "rounded-full"
-              }`}
-            />
-          )}
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-            {char.name}
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300 text-center min-h-[40px] mb-6">
-            {char.description}
-          </p>
+          {/* Background Image */}
+          {char.sceneBackgroundUrl && (
+            <>
+              <div
+                className="absolute inset-0 rounded-xl"
+                style={{
+                  backgroundImage: `url(${char.sceneBackgroundUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
 
-          <CustomButton onClick={() => handleEditCharacter(char)}>
-            {t("characters.select")}
-          </CustomButton>
+              <div className="absolute inset-0 bg-white opacity-90 dark:hidden rounded-xl" />
+
+              <div className="absolute inset-0 bg-gray-800 opacity-90 hidden dark:block rounded-xl" />
+            </>
+          )}
+
+          {/* Content container */}
+          <div className="relative z-10 flex flex-col items-center w-full">
+            {char.avatarUrl && (
+              <img
+                src={char.avatarUrl}
+                alt={char.name}
+                className={`mb-3 object-cover mx-auto w-20 h-20 ${
+                  char.avatarShape === "square" ? "rounded-lg" : "rounded-full"
+                }`}
+              />
+            )}
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+              {char.name}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 text-center min-h-[40px] mb-6">
+              {char.description}
+            </p>
+
+            <CustomButton onClick={() => handleEditCharacter(char)}>
+              {t("characters.select")}
+            </CustomButton>
+          </div>
         </div>
       ))}
     </div>

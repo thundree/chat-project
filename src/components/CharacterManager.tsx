@@ -127,24 +127,6 @@ export default function CharacterManager({
             />
           </div>
 
-          {/* Preview */}
-          {formData.backgroundImage && (
-            <div className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="text-center">
-                <img
-                  src={`${
-                    formData.backgroundImage
-                  }?size=${new Date().getTime()}`} // Cache busting
-                  alt={t("characterManager.backgroundPreview")}
-                  className="mx-auto h-42 w-auto object-cover rounded-lg"
-                />
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                  {t("characterManager.backgroundPreview")}
-                </p>
-              </div>
-            </div>
-          )}
-
           <div>
             <Label htmlFor="characterImage">
               {t("characterManager.characterImage")}
@@ -160,19 +142,45 @@ export default function CharacterManager({
             />
           </div>
 
-          {/* Preview */}
-          {formData.characterImage && (
-            <div className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="text-center">
-                <img
-                  src={`${
-                    formData.characterImage
-                  }?size=${new Date().getTime()}`} // Cache busting
-                  alt={formData.characterName || "Character preview"}
-                  className="mx-auto h-42 w-auto object-cover rounded-lg"
-                />
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                  {t("characterManager.characterPreview")}
+          {/* Combined Preview Section */}
+          {(formData.backgroundImage || formData.characterImage) && (
+            <div className="w-full relative p-4 rounded-lg overflow-hidden min-h-[140px] flex items-center justify-center">
+              {/* Background Image */}
+              {formData.backgroundImage && (
+                <>
+                  <div
+                    className="absolute inset-0 rounded-lg"
+                    style={{
+                      backgroundImage: `url(${formData.backgroundImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  />
+
+                  <div className="absolute inset-0 bg-white opacity-90 dark:hidden rounded-lg" />
+
+                  <div className="absolute inset-0 bg-gray-800 opacity-90 hidden dark:block rounded-lg" />
+                </>
+              )}
+
+              {/* Content */}
+              <div className="relative z-10 text-center">
+                {formData.characterImage && (
+                  <img
+                    src={formData.characterImage}
+                    alt={formData.characterName || "Character preview"}
+                    className="mx-auto object-cover w-16 h-16 mb-2 rounded-lg"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                )}
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {formData.characterName || "Character Name"}
+                </p>
+                <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+                  {t("characterManager.backgroundPreview")}
                 </p>
               </div>
             </div>

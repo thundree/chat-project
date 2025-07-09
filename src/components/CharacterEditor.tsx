@@ -225,28 +225,54 @@ export default function CharacterEditor({
         </div>
       </div>
 
-      {/* Preview Avatar */}
-      {formData.avatarUrl && (
-        <div className="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <div className="text-center">
-            <img
-              src={formData.avatarUrl}
-              alt={formData.name || "Character preview"}
-              className={`mx-auto object-cover w-20 h-20 ${
-                formData.avatarShape === "square"
-                  ? "rounded-lg"
-                  : "rounded-full"
-              }`}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              {t("characterEditor.avatarPreview")}
+      {/* Preview Section */}
+      <div className="flex w-full gap-6">
+        {/* Avatar & Background Preview */}
+        <div className="w-full relative p-4 rounded-lg overflow-hidden min-h-[140px] flex items-center justify-center">
+          {/* Background Image */}
+          {formData.sceneBackgroundUrl && (
+            <>
+              <div
+                className="absolute inset-0 rounded-lg"
+                style={{
+                  backgroundImage: `url(${formData.sceneBackgroundUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+
+              <div className="absolute inset-0 bg-white opacity-90 dark:hidden rounded-lg" />
+
+              <div className="absolute inset-0 bg-gray-800 opacity-90 hidden dark:block rounded-lg" />
+            </>
+          )}
+
+          {/* Content */}
+          <div className="relative z-10 text-center">
+            {formData.avatarUrl && (
+              <img
+                src={formData.avatarUrl}
+                alt={formData.name || "Character preview"}
+                className={`mx-auto object-cover w-16 h-16 mb-2 ${
+                  formData.avatarShape === "square"
+                    ? "rounded-lg"
+                    : "rounded-full"
+                }`}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            )}
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {formData.name || "Character Name"}
+            </p>
+            <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+              {t("characterEditor.backgroundPreview")}
             </p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

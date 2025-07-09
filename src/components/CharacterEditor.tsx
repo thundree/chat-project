@@ -232,12 +232,11 @@ export default function CharacterEditor({
             <img
               src={formData.avatarUrl}
               alt={formData.name || "Character preview"}
-              className={`mx-auto object-cover ${
+              className={`mx-auto object-cover w-20 h-20 ${
                 formData.avatarShape === "square"
                   ? "rounded-lg"
                   : "rounded-full"
               }`}
-              style={{ width: 80, height: 80 }}
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}

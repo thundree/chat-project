@@ -86,10 +86,9 @@ export default function CharacterSelect({
             <img
               src={char.avatarUrl}
               alt={char.name}
-              className={`mb-3 object-cover ${
+              className={`mb-3 object-cover mx-auto w-20 h-20 ${
                 char.avatarShape === "square" ? "rounded-lg" : "rounded-full"
               }`}
-              style={{ width: 80, height: 80 }}
             />
           )}
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">

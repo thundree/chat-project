@@ -206,8 +206,10 @@ export default function MainContent() {
       const userMessage: Omit<Message, "id"> = {
         sender: "user",
         text: [messageText.trim()],
-      };      const messageId = await addMessage(currentChatId, userMessage);
-      
+      };
+
+      const messageId = await addMessage(currentChatId, userMessage);
+
       // Create the full message object to pass to handleGenerateResponse
       const fullUserMessage: Message = {
         ...userMessage,

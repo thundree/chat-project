@@ -109,8 +109,8 @@ export const prepareMessagesForGoogleAI = (
   let systemInstruction: string | undefined;
 
   // Add system instruction if available
-  if (chat.characterInitialPrompt) {
-    systemInstruction = chat.characterInitialPrompt;
+  if (chat.characterConversationBase) {
+    systemInstruction = chat.characterConversationBase;
   }
 
   // Add character's initial message if available

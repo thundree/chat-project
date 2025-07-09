@@ -292,7 +292,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         title: title ?? `Chat with ${character.name}`,
         characterName: character.name,
         characterImage: character.avatarUrl,
-        characterInitialPrompt: character.roleInstruction,
+        characterConversationBase: character.roleInstruction,
         characterInitialMessage: character?.characterInitialMessage ?? [],
         characterColor: "#3b82f6", // Default blue color
         temperature: 0.7,

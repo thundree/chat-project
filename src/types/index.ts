@@ -25,7 +25,7 @@ export type Chat = {
   characterImage?: string;
   characterName?: string;
   characterInitialMessage?: string[];
-  characterInitialPrompt?: string;
+  characterConversationBase?: string;
   characterColor?: string;
   characterVoice?: string;
   temperature: number;

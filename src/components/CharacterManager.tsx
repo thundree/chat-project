@@ -17,7 +17,7 @@ export default function CharacterManager({
 
   const [formData, setFormData] = useState({
     characterName: currentChat.characterName ?? "",
-    characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
+    characterConversationBase: currentChat.characterConversationBase ?? "",
     characterInitialMessage:
       currentChat.characterInitialMessage?.join("\n\n") ?? "",
     characterImage: currentChat.characterImage ?? "",
@@ -29,7 +29,7 @@ export default function CharacterManager({
   useEffect(() => {
     const newFormData = {
       characterName: currentChat.characterName ?? "",
-      characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
+      characterConversationBase: currentChat.characterConversationBase ?? "",
       characterInitialMessage:
         currentChat.characterInitialMessage?.join("\n\n") ?? "",
       characterImage: currentChat.characterImage ?? "",
@@ -48,7 +48,7 @@ export default function CharacterManager({
   const handleSave = async () => {
     const updates: Partial<Chat> = {
       characterName: formData.characterName,
-      characterInitialPrompt: formData.characterInitialPrompt,
+      characterConversationBase: formData.characterConversationBase,
       characterInitialMessage: formData.characterInitialMessage
         ? formData.characterInitialMessage
             .split("\n\n")
@@ -66,7 +66,7 @@ export default function CharacterManager({
   const handleReset = () => {
     setFormData({
       characterName: currentChat.characterName ?? "",
-      characterInitialPrompt: currentChat.characterInitialPrompt ?? "",
+      characterConversationBase: currentChat.characterConversationBase ?? "",
       characterInitialMessage:
         currentChat.characterInitialMessage?.join("\n\n") ?? "",
       characterImage: currentChat.characterImage ?? "",
@@ -190,14 +190,14 @@ export default function CharacterManager({
         {/* Character Behavior */}
         <div className="space-y-4">
           <div>
-            <Label htmlFor="characterInitialPrompt">
+            <Label htmlFor="characterConversationBase">
               {t("characterManager.initialPrompt")}
             </Label>
             <Textarea
-              id="characterInitialPrompt"
-              value={formData.characterInitialPrompt}
+              id="characterConversationBase"
+              value={formData.characterConversationBase}
               onChange={(e) =>
-                handleInputChange("characterInitialPrompt", e.target.value)
+                handleInputChange("characterConversationBase", e.target.value)
               }
               placeholder={t("characterManager.initialPromptPlaceholder")}
               rows={7}

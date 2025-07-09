@@ -163,7 +163,7 @@ interface Chat {
   title: string;                 // Chat display name
   characterId: string;           // Associated character
   characterName: string;         // Character display name
-  characterInitialPrompt?: string;  // AI system prompt
+  characterConversationBase?: string;  // AI system prompt
   characterInitialMessage?: string[]; // Welcome message
   userName: string;              // Your display name
   temperature: number;           // AI creativity (0.1-1.0)

@@ -92,10 +92,10 @@ export const prepareMessagesForOpenAI = (chat: Chat): OpenAIMessage[] => {
   const messages: OpenAIMessage[] = [];
 
   // Add system message with character prompt if available
-  if (chat.characterInitialPrompt) {
+  if (chat.characterConversationBase) {
     messages.push({
       role: "system",
-      content: chat.characterInitialPrompt,
+      content: chat.characterConversationBase,
     });
   }
 

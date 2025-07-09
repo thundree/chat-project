@@ -129,6 +129,7 @@
   },
   "mainContent": {
     "noChatSelected": "No chat selected",
+    "chatNotFound": "Chat not found",
     "apiKeyRequired": "API Key Required",
     "noApiKeyFound": "No API key found for",
     "configureApiKey": "Please configure your API key in the Configuration tab to use this service.",

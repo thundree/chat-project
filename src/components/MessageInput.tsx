@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { SiNginxproxymanager } from "react-icons/si";
 import { IoSend } from "react-icons/io5";
 import { useTranslation } from "@/hooks/useTranslation";
-import type { Chat } from "@/types";
+import type { Chat, Message } from "@/types";
 
 interface MessageInputProps {
   selectedChat: Chat | null;
-  onSendMessage: (messageText: string) => void;
-  onGenerateResponse: () => void;
+  onSendMessage: (messageText: string) => Promise<Message | undefined>;
+  onGenerateResponse: (latestUserMessage?: Message) => void;
   isLoading?: boolean;
   disabled?: boolean;
 }
@@ -40,12 +40,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const handleSubmit = async () => {
     const trimmedText = inputText.trim();
     if (trimmedText && !isLoading && !disabled) {
-      onSendMessage(trimmedText);
+      const userMessage = await onSendMessage(trimmedText);
       setInputText("");
-      // Auto-generate response after sending user message
-      setTimeout(() => {
-        onGenerateResponse();
-      }, 100); // Small delay to ensure message is added to history first
+      // Small delay to ensure React state has fully propagated
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      // Auto-generate response after the user message has been properly added
+      onGenerateResponse(userMessage);
     }
   };
 

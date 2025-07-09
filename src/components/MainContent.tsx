@@ -119,8 +119,8 @@ export default function MainContent() {
     tabsRef.current?.setActiveTab(0);
   }, [currentChatId]);
 
-  const handleGenerateResponse = async () => {
-    if (!currentChat) {
+  const handleGenerateResponse = async (latestUserMessage?: Message) => {
+    if (!currentChat || !currentChatId) {
       showAlert(t("mainContent.noChatSelected"));
       return;
     }
@@ -141,7 +141,27 @@ export default function MainContent() {
       return;
     }
 
-    const newMessage = await generateResponse(currentChat, {
+    // Get the most up-to-date chat from the context
+    let freshChat = chats.find((chat) => chat.id === currentChatId);
+    if (!freshChat) {
+      showAlert(t("mainContent.chatNotFound"));
+      return;
+    }
+
+    // If we have a latest user message that's not in the chat yet, add it manually
+    if (latestUserMessage) {
+      const messageExists = freshChat.messages?.some(
+        (msg) => msg.id === latestUserMessage.id
+      );
+      if (!messageExists) {
+        freshChat = {
+          ...freshChat,
+          messages: [...(freshChat.messages || []), latestUserMessage],
+        };
+      }
+    }
+
+    const newMessage = await generateResponse(freshChat, {
       model: selectedModel,
       maxTokens: 1000,
     });
@@ -181,13 +201,20 @@ export default function MainContent() {
     );
   };
 
-  const onSendMessage = (messageText: string) => {
+  const onSendMessage = async (messageText: string) => {
     if (messageText.trim() && currentChatId) {
       const userMessage: Omit<Message, "id"> = {
         sender: "user",
         text: [messageText.trim()],
+      };      const messageId = await addMessage(currentChatId, userMessage);
+      
+      // Create the full message object to pass to handleGenerateResponse
+      const fullUserMessage: Message = {
+        ...userMessage,
+        id: messageId,
       };
-      addMessage(currentChatId, userMessage);
+
+      return fullUserMessage;
     }
   };
 

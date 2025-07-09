@@ -12,8 +12,8 @@ interface MessageListProps {
   messages: Message[];
   selectedChat: Chat | null;
   streamingResponse: string;
-  onSendMessage: (messageText: string) => void;
-  onGenerateResponse: () => void;
+  onSendMessage: (messageText: string) => Promise<Message | undefined>;
+  onGenerateResponse: (latestUserMessage?: Message) => void;
   isLoading?: boolean;
 }
 
@@ -60,7 +60,8 @@ const MessageList: React.FC<MessageListProps> = ({
           if (message.sender === "user") {
             msgSender = selectedChat?.userName ?? t("messageList.defaultUser");
           } else {
-            msgSender = selectedChat?.characterName ?? t("messageList.defaultCharacter");
+            msgSender =
+              selectedChat?.characterName ?? t("messageList.defaultCharacter");
           }
 
           return (

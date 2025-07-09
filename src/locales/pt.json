@@ -129,6 +129,7 @@
   },
   "mainContent": {
     "noChatSelected": "Nenhum chat selecionado",
+    "chatNotFound": "Chat não encontrado",
     "apiKeyRequired": "Chave API Necessária",
     "noApiKeyFound": "Nenhuma chave API encontrada para",
     "configureApiKey": "Por favor, configure sua chave API na aba de Configuração para usar este serviço.",

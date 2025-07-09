@@ -12,7 +12,7 @@ const CharacterManager = React.lazy(
   () => import("@/components/CharacterManager")
 );
 
-import type { Chat } from "@/types";
+import type { Chat, Message } from "@/types";
 import { useChat } from "@/contexts/useChat";
 import { useTranslation } from "@/hooks/useTranslation";
 import type { AIProvider } from "@/constants";
@@ -27,9 +27,9 @@ interface ChatPanelProps {
   onProviderChange: (provider: AIProvider) => void;
   selectedModel: string;
   selectedProvider: AIProvider;
-  handleGenerateResponse: () => void;
+  handleGenerateResponse: (latestUserMessage?: Message) => void;
   handleValidateConnection: () => void;
-  onSendMessage: (messageText: string) => void;
+  onSendMessage: (messageText: string) => Promise<Message | undefined>;
   tabsRef: RefObject<TabsRef>;
 }
 

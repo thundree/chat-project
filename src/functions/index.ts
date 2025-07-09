@@ -43,12 +43,11 @@ export const generatePlaceholderInstructions = (
   standalone: boolean = false
 ): string => {
   const charName = chat.characterName || "the character";
-  const userName = chat.userName || "the user";
 
   let instructions = standalone ? "" : "\n\n";
   instructions += `IMPORTANT: In your responses, you can use these placeholders:
 - {{char}} outputs your name ("${charName}")
-- {{user}} outputs the user's name ("${userName}")`;
+- {{user}} outputs the user's name`;
 
   // Add any additional placeholders
   if (additionalPlaceholders) {

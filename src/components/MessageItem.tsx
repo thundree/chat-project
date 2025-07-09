@@ -96,7 +96,7 @@ export default function MessageItem({
   return (
     <div
       key={`chat-message-${message.id}`}
-      className="p-2 flex gap-2 bg-white/90 dark:bg-black/80 rounded-md"
+      className="p-2 flex gap-2 bg-white/90 dark:bg-black/90 rounded-md"
     >
       <div className="flex-shrink-0 w-14 text-gray-800 dark:text-blue-200">
         {messageIcon}

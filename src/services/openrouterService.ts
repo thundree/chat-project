@@ -2,6 +2,7 @@ import type { Chat, Message, SenderType } from "@/types";
 import { httpClient } from "@/utils/httpClient";
 import DatabaseService from "./databaseService";
 import { OPENROUTER_API_KEY_INDEX } from "@/constants";
+import { generatePlaceholderInstructions } from "@/functions";
 
 // OpenRouter API configuration
 let OPENROUTER_API_KEY: string | null = null;
@@ -120,13 +121,20 @@ export const prepareMessagesForOpenRouter = (
 ): OpenRouterMessage[] => {
   const messages: OpenRouterMessage[] = [];
 
-  // Add system message with character prompt if available
-  if (chat.characterConversationBase) {
-    messages.push({
-      role: "system",
-      content: chat.characterConversationBase,
-    });
-  }
+  // Always add placeholder instructions, with or without characterConversationBase
+  const placeholderInstructions = generatePlaceholderInstructions(
+    chat,
+    undefined,
+    !chat.characterConversationBase
+  );
+  const systemContent = chat.characterConversationBase
+    ? chat.characterConversationBase + placeholderInstructions
+    : placeholderInstructions;
+
+  messages.push({
+    role: "system",
+    content: systemContent,
+  });
 
   // Add character's initial message if available
   if (chat.characterInitialMessage && chat.characterInitialMessage.length > 0) {

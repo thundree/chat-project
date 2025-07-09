@@ -3,6 +3,7 @@ import type { Chat, Message, SenderType } from "@/types";
 import { httpClient } from "@/utils/httpClient";
 import DatabaseService from "./databaseService";
 import { GOOGLE_AI_API_KEY_INDEX } from "@/constants";
+import { generatePlaceholderInstructions } from "@/functions";
 
 // Google AI API configuration
 let GOOGLE_AI_API_KEY: string | null = null;
@@ -49,8 +50,8 @@ export interface GoogleAICompletionRequest {
     topP?: number;
     topK?: number;
   };
-  systemInstruction?: {
-    parts: { text: string }[];
+  config?: {
+    systemInstruction?: string;
   };
 }
 
@@ -106,12 +107,15 @@ export const prepareMessagesForGoogleAI = (
   systemInstruction?: string;
 } => {
   const messages: GoogleAIMessage[] = [];
-  let systemInstruction: string | undefined;
-
-  // Add system instruction if available
-  if (chat.characterConversationBase) {
-    systemInstruction = chat.characterConversationBase;
-  }
+  // Always add placeholder instructions, with or without characterConversationBase
+  const placeholderInstructions = generatePlaceholderInstructions(
+    chat,
+    undefined,
+    !chat.characterConversationBase
+  );
+  const systemInstruction = chat.characterConversationBase
+    ? chat.characterConversationBase + placeholderInstructions
+    : placeholderInstructions;
 
   // Add character's initial message if available
   if (chat.characterInitialMessage && chat.characterInitialMessage.length > 0) {
@@ -129,37 +133,31 @@ export const prepareMessagesForGoogleAI = (
   }
 
   // Ensure the conversation ends with a user message (required for Gemini 2.5+ models)
+  // The conversation should naturally end with a user message when we're generating a response
   if (messages.length > 0 && messages[messages.length - 1].role === "model") {
-    // If the last message is from the model, we need to add a user message
-    // This typically happens when we're generating a response to the user's last message
-    // In this case, we should look at the last user message to continue the conversation
+    // If the last message is from the model, this means we're probably in a state where
+    // we need to add a user message to continue the conversation.
+    // This should only happen if we're starting a new conversation or testing.
 
-    // Find the last user message in the conversation
-    let lastUserMessageIndex = -1;
-    for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].role === "user") {
-        lastUserMessageIndex = i;
-        break;
-      }
-    }
-
-    if (lastUserMessageIndex >= 0) {
-      // Remove any model messages after the last user message
-      messages.splice(lastUserMessageIndex + 1);
-    } else if (messages.length === 1 && messages[0].role === "model") {
-      // If we only have the character's initial message, add a generic user greeting
+    // Only add a greeting if we have just the character's initial message
+    if (
+      (messages.length === 1 && messages[0].role === "model") ||
+      messages.length === 0
+    ) {
       messages.push({
         role: "user",
-        parts: [{ text: "Hello" }],
+        parts: [{ text: "[instigate the conversation with the user]" }],
       });
     }
+    // For other cases, the conversation history should already include the user's message
+    // that we need to respond to, so we don't modify the messages array
   }
 
   // If we have no messages at all, add a default user message
   if (messages.length === 0) {
     messages.push({
       role: "user",
-      parts: [{ text: "Hello" }],
+      parts: [{ text: "[instigate the conversation with the user]" }],
     });
   }
 
@@ -207,8 +205,8 @@ export const getChatCompletion = async (
 
     // Add system instruction if available
     if (systemInstruction) {
-      params.systemInstruction = {
-        parts: [{ text: systemInstruction }],
+      params.config = {
+        systemInstruction,
       };
     }
 
@@ -268,8 +266,8 @@ export const getStreamingChatCompletion = async (
 
     // Add system instruction if available
     if (systemInstruction) {
-      params.systemInstruction = {
-        parts: [{ text: systemInstruction }],
+      params.config = {
+        systemInstruction,
       };
     }
 
@@ -315,8 +313,8 @@ export const getChatCompletionViaProxy = async (
 
     // Add system instruction if available
     if (systemInstruction) {
-      requestBody.systemInstruction = {
-        parts: [{ text: systemInstruction }],
+      requestBody.config = {
+        systemInstruction,
       };
     }
 

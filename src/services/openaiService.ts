@@ -3,6 +3,7 @@ import type { Chat, Message, SenderType } from "@/types";
 import { httpClient } from "@/utils/httpClient";
 import DatabaseService from "./databaseService";
 import { OPEN_AI_API_KEY_INDEX } from "@/constants";
+import { generatePlaceholderInstructions } from "@/functions";
 
 // OpenAI API configuration
 let OPENAI_API_KEY: string | null = null;
@@ -91,13 +92,20 @@ export const convertToOpenAIMessage = (message: Message): OpenAIMessage => {
 export const prepareMessagesForOpenAI = (chat: Chat): OpenAIMessage[] => {
   const messages: OpenAIMessage[] = [];
 
-  // Add system message with character prompt if available
-  if (chat.characterConversationBase) {
-    messages.push({
-      role: "system",
-      content: chat.characterConversationBase,
-    });
-  }
+  // Always add placeholder instructions, with or without characterConversationBase
+  const placeholderInstructions = generatePlaceholderInstructions(
+    chat,
+    undefined,
+    !chat.characterConversationBase
+  );
+  const systemContent = chat.characterConversationBase
+    ? chat.characterConversationBase + placeholderInstructions
+    : placeholderInstructions;
+
+  messages.push({
+    role: "system",
+    content: systemContent,
+  });
 
   // Add character's initial message if available
   if (chat.characterInitialMessage && chat.characterInitialMessage.length > 0) {

@@ -193,7 +193,10 @@
     "reminderMessagePlaceholder": "Breve lembrete para manter o personagem no papel",
     "initialMessage": "Mensagem Inicial",
     "initialMessagePlaceholder": "A primeira mensagem que o personagem enviará",
-    "avatarPreview": "Visualização do Avatar"
+    "avatarPreview": "Visualização do Avatar",
+    "chatTitle": "Título do Chat",
+    "chatTitlePlaceholder": "Digite um título para seu chat",
+    "chatTitleDescription": "Este será o nome da sua conversa de chat"
   },
   "characterManager": {
     "title": "Configurações do Personagem",

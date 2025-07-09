@@ -193,7 +193,10 @@
     "reminderMessagePlaceholder": "Brief reminder to keep the character in role",
     "initialMessage": "Initial Message",
     "initialMessagePlaceholder": "The first message the character will send",
-    "avatarPreview": "Avatar Preview"
+    "avatarPreview": "Avatar Preview",
+    "chatTitle": "Chat Title",
+    "chatTitlePlaceholder": "Enter a title for your chat",
+    "chatTitleDescription": "This will be the name of your chat conversation"
   },
   "characterManager": {
     "title": "Character Settings",

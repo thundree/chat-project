@@ -8,7 +8,7 @@ import { HiPlus } from "react-icons/hi";
 const CharacterEditor = lazy(() => import("@/components/CharacterEditor"));
 
 interface CharacterSelectProps {
-  onSelect: (character: Character) => void;
+  onSelect: (character: Character, chatTitle?: string) => void;
 }
 
 export default function CharacterSelect({
@@ -16,7 +16,9 @@ export default function CharacterSelect({
 }: Readonly<CharacterSelectProps>) {
   const { t } = useTranslation();
   const [showEditor, setShowEditor] = useState(false);
-  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(
+    null
+  );
 
   const handleCreateCustom = () => {
     setEditingCharacter(null);
@@ -28,10 +30,13 @@ export default function CharacterSelect({
     setShowEditor(true);
   };
 
-  const handleSaveCustomCharacter = (character: Character) => {
+  const handleSaveCustomCharacter = (
+    character: Character,
+    chatTitle?: string
+  ) => {
     setShowEditor(false);
     setEditingCharacter(null);
-    onSelect(character);
+    onSelect(character, chatTitle);
   };
 
   const handleCancelEditor = () => {

@@ -6,9 +6,10 @@ import type { Character } from "@/types";
 
 interface CharacterEditorProps {
   character?: Character;
-  onSave: (character: Character) => void;
+  onSave: (character: Character, chatTitle?: string) => void;
   onCancel: () => void;
   isEditing?: boolean;
+  chatTitle?: string;
 }
 
 const defaultCharacter: Omit<Character, "isOriginal"> = {
@@ -38,6 +39,7 @@ export default function CharacterEditor({
   onSave,
   onCancel,
   isEditing = false,
+  chatTitle,
 }: Readonly<CharacterEditorProps>) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Character, "isOriginal">>(
@@ -46,12 +48,20 @@ export default function CharacterEditor({
       ...character,
     })
   );
+  const [currentChatTitle, setCurrentChatTitle] = useState<string>(
+    chatTitle || (character ? `Chat with ${character.name}` : "")
+  );
 
   useEffect(() => {
     if (character) {
       setFormData({ ...defaultCharacter, ...character });
     }
-  }, [character]);
+    if (chatTitle !== undefined) {
+      setCurrentChatTitle(chatTitle);
+    } else if (character) {
+      setCurrentChatTitle(`Chat with ${character.name}`);
+    }
+  }, [character, chatTitle]);
 
   const handleInputChange = (
     field: keyof typeof formData,
@@ -70,7 +80,7 @@ export default function CharacterEditor({
       isOriginal: false, // Custom characters are not original
     };
 
-    onSave(characterToSave);
+    onSave(characterToSave, currentChatTitle.trim() || undefined);
   };
 
   const isValid = formData.name.trim().length > 0;
@@ -90,6 +100,24 @@ export default function CharacterEditor({
           <CustomButton variant="gray" onClick={onCancel}>
             {t("common.cancel")}
           </CustomButton>
+        </div>
+      </div>
+
+      {/* Chat Title Section */}
+      <div className="border-b border-gray-200 dark:border-gray-600 pb-4">
+        <div>
+          <Label htmlFor="chatTitle">{t("characterEditor.chatTitle")}</Label>
+          <TextInput
+            id="chatTitle"
+            type="text"
+            value={currentChatTitle}
+            onChange={(e) => setCurrentChatTitle(e.target.value)}
+            placeholder={t("characterEditor.chatTitlePlaceholder")}
+            maxLength={128}
+          />
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            {t("characterEditor.chatTitleDescription")}
+          </p>
         </div>
       </div>
 

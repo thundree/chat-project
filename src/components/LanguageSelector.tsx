@@ -1,5 +1,6 @@
 import { useTranslation } from "@/hooks/useTranslation";
 import type { Locale } from "@/locales";
+import { Label } from "flowbite-react";
 
 interface LanguageSelectorProps {
   readonly className?: string;
@@ -16,12 +17,9 @@ export default function LanguageSelector({
 
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label
-        htmlFor="language-select"
-        className="block text-xs font-medium text-gray-600 dark:text-gray-400"
-      >
+      <Label htmlFor="language-select" className="mb-1 block text-sm">
         {t("settings.language")}
-      </label>
+      </Label>
       <select
         id="language-select"
         value={locale}

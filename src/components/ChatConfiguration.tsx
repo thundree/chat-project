@@ -10,17 +10,6 @@ import {
   areModelsStale,
   saveSelectedProvider,
 } from "@/utils/localStorage";
-import DatabaseService from "@/services/databaseService";
-import { refreshApiKey as refreshGoogleApiKey } from "@/services/googleAIService";
-import { refreshApiKey as refreshOpenAIApiKey } from "@/services/openaiService";
-import { refreshApiKey as refreshOpenRouterApiKey } from "@/services/openrouterService";
-import {
-  validateOpenAIKey,
-  validateGoogleAIKey,
-  validateOllamaBaseUrl,
-  validateOpenRouterKey,
-} from "@/utils/apiKeyUtils";
-
 import { TbRefreshAlert } from "react-icons/tb";
 import { BsDatabaseFillExclamation } from "react-icons/bs";
 import CustomButton from "@/components/CustomButton";
@@ -65,16 +54,7 @@ export default function ChatConfiguration({
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [modelsFromCache, setModelsFromCache] = useState<boolean>(false);
 
-  // API Key states
-  const [openaiKey, setOpenaiKey] = useState("");
-  const [googleKey, setGoogleKey] = useState("");
-  const [ollamaUrl, setOllamaUrl] = useState("http://localhost:11434");
-  const [openrouterKey, setOpenrouterKey] = useState("");
-  const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
-  const [hasGoogleKey, setHasGoogleKey] = useState(false);
-  const [hasOllamaKey, setHasOllamaKey] = useState(false);
-  const [hasOpenRouterKey, setHasOpenRouterKey] = useState(false);
-  const [isSavingKey, setIsSavingKey] = useState(false);
+  // Chat configuration states
   const [userName, setUserName] = useState(currentChat.userName ?? "User");
   const [isSavingUserName, setIsSavingUserName] = useState(false);
   const [userNameSaved, setUserNameSaved] = useState(false);
@@ -253,157 +233,6 @@ export default function ChatConfiguration({
     }
   };
 
-  // Check for existing API keys on component mount
-  const checkApiKeys = async () => {
-    try {
-      const [openaiExists, googleExists, ollamaExists, openrouterExists] =
-        await Promise.all([
-          DatabaseService.hasApiKey(OPEN_AI_API_KEY_INDEX),
-          DatabaseService.hasApiKey(GOOGLE_AI_API_KEY_INDEX),
-          DatabaseService.hasApiKey(OLLAMA_API_KEY_INDEX),
-          DatabaseService.hasApiKey(OPENROUTER_API_KEY_INDEX),
-        ]);
-      setHasOpenAIKey(openaiExists);
-      setHasGoogleKey(googleExists);
-      setHasOllamaKey(ollamaExists);
-      setHasOpenRouterKey(openrouterExists);
-    } catch (error) {
-      console.error("Error checking API keys:", error);
-    }
-  };
-
-  // Save OpenAI API key
-  const handleSaveOpenAIKey = async () => {
-    if (!openaiKey.trim()) return;
-
-    if (!validateOpenAIKey(openaiKey.trim())) {
-      alert(t("apiKeys.openai.validation"));
-      return;
-    }
-
-    setIsSavingKey(true);
-    try {
-      await DatabaseService.saveApiKey(OPEN_AI_API_KEY_INDEX, openaiKey.trim());
-      await refreshOpenAIApiKey();
-      setOpenaiKey("");
-      setHasOpenAIKey(true);
-      // Refresh models after setting API key
-      await refreshModels();
-    } catch (error) {
-      console.error("Error saving OpenAI key:", error);
-      alert(t("apiKeys.saveError"));
-    } finally {
-      setIsSavingKey(false);
-    }
-  };
-
-  // Save Google AI API key
-  const handleSaveGoogleKey = async () => {
-    if (!googleKey.trim()) return;
-
-    if (!validateGoogleAIKey(googleKey.trim())) {
-      alert(t("apiKeys.google.validation"));
-      return;
-    }
-
-    setIsSavingKey(true);
-    try {
-      await DatabaseService.saveApiKey(
-        GOOGLE_AI_API_KEY_INDEX,
-        googleKey.trim()
-      );
-      await refreshGoogleApiKey();
-      setGoogleKey("");
-      setHasGoogleKey(true);
-      // Refresh models after setting API key
-      await refreshModels();
-    } catch (error) {
-      console.error("Error saving Google AI key:", error);
-      alert(t("apiKeys.saveError"));
-    } finally {
-      setIsSavingKey(false);
-    }
-  };
-
-  // Save Ollama URL
-  const handleSaveOllamaUrl = async () => {
-    if (!ollamaUrl.trim()) return;
-
-    if (!validateOllamaBaseUrl(ollamaUrl.trim())) {
-      alert(t("apiKeys.ollama.validation"));
-      return;
-    }
-
-    setIsSavingKey(true);
-    try {
-      await DatabaseService.saveApiKey(OLLAMA_API_KEY_INDEX, ollamaUrl.trim());
-      setHasOllamaKey(true);
-      // Refresh models after setting URL
-      await refreshModels();
-    } catch (error) {
-      console.error("Error saving Ollama URL:", error);
-      alert(t("apiKeys.saveError"));
-    } finally {
-      setIsSavingKey(false);
-    }
-  };
-
-  // Save OpenRouter API key
-  const handleSaveOpenRouterKey = async () => {
-    if (!openrouterKey.trim()) return;
-
-    if (!validateOpenRouterKey(openrouterKey.trim())) {
-      alert(t("apiKeys.openrouter.validation"));
-      return;
-    }
-
-    setIsSavingKey(true);
-    try {
-      await DatabaseService.saveApiKey(
-        OPENROUTER_API_KEY_INDEX,
-        openrouterKey.trim()
-      );
-      await refreshOpenRouterApiKey();
-      setOpenrouterKey("");
-      setHasOpenRouterKey(true);
-      // Refresh models after setting API key
-      await refreshModels();
-    } catch (error) {
-      console.error("Error saving OpenRouter key:", error);
-      alert(t("apiKeys.saveError"));
-    } finally {
-      setIsSavingKey(false);
-    }
-  };
-
-  // Remove API key
-  const handleRemoveKey = async (provider: AIProvider) => {
-    setIsSavingKey(true);
-    try {
-      const keys = await DatabaseService.getAllApiKeys(provider);
-      for (const key of keys) {
-        await DatabaseService.deleteApiKey(key.id);
-      }
-
-      if (provider === OPEN_AI_API_KEY_INDEX) {
-        await refreshOpenAIApiKey();
-        setHasOpenAIKey(false);
-      } else if (provider === GOOGLE_AI_API_KEY_INDEX) {
-        await refreshGoogleApiKey();
-        setHasGoogleKey(false);
-      } else if (provider === OLLAMA_API_KEY_INDEX) {
-        setHasOllamaKey(false);
-      } else if (provider === OPENROUTER_API_KEY_INDEX) {
-        await refreshOpenRouterApiKey();
-        setHasOpenRouterKey(false);
-      }
-    } catch (error) {
-      console.error(`Error removing ${provider} key:`, error);
-    } finally {
-      setIsSavingKey(false);
-    }
-  };
-
   const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
     setUserNameSaved(false);
@@ -486,11 +315,6 @@ export default function ChatConfiguration({
     fetchModels();
   }, [fetchModels]);
 
-  // Check for existing API keys on component mount
-  useEffect(() => {
-    checkApiKeys();
-  }, []);
-
   // Load cached models when API key states change (but let fetchModels handle fresh fetching)
   useEffect(() => {
     const loadCachedModelsIfKeyExists = async () => {
@@ -506,14 +330,7 @@ export default function ChatConfiguration({
     };
 
     loadCachedModelsIfKeyExists();
-  }, [
-    hasOpenAIKey,
-    hasGoogleKey,
-    hasOllamaKey,
-    hasOpenRouterKey,
-    selectedProvider,
-    hasApiKey,
-  ]);
+  }, [selectedProvider, hasApiKey]);
 
   useEffect(() => {
     setUserName(currentChat.userName ?? "User");
@@ -643,259 +460,14 @@ export default function ChatConfiguration({
         </div>
       </div>
 
-      {/* API Key Configuration */}
+      {/* Note about API Keys */}
       <div className="w-full border-t border-gray-300 dark:border-gray-600 pt-3">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          {t("apiKeys.title")}
-        </h3>
-
-        {/* OpenAI API Key */}
-        <div className="mb-4">
-          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            {t("apiKeys.openai.title")}
-          </span>
-          {hasOpenAIKey ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                {t("apiKeys.configured")}
-              </span>
-              <button
-                onClick={() => handleRemoveKey(OPEN_AI_API_KEY_INDEX)}
-                disabled={isSavingKey}
-                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
-              >
-                {t("common.remove")}
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <input
-                id="openai-key-input"
-                name="openai-api-key"
-                type="password"
-                value={openaiKey}
-                onChange={(e) => setOpenaiKey(e.target.value)}
-                placeholder={t("apiKeys.openai.placeholder")}
-                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
-                  openaiKey && !validateOpenAIKey(openaiKey)
-                    ? "border-red-300 dark:border-red-500"
-                    : "border-gray-300"
-                }`}
-                disabled={isSavingKey}
-              />
-              <button
-                onClick={handleSaveOpenAIKey}
-                disabled={
-                  isSavingKey ||
-                  !openaiKey.trim() ||
-                  !validateOpenAIKey(openaiKey)
-                }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
-              >
-                {isSavingKey ? "..." : t("common.save")}
-              </button>
-            </div>
-          )}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {t("apiKeys.openai.description")}{" "}
-            <a
-              href="https://platform.openai.com/api-keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              {t("apiKeys.openai.link")}
-            </a>
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            <strong>{t("apiKeys.title")}</strong> {t("settings.apiKeysNote")}
           </p>
-        </div>
-
-        {/* Google AI API Key */}
-        <div className="mb-2">
-          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            {t("apiKeys.google.title")}
-          </span>
-          {hasGoogleKey ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                {t("apiKeys.configured")}
-              </span>
-              <button
-                onClick={() => handleRemoveKey(GOOGLE_AI_API_KEY_INDEX)}
-                disabled={isSavingKey}
-                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
-              >
-                {t("common.remove")}
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <input
-                id="google-key-input"
-                name="google-ai-api-key"
-                type="password"
-                value={googleKey}
-                onChange={(e) => setGoogleKey(e.target.value)}
-                placeholder={t("apiKeys.google.placeholder")}
-                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
-                  googleKey && !validateGoogleAIKey(googleKey)
-                    ? "border-red-300 dark:border-red-500"
-                    : "border-gray-300"
-                }`}
-                disabled={isSavingKey}
-              />
-              <button
-                onClick={handleSaveGoogleKey}
-                disabled={
-                  isSavingKey ||
-                  !googleKey.trim() ||
-                  !validateGoogleAIKey(googleKey)
-                }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
-              >
-                {isSavingKey ? "..." : t("common.save")}
-              </button>
-            </div>
-          )}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {t("apiKeys.google.description")}{" "}
-            <a
-              href="https://aistudio.google.com/app/apikey"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              {t("apiKeys.google.link")}
-            </a>
-          </p>
-        </div>
-
-        {/* OpenRouter Configuration */}
-        <div className="mt-4 mb-2">
-          <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            {t("apiKeys.openrouter.title")}
-          </span>
-          {hasOpenRouterKey ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                {t("apiKeys.configured")}
-              </span>
-              <button
-                onClick={() => handleRemoveKey(OPENROUTER_API_KEY_INDEX)}
-                disabled={isSavingKey}
-                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
-              >
-                {t("common.remove")}
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <input
-                id="openrouter-key-input"
-                name="openrouter-api-key"
-                type="password"
-                value={openrouterKey}
-                onChange={(e) => setOpenrouterKey(e.target.value)}
-                placeholder={t("apiKeys.openrouter.placeholder")}
-                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
-                  openrouterKey && !validateOpenRouterKey(openrouterKey)
-                    ? "border-red-300 dark:border-red-500"
-                    : "border-gray-300"
-                }`}
-                disabled={isSavingKey}
-              />
-              <button
-                onClick={handleSaveOpenRouterKey}
-                disabled={
-                  isSavingKey ||
-                  !openrouterKey.trim() ||
-                  !validateOpenRouterKey(openrouterKey)
-                }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
-              >
-                {isSavingKey ? "..." : t("common.save")}
-              </button>
-            </div>
-          )}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {t("apiKeys.openrouter.description")}{" "}
-            <a
-              href="https://openrouter.ai/keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              {t("apiKeys.openrouter.link")}
-            </a>
-            {". "}
-            {t("apiKeys.openrouter.additionalInfo")}
-          </p>
-        </div>
-
-        {/* Ollama Configuration */}
-        <div className="mt-4 mb-2">
-          <p className="flex gap-2 text-xs font-medium text-gray-600 dark:text-gray-400 my-1">
-            {t("apiKeys.ollama.title")}{" "}
-            <a
-              href={ollamaUrl.trim()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block mb-2 text-xs underline text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-            >
-              <i>{ollamaUrl.trim()}</i>
-            </a>
-          </p>
-          {hasOllamaKey ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                {t("apiKeys.configured")}
-              </span>
-              <button
-                onClick={() => handleRemoveKey(OLLAMA_API_KEY_INDEX)}
-                disabled={isSavingKey}
-                className="text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
-              >
-                {t("common.edit")}
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <input
-                id="ollama-url-input"
-                name="ollama-base-url"
-                type="url"
-                value={ollamaUrl}
-                onChange={(e) => setOllamaUrl(e.target.value)}
-                placeholder={t("apiKeys.ollama.placeholder")}
-                className={`flex-1 max-w-xs text-xs p-2 border rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 ${
-                  ollamaUrl && !validateOllamaBaseUrl(ollamaUrl)
-                    ? "border-red-300 dark:border-red-500"
-                    : "border-gray-300"
-                }`}
-                disabled={isSavingKey}
-              />
-              <button
-                onClick={handleSaveOllamaUrl}
-                disabled={
-                  isSavingKey ||
-                  !ollamaUrl.trim() ||
-                  !validateOllamaBaseUrl(ollamaUrl)
-                }
-                className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 w-16 cursor-pointer"
-              >
-                {isSavingKey ? "..." : t("common.save")}
-              </button>
-            </div>
-          )}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {t("apiKeys.ollama.description")}{" "}
-            <a
-              href="https://ollama.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              {t("apiKeys.ollama.link")}
-            </a>
+          <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
+            {t("settings.apiKeysInstructions")}
           </p>
         </div>
       </div>

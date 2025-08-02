@@ -117,7 +117,9 @@
     "storageDescription": "KB utilizados",
     "maxTokens": "Máximo de Tokens",
     "maxTokensDescription": "Número máximo de tokens para respostas da IA",
-    "themeDescription": "Escolha seu tema preferido. Automático seguirá a preferência do seu sistema."
+    "themeDescription": "Escolha seu tema preferido. Automático seguirá a preferência do seu sistema.",
+    "apiKeysNote": "configurações foram movidas para as Configurações Globais.",
+    "apiKeysInstructions": "Clique no botão Configurações na barra lateral para configurar suas chaves API."
   },
   "sidebar": {
     "newChat": "Novo Chat",

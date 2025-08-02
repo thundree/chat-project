@@ -5,6 +5,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import type { Theme } from "@/contexts/themeContext";
 import GenericModal from "@/components/GenericModal";
 import LanguageSelector from "@/components/LanguageSelector";
+import ApiKeyManager from "@/components/ApiKeyManager";
 import {
   saveUserPreferences,
   loadUserPreferences,
@@ -167,6 +168,16 @@ const GlobalSettingsModal: React.FC<GlobalSettingsModalProps> = ({
                 {t("chat.temperatureDescription")}
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* API Keys Configuration */}
+        <div>
+          <Label className="mb-2 block text-lg font-semibold">
+            {t("apiKeys.title")}
+          </Label>
+          <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+            <ApiKeyManager showTitle={false} className="space-y-4" />
           </div>
         </div>
 

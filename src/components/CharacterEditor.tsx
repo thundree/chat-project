@@ -361,7 +361,7 @@ export default function CharacterEditor({
               />
             )}
             <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              {formData.name || "Character Name"}
+              {formData.name || ""}
             </p>
             <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
               {t("characterEditor.backgroundPreview")}

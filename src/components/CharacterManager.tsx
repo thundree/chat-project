@@ -169,7 +169,7 @@ export default function CharacterManager({
                 {formData.characterImage && (
                   <img
                     src={formData.characterImage}
-                    alt={formData.characterName || "Character preview"}
+                    alt={formData.characterName || ""}
                     className="mx-auto object-cover w-16 h-16 mb-2 rounded-lg"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = "none";
@@ -177,7 +177,7 @@ export default function CharacterManager({
                   />
                 )}
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {formData.characterName || "Character Name"}
+                  {formData.characterName || ""}
                 </p>
                 <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
                   {t("characterManager.backgroundPreview")}

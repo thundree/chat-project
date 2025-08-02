@@ -114,11 +114,14 @@
     "storageUsage": "Uso de Armazenamento",
     "exportData": "Exportar Dados do App",
     "exportDescription": "Baixar um backup das suas configurações e dados",
+    "clearData": "Limpar Todos os Dados",
+    "clearDataDescription": "Remove todos os chats, mensagens, personagens e configurações",
+    "clearDataConfirmation": "Tem certeza de que deseja limpar todos os dados? Esta ação não pode ser desfeita.",
     "storageDescription": "KB utilizados",
     "maxTokens": "Máximo de Tokens",
     "maxTokensDescription": "Número máximo de tokens para respostas da IA",
     "themeDescription": "Escolha seu tema preferido. Automático seguirá a preferência do seu sistema.",
-    "apiKeysNote": "configurações foram movidas para as Configurações Globais.",
+    "apiKeysNote": "estão localizadas nas Configurações Globais.",
     "apiKeysInstructions": "Clique no botão Configurações na barra lateral para configurar suas chaves API."
   },
   "sidebar": {

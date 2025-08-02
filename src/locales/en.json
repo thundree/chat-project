@@ -114,11 +114,14 @@
     "storageUsage": "Storage Usage",
     "exportData": "Export App Data",
     "exportDescription": "Download a backup of your settings and data",
+    "clearData": "Clear All Data",
+    "clearDataDescription": "Remove all chats, messages, characters and settings",
+    "clearDataConfirmation": "Are you sure you want to clear all data? This action cannot be undone.",
     "storageDescription": "KB used",
     "maxTokens": "Max Tokens",
     "maxTokensDescription": "Maximum number of tokens for AI responses",
     "themeDescription": "Choose your preferred theme. Auto will follow your system preference.",
-    "apiKeysNote": "configurations have been moved to Global Settings.",
+    "apiKeysNote": "can be found in Global Settings.",
     "apiKeysInstructions": "Click the Settings button in the sidebar to configure your API keys."
   },
   "sidebar": {
